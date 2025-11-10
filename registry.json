@@ -1,6 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "Lumos Registry",
+  "baseUrl": "https://lumos-shadcn-ui-registry.vercel.app",
   "homepage": "https://lumos-shadcn-ui-registry.vercel.app",
   "items": [
     {
