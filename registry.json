@@ -7,76 +7,41 @@
     {
       "name": "theme",
       "type": "registry:theme",
-      "title": "LEUCHTTURM Theme",
-      "description": "Lumos LEUCHTTURM design system theme with brand colors, typography, and tokens",
+      "title": "Lumos Design System",
+      "description": "Lumos production design tokens — light mode. Orange primary, Roobert font, full semantic color system.",
       "cssVars": {
         "light": {
           "background": "0 0% 100%",
-          "foreground": "216 20% 10%",
+          "foreground": "223 21% 20%",
           "card": "0 0% 100%",
-          "card-foreground": "216 20% 10%",
+          "card-foreground": "223 21% 20%",
           "popover": "0 0% 100%",
-          "popover-foreground": "216 20% 10%",
+          "popover-foreground": "223 21% 20%",
           "primary": "20 99% 55%",
           "primary-foreground": "0 0% 100%",
-          "secondary": "180 9% 98%",
-          "secondary-foreground": "216 20% 10%",
-          "muted": "210 15% 95%",
-          "muted-foreground": "225 23% 39%",
+          "secondary": "210 13% 97%",
+          "secondary-foreground": "223 21% 20%",
+          "muted": "210 14% 95%",
+          "muted-foreground": "225 20% 42%",
           "accent": "19 100% 96%",
           "accent-foreground": "20 99% 40%",
           "destructive": "0 65% 50%",
           "destructive-foreground": "0 0% 100%",
-          "border": "224 14% 85%",
-          "input": "224 14% 85%",
+          "border": "220 13% 91%",
+          "input": "222 15% 87%",
           "ring": "20 99% 55%",
           "chart-1": "215 90% 47%",
           "chart-2": "250 50% 60%",
           "chart-3": "322 55% 55%",
           "chart-4": "195 65% 40%",
           "chart-5": "84 50% 55%",
-          "sidebar": "210 15% 95%",
-          "sidebar-foreground": "216 20% 10%",
+          "sidebar": "210 13% 97%",
+          "sidebar-foreground": "223 21% 20%",
           "sidebar-primary": "20 99% 55%",
           "sidebar-primary-foreground": "0 0% 100%",
           "sidebar-accent": "19 100% 96%",
           "sidebar-accent-foreground": "20 99% 40%",
-          "sidebar-border": "224 14% 85%",
-          "sidebar-ring": "20 99% 55%",
-          "radius": "0.5rem"
-        },
-        "dark": {
-          "background": "216 20% 10%",
-          "foreground": "0 0% 100%",
-          "card": "219 19% 14%",
-          "card-foreground": "0 0% 100%",
-          "popover": "216 20% 10%",
-          "popover-foreground": "0 0% 100%",
-          "primary": "20 99% 55%",
-          "primary-foreground": "0 0% 100%",
-          "secondary": "219 19% 14%",
-          "secondary-foreground": "0 0% 100%",
-          "muted": "0 0% 0%",
-          "muted-foreground": "224 14% 85%",
-          "accent": "20 80% 16%",
-          "accent-foreground": "20 100% 79%",
-          "destructive": "0 70% 40%",
-          "destructive-foreground": "0 0% 100%",
-          "border": "225 23% 39%",
-          "input": "225 23% 39%",
-          "ring": "20 99% 55%",
-          "chart-1": "215 100% 65%",
-          "chart-2": "249 70% 73%",
-          "chart-3": "323 84% 80%",
-          "chart-4": "195 70% 75%",
-          "chart-5": "84 61% 80%",
-          "sidebar": "219 19% 14%",
-          "sidebar-foreground": "0 0% 100%",
-          "sidebar-primary": "20 99% 55%",
-          "sidebar-primary-foreground": "0 0% 100%",
-          "sidebar-accent": "20 80% 16%",
-          "sidebar-accent-foreground": "20 100% 79%",
-          "sidebar-border": "225 23% 39%",
+          "sidebar-border": "220 13% 91%",
           "sidebar-ring": "20 99% 55%",
           "radius": "0.5rem"
         }
@@ -103,7 +68,6 @@
       "registryDependencies": [
         "https://lumos-shadcn-ui-registry.vercel.app/r/brand-header.json",
         "https://lumos-shadcn-ui-registry.vercel.app/r/brand-sidebar.json",
-        "https://lumos-shadcn-ui-registry.vercel.app/r/product-grid.json",
         "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"
       ],
       "files": [
@@ -144,28 +108,6 @@
       ]
     },
     {
-      "name": "store",
-      "type": "registry:block",
-      "title": "Store",
-      "description": "A store application with your brand themed components",
-      "registryDependencies": [
-        "https://lumos-shadcn-ui-registry.vercel.app/r/product-grid.json",
-        "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"
-      ],
-      "files": [
-        {
-          "path": "src/layouts/minimal-layout.tsx",
-          "type": "registry:file",
-          "target": "app/layout.tsx"
-        },
-        {
-          "path": "src/app/demo/[name]/blocks/store-page.tsx",
-          "type": "registry:page",
-          "target": "app/page.tsx"
-        }
-      ]
-    },
-    {
       "name": "brand-header",
       "type": "registry:component",
       "title": "Brand Header",
@@ -176,7 +118,6 @@
         "avatar",
         "sidebar",
         "https://lumos-shadcn-ui-registry.vercel.app/r/sonner.json",
-        "https://lumos-shadcn-ui-registry.vercel.app/r/logo.json",
         "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"
       ],
       "files": [
@@ -222,136 +163,6 @@
           "path": "src/app/demo/[name]/blocks/blank-page.tsx",
           "type": "registry:page",
           "target": "app/page.tsx"
-        }
-      ]
-    },
-    {
-      "name": "login",
-      "type": "registry:component",
-      "title": "Login",
-      "description": "Username & password login section with customer quote.",
-      "registryDependencies": [
-        "badge",
-        "button",
-        "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json",
-        "https://lumos-shadcn-ui-registry.vercel.app/r/logo.json"
-      ],
-      "files": [
-        {
-          "path": "src/components/login.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/layouts/minimal-layout.tsx",
-          "type": "registry:file",
-          "target": "app/layout.tsx"
-        },
-        {
-          "path": "src/app/demo/[name]/blocks/blank-page.tsx",
-          "type": "registry:page",
-          "target": "app/page.tsx"
-        }
-      ]
-    },
-    {
-      "name": "logo",
-      "type": "registry:component",
-      "title": "Brand Logo",
-      "description": "A styled, simple, reusable logo",
-      "registryDependencies": [
-        "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"
-      ],
-      "files": [
-        {
-          "path": "src/components/logo.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/layouts/minimal-layout.tsx",
-          "type": "registry:file",
-          "target": "app/layout.tsx"
-        },
-        {
-          "path": "src/app/demo/[name]/blocks/blank-page.tsx",
-          "type": "registry:page",
-          "target": "app/page.tsx"
-        }
-      ]
-    },
-    {
-      "name": "hero",
-      "type": "registry:component",
-      "title": "Hero",
-      "description": "Attention-grabbing section for the top of your landing pages.",
-      "registryDependencies": [
-        "badge",
-        "button",
-        "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"
-      ],
-      "files": [
-        {
-          "path": "src/components/hero.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/layouts/minimal-layout.tsx",
-          "type": "registry:file",
-          "target": "app/layout.tsx"
-        },
-        {
-          "path": "src/app/demo/[name]/blocks/blank-page.tsx",
-          "type": "registry:page",
-          "target": "app/page.tsx"
-        }
-      ]
-    },
-    {
-      "name": "promo",
-      "type": "registry:component",
-      "title": "Promo",
-      "description": "Attention-grabbing section to display the current promotional deal.",
-      "registryDependencies": [
-        "button",
-        "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"
-      ],
-      "files": [
-        {
-          "path": "src/components/promo.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/layouts/minimal-layout.tsx",
-          "type": "registry:file",
-          "target": "app/layout.tsx"
-        },
-        {
-          "path": "src/app/demo/[name]/blocks/blank-page.tsx",
-          "type": "registry:page",
-          "target": "app/page.tsx"
-        }
-      ]
-    },
-    {
-      "name": "product-grid",
-      "type": "registry:component",
-      "title": "Product Grid",
-      "description": "Product grid displaying all products with API to fetch data",
-      "registryDependencies": [
-        "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"
-      ],
-      "files": [
-        {
-          "path": "src/components/product-grid.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/lib/products.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "src/layouts/minimal-layout.tsx",
-          "type": "registry:file",
-          "target": "app/layout.tsx"
         }
       ]
     },
