@@ -3,16 +3,24 @@ import type { ReactElement, ReactNode } from "react";
 // blocks
 import { blank } from "@/app/demo/[name]/blocks/blank";
 import { dashboard } from "@/app/demo/[name]/blocks/dashboard";
-import { store } from "@/app/demo/[name]/blocks/store";
+import {
+  lumosAppsIndex,
+  lumosIdentitiesIndex,
+  lumosAccountsIndex,
+  lumosAccessReviewsIndex,
+  lumosOnboardingIndex,
+  lumosOffboardingIndex,
+  lumosActivityLogIndex,
+  lumosTasksIndex,
+  lumosAccessPoliciesIndex,
+  lumosAnalyticsIndex,
+  lumosIntegrationsIndex,
+  lumosSettingsIndex,
+} from "@/app/demo/[name]/blocks/lumos-demos";
 
 // components
 import { brandHeader } from "@/app/demo/[name]/components/brand-header";
 import { brandSidebar } from "@/app/demo/[name]/components/brand-sidebar";
-import { hero } from "@/app/demo/[name]/components/hero";
-import { login } from "@/app/demo/[name]/components/login";
-import { logo } from "@/app/demo/[name]/components/logo";
-import { productGrid } from "@/app/demo/[name]/components/product-grid";
-import { promo } from "@/app/demo/[name]/components/promo";
 
 // ui
 import { accordion } from "@/app/demo/[name]/ui/accordion";
@@ -52,17 +60,23 @@ interface Demo {
 export const demos: { [name: string]: Demo } = {
   // blocks
   blank,
-  store,
   dashboard,
+  "lumos-apps-index": lumosAppsIndex,
+  "lumos-identities-index": lumosIdentitiesIndex,
+  "lumos-accounts-index": lumosAccountsIndex,
+  "lumos-access-reviews-index": lumosAccessReviewsIndex,
+  "lumos-onboarding-index": lumosOnboardingIndex,
+  "lumos-offboarding-index": lumosOffboardingIndex,
+  "lumos-activity-log-index": lumosActivityLogIndex,
+  "lumos-tasks-index": lumosTasksIndex,
+  "lumos-access-policies-index": lumosAccessPoliciesIndex,
+  "lumos-analytics-index": lumosAnalyticsIndex,
+  "lumos-integrations-index": lumosIntegrationsIndex,
+  "lumos-settings-index": lumosSettingsIndex,
 
   // components
-  hero,
-  login,
-  promo,
-  logo,
   "brand-header": brandHeader,
   "brand-sidebar": brandSidebar,
-  "product-grid": productGrid,
 
   // ui
   accordion,
