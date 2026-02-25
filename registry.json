@@ -108,6 +108,70 @@
       ]
     },
     {
+      "name": "lumos-apps-index",
+      "type": "registry:block",
+      "title": "Lumos Apps",
+      "description": "Apps inventory index with table, tabs, search and filter",
+      "registryDependencies": [
+        "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"
+      ],
+      "files": [
+        {
+          "path": "src/app/demo/[name]/blocks/lumos-apps-index.tsx",
+          "type": "registry:page",
+          "target": "app/page.tsx"
+        }
+      ]
+    },
+    {
+      "name": "lumos-identities-index",
+      "type": "registry:block",
+      "title": "Lumos Identities",
+      "description": "Identities (people/employees) index with avatar initials, department, and status",
+      "registryDependencies": [
+        "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"
+      ],
+      "files": [
+        {
+          "path": "src/app/demo/[name]/blocks/lumos-identities-index.tsx",
+          "type": "registry:page",
+          "target": "app/page.tsx"
+        }
+      ]
+    },
+    {
+      "name": "lumos-accounts-index",
+      "type": "registry:block",
+      "title": "Lumos Accounts",
+      "description": "Accounts index with tabs (All, Inactive, Terminated, Unmatched)",
+      "registryDependencies": [
+        "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"
+      ],
+      "files": [
+        {
+          "path": "src/app/demo/[name]/blocks/lumos-accounts-index.tsx",
+          "type": "registry:page",
+          "target": "app/page.tsx"
+        }
+      ]
+    },
+    {
+      "name": "lumos-access-reviews-index",
+      "type": "registry:block",
+      "title": "Lumos Access Reviews",
+      "description": "Access review campaigns index with progress tracking and status badges",
+      "registryDependencies": [
+        "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"
+      ],
+      "files": [
+        {
+          "path": "src/app/demo/[name]/blocks/lumos-access-reviews-index.tsx",
+          "type": "registry:page",
+          "target": "app/page.tsx"
+        }
+      ]
+    },
+    {
       "name": "brand-header",
       "type": "registry:component",
       "title": "Brand Header",
