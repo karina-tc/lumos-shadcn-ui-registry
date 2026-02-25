@@ -673,6 +673,30 @@
           "target": "app/layout.tsx"
         }
       ]
+    },
+    {
+      "name": "lumos-analytics-index",
+      "type": "registry:block",
+      "title": "Lumos Analytics",
+      "description": "Analytics dashboard with spend stats, monthly chart, top apps, and access review summary",
+      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
+      "files": [{"path": "src/app/demo/[name]/blocks/lumos-analytics-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
+    },
+    {
+      "name": "lumos-integrations-index",
+      "type": "registry:block",
+      "title": "Lumos Integrations",
+      "description": "Integrations hub with connected/disconnected status cards grouped by category",
+      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
+      "files": [{"path": "src/app/demo/[name]/blocks/lumos-integrations-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
+    },
+    {
+      "name": "lumos-settings-index",
+      "type": "registry:block",
+      "title": "Lumos Settings",
+      "description": "Settings page with vertical category nav and General organization settings form",
+      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
+      "files": [{"path": "src/app/demo/[name]/blocks/lumos-settings-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
     }
   ]
 }
