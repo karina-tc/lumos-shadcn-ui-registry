@@ -113,11 +113,8 @@
       "title": "Brand Header",
       "description": "A styled, simple, reusable header",
       "registryDependencies": [
-        "button",
-        "input",
-        "avatar",
         "sidebar",
-        "https://lumos-shadcn-ui-registry.vercel.app/r/sonner.json",
+        "separator",
         "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"
       ],
       "files": [
