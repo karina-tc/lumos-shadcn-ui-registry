@@ -1,185 +1,83 @@
 "use client";
 
 import {
-  AlertTriangle,
-  BarChart2,
-  Clock,
-  Database,
-  Home,
-  LayoutGrid,
-  MessageSquareText,
-  MoreHorizontal,
-  Plus,
-  Table,
-} from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import type * as React from "react";
-
-import { Button } from "@/components/ui/button";
-import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarSeparator,
-  useSidebar,
 } from "@/components/ui/sidebar";
-import { cn } from "@/lib/utils";
 
 interface NavItem {
-  title: string;
+  label: string;
   href: string;
-  icon: React.ReactNode;
-  badge?: {
-    text: string;
-  };
+  active?: boolean;
 }
 
-interface SidebarProps {
-  collapsed?: boolean;
-  onToggle?: () => void;
-  className?: string;
+interface BrandSidebarProps {
+  navItems?: NavItem[];
+  footerItems?: NavItem[];
 }
+
+const defaultNav: NavItem[] = [
+  { label: "Home", href: "#" },
+  { label: "Apps", href: "#" },
+  { label: "Users", href: "#" },
+  { label: "Groups", href: "#" },
+  { label: "Requests", href: "#", active: true },
+  { label: "Policies", href: "#" },
+];
 
 export function BrandSidebar({
-  collapsed = false,
-  onToggle,
-  className,
-}: SidebarProps) {
-  const pathname = usePathname();
-  const { state } = useSidebar();
-  const isCollapsed = state === "collapsed";
-
-  const mainNavItems: NavItem[] = [
-    {
-      title: "Home",
-      href: "#",
-      icon: <Home className="size-4" />,
-    },
-    {
-      title: "Projects",
-      href: "#projects",
-      icon: <LayoutGrid className="size-4" />,
-    },
-    {
-      title: "Databases",
-      href: "#databases",
-      icon: <Database className="size-4" />,
-    },
-    {
-      title: "Tables",
-      href: "#tables",
-      icon: <Table className="size-4" />,
-      badge: {
-        text: "Beta",
-      },
-    },
-    {
-      title: "AI",
-      href: "#ai",
-      icon: <MessageSquareText className="size-4" />,
-      badge: {
-        text: "Alpha",
-      },
-    },
-  ];
-
-  const toolsNavItems: NavItem[] = [
-    {
-      title: "Alerts",
-      href: "#alerts",
-      icon: <AlertTriangle className="size-4" />,
-    },
-    {
-      title: "Analytics",
-      href: "#analytics",
-      icon: <BarChart2 className="size-4" />,
-    },
-    {
-      title: "History",
-      href: "#history",
-      icon: <Clock className="size-4" />,
-    },
-    {
-      title: "More",
-      href: "#more",
-      icon: <MoreHorizontal className="size-4" />,
-    },
-  ];
-
+  navItems = defaultNav,
+  footerItems = [],
+}: BrandSidebarProps) {
   return (
-    <Sidebar variant="sidebar" collapsible="icon" className="mt-16">
-      <SidebarHeader>
-        <div className={cn(isCollapsed ? "py-2" : "p-2")}>
-          <Button className={cn(isCollapsed ? "h-8 w-8 p-0" : "w-full")}>
-            <Plus className={cn("size-4", !isCollapsed && "mr-1")} />
-            {!isCollapsed && <span>Create</span>}
-          </Button>
+    <Sidebar className="border-r border-sidebar-border bg-sidebar w-64">
+      <SidebarHeader className="px-4 py-3">
+        <div className="flex items-center gap-2">
+          <div className="h-6 w-6 rounded-sm bg-primary" />
+          <span className="text-sm font-semibold text-sidebar-foreground">Lumos</span>
         </div>
       </SidebarHeader>
 
       <SidebarContent>
-        {/* Main Nav Items */}
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {mainNavItems.map((item) => (
-                <SidebarMenuItem key={item.href}>
+              {navItems.map((item) => (
+                <SidebarMenuItem key={item.label}>
                   <SidebarMenuButton
                     asChild
-                    isActive={
-                      pathname === item.href ||
-                      (pathname === "" && item.href === "/")
-                    }
-                    tooltip={item.title}
+                    isActive={item.active}
+                    className="text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground"
                   >
-                    <Link href={item.href}>
-                      {item.icon}
-                      <span>{item.title}</span>
-                    </Link>
+                    <a href={item.href}>{item.label}</a>
                   </SidebarMenuButton>
-                  {item.badge && (
-                    <SidebarMenuBadge>{item.badge.text}</SidebarMenuBadge>
-                  )}
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarSeparator />
-
-        {/* Tools Nav Items */}
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {toolsNavItems.map((item) => (
-                <SidebarMenuItem key={item.href}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={pathname === item.href}
-                    tooltip={item.title}
-                  >
-                    <Link href={item.href}>
-                      {item.icon}
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                  {item.badge && (
-                    <SidebarMenuBadge>{item.badge.text}</SidebarMenuBadge>
-                  )}
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      {footerItems.length > 0 && (
+        <SidebarFooter className="border-t border-sidebar-border px-4 py-3">
+          <SidebarMenu>
+            {footerItems.map((item) => (
+              <SidebarMenuItem key={item.label}>
+                <SidebarMenuButton asChild className="text-sm text-sidebar-foreground">
+                  <a href={item.href}>{item.label}</a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarFooter>
+      )}
     </Sidebar>
   );
 }
