@@ -316,6 +316,7 @@
   --color-background-container-danger: hsl(var(--background-container-danger));
   --color-background-container-success: hsl(var(--background-container-success));
   --color-background-container-warning: hsl(var(--background-container-warning));
+  --color-background-container-ai: hsl(var(--background-container-ai));
   --color-background-action-primary: hsl(var(--background-action-primary));
   --color-background-action-primary-hover: hsl(var(--background-action-primary-hover));
   --color-background-action-primary-pressed: hsl(var(--background-action-primary-pressed));
@@ -324,13 +325,24 @@
   --color-background-action-secondary-pressed: hsl(var(--background-action-secondary-pressed));
   --color-background-action-danger: hsl(var(--background-action-danger));
   --color-background-action-danger-hover: hsl(var(--background-action-danger-hover));
+  --color-background-action-danger-pressed: hsl(var(--background-action-danger-pressed));
+  --color-background-action-success: hsl(var(--background-action-success));
+  --color-background-action-success-hover: hsl(var(--background-action-success-hover));
+  --color-background-action-success-pressed: hsl(var(--background-action-success-pressed));
   --color-background-action-accent: hsl(var(--background-action-accent));
   --color-background-action-accent-hover: hsl(var(--background-action-accent-hover));
+  --color-background-action-accent-pressed: hsl(var(--background-action-accent-pressed));
+  --color-background-action-unselected: hsl(var(--background-action-unselected));
   --color-background-data-blue: hsl(var(--background-data-blue));
   --color-background-data-purple: hsl(var(--background-data-purple));
   --color-background-data-pink: hsl(var(--background-data-pink));
   --color-background-data-teal: hsl(var(--background-data-teal));
   --color-background-data-lemon: hsl(var(--background-data-lemon));
+  --color-background-data-blue-hover: hsl(var(--background-data-blue-hover));
+  --color-background-data-purple-hover: hsl(var(--background-data-purple-hover));
+  --color-background-data-pink-hover: hsl(var(--background-data-pink-hover));
+  --color-background-data-teal-hover: hsl(var(--background-data-teal-hover));
+  --color-background-data-lemon-hover: hsl(var(--background-data-lemon-hover));
 
   /* Lumos semantic — foreground */
   --color-foreground-primary: hsl(var(--foreground-primary));
@@ -367,6 +379,7 @@
   --color-border-data-pink: hsl(var(--border-data-pink));
   --color-border-data-teal: hsl(var(--border-data-teal));
   --color-border-data-lemon: hsl(var(--border-data-lemon));
+  --color-border-ai: hsl(var(--border-ai));
 
   /* Lumos semantic — outline */
   --color-outline-default: hsl(var(--outline-default));
