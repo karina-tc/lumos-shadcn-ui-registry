@@ -697,6 +697,46 @@
       "description": "Settings page with vertical category nav and General organization settings form",
       "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-settings-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
+    },
+    {
+      "name": "lumos-onboarding-index",
+      "type": "registry:block",
+      "title": "Lumos Onboarding",
+      "description": "Employee onboarding index with provisioning progress and status",
+      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
+      "files": [{"path": "src/app/demo/[name]/blocks/lumos-onboarding-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
+    },
+    {
+      "name": "lumos-offboarding-index",
+      "type": "registry:block",
+      "title": "Lumos Offboarding",
+      "description": "Employee offboarding index with app revocation tracking",
+      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
+      "files": [{"path": "src/app/demo/[name]/blocks/lumos-offboarding-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
+    },
+    {
+      "name": "lumos-activity-log-index",
+      "type": "registry:block",
+      "title": "Lumos Activity Log",
+      "description": "Audit log of all admin actions with actor, resource, and timestamp",
+      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
+      "files": [{"path": "src/app/demo/[name]/blocks/lumos-activity-log-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
+    },
+    {
+      "name": "lumos-tasks-index",
+      "type": "registry:block",
+      "title": "Lumos Tasks",
+      "description": "Admin tasks index with priority and status badges",
+      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
+      "files": [{"path": "src/app/demo/[name]/blocks/lumos-tasks-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
+    },
+    {
+      "name": "lumos-access-policies-index",
+      "type": "registry:block",
+      "title": "Lumos Access Policies",
+      "description": "Access policies index showing onboarding rules, app coverage, and user assignments",
+      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
+      "files": [{"path": "src/app/demo/[name]/blocks/lumos-access-policies-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
     }
   ]
 }
