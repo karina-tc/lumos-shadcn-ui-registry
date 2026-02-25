@@ -737,6 +737,44 @@
       "description": "Access policies index showing onboarding rules, app coverage, and user assignments",
       "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-access-policies-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
+    },
+    {
+      "name": "lumos-button",
+      "type": "registry:component",
+      "title": "Lumos Button",
+      "description": "Lumos button — orange primary, rounded-full, md/sm sizes, primary/secondary/danger/ghost/accent variants",
+      "dependencies": ["class-variance-authority"],
+      "files": [
+        {
+          "path": "src/components/lumos-button.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "lumos-badge",
+      "type": "registry:component",
+      "title": "Lumos Badge",
+      "description": "Status/data badge using the Lumos data color palette (blue, purple, pink, teal, lemon, orange, success, danger, warning)",
+      "dependencies": ["class-variance-authority"],
+      "files": [
+        {
+          "path": "src/components/lumos-badge.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "lumos-card",
+      "type": "registry:component",
+      "title": "Lumos Card",
+      "description": "App tile card with the Lumos apptile box shadow pattern (used in app catalog, integrations, dashboards)",
+      "files": [
+        {
+          "path": "src/components/lumos-card.tsx",
+          "type": "registry:component"
+        }
+      ]
     }
   ]
 }
