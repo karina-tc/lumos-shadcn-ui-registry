@@ -15,22 +15,38 @@ export function MCPTabs({ rootUrl }: { rootUrl: string }) {
   const [tab, setTab] = useState("cursor");
   const [hasCopied, setHasCopied] = useState(false);
 
+  const registryUrl = `https://${rootUrl}/r/registry.json`;
+
   const mcp = {
     command: "npx -y shadcn@canary registry:mcp",
     env: {
-      REGISTRY_URL: `https://${rootUrl}/r/registry.json`,
+      REGISTRY_URL: registryUrl,
+    },
+  };
+
+  // Claude Code requires "type": "stdio" and split command/args (not a combined string)
+  const claudeMcp = {
+    type: "stdio",
+    command: "npx",
+    args: ["-y", "shadcn@canary", "registry:mcp"],
+    env: {
+      REGISTRY_URL: registryUrl,
     },
   };
 
   const mcpServer = JSON.stringify(
-    {
-      mcpServers: {
-        shadcn: mcp,
-      },
-    },
+    { mcpServers: { lumos: mcp } },
     null,
     2,
   );
+
+  const claudeMcpServer = JSON.stringify(
+    { mcpServers: { lumos: claudeMcp } },
+    null,
+    2,
+  );
+
+  const currentConfig = tab === "claude-code" ? claudeMcpServer : mcpServer;
 
   useEffect(() => {
     if (hasCopied) {
@@ -46,6 +62,7 @@ export function MCPTabs({ rootUrl }: { rootUrl: string }) {
         <TabsList>
           <TabsTrigger value="cursor">Cursor</TabsTrigger>
           <TabsTrigger value="windsurf">Windsurf</TabsTrigger>
+          <TabsTrigger value="claude-code">Claude Code</TabsTrigger>
         </TabsList>
       </div>
 
@@ -65,6 +82,16 @@ export function MCPTabs({ rootUrl }: { rootUrl: string }) {
         </p>
       </TabsContent>
 
+      <TabsContent value="claude-code">
+        <p className="text-muted-foreground text-sm">
+          Copy and paste the code into{" "}
+          <code className="inline text-sm tabular-nums">.mcp.json</code> in your
+          project root, or add to{" "}
+          <code className="inline text-sm tabular-nums">~/.claude.json</code>{" "}
+          to enable across all projects.
+        </p>
+      </TabsContent>
+
       <div className="relative">
         <div className="absolute top-3 right-3 flex gap-2">
           {tab === "cursor" && <AddToCursor mcp={mcp} />}
@@ -73,7 +100,7 @@ export function MCPTabs({ rootUrl }: { rootUrl: string }) {
             size="sm"
             variant="outline"
             onClick={() => {
-              copyToClipboard(mcpServer);
+              copyToClipboard(currentConfig);
               setHasCopied(true);
             }}
             className="shadow-none"
@@ -85,7 +112,7 @@ export function MCPTabs({ rootUrl }: { rootUrl: string }) {
 
         <pre className="mt-16 overflow-x-auto rounded-lg border bg-muted p-1 sm:mt-0">
           <code className="relative rounded bg-transparent p-1 font-mono text-muted-foreground text-sm">
-            {mcpServer}
+            {currentConfig}
           </code>
         </pre>
       </div>

@@ -65,6 +65,7 @@
       "type": "registry:block",
       "title": "Blank",
       "description": "A blank application with all brand components and code",
+      "relatedComponents": ["brand-header", "brand-sidebar"],
       "registryDependencies": [
         "https://lumos-shadcn-ui-registry.vercel.app/r/brand-header.json",
         "https://lumos-shadcn-ui-registry.vercel.app/r/brand-sidebar.json",
@@ -88,6 +89,7 @@
       "type": "registry:block",
       "title": "Dashboard",
       "description": "A dashboard application with your brand themed components",
+      "relatedComponents": ["brand-header", "brand-sidebar"],
       "registryDependencies": [
         "https://lumos-shadcn-ui-registry.vercel.app/r/sonner.json",
         "https://lumos-shadcn-ui-registry.vercel.app/r/brand-header.json",
@@ -112,6 +114,7 @@
       "type": "registry:block",
       "title": "Lumos Apps",
       "description": "Apps inventory index with table, tabs, search and filter",
+      "relatedComponents": ["brand-header", "brand-sidebar"],
       "registryDependencies": [
         "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"
       ],
@@ -128,6 +131,7 @@
       "type": "registry:block",
       "title": "Lumos Identities",
       "description": "Identities (people/employees) index with avatar initials, department, and status",
+      "relatedComponents": ["brand-header", "brand-sidebar"],
       "registryDependencies": [
         "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"
       ],
@@ -144,6 +148,7 @@
       "type": "registry:block",
       "title": "Lumos Accounts",
       "description": "Accounts index with tabs (All, Inactive, Terminated, Unmatched)",
+      "relatedComponents": ["brand-header", "brand-sidebar"],
       "registryDependencies": [
         "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"
       ],
@@ -160,6 +165,7 @@
       "type": "registry:block",
       "title": "Lumos Access Reviews",
       "description": "Access review campaigns index with progress tracking and status badges",
+      "relatedComponents": ["brand-header", "brand-sidebar"],
       "registryDependencies": [
         "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"
       ],
@@ -679,6 +685,7 @@
       "type": "registry:block",
       "title": "Lumos Analytics",
       "description": "Analytics dashboard with spend stats, monthly chart, top apps, and access review summary",
+      "relatedComponents": ["brand-header", "brand-sidebar"],
       "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-analytics-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
     },
@@ -687,6 +694,7 @@
       "type": "registry:block",
       "title": "Lumos Integrations",
       "description": "Integrations hub with connected/disconnected status cards grouped by category",
+      "relatedComponents": ["brand-header", "brand-sidebar"],
       "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-integrations-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
     },
@@ -695,6 +703,7 @@
       "type": "registry:block",
       "title": "Lumos Settings",
       "description": "Settings page with vertical category nav and General organization settings form",
+      "relatedComponents": ["brand-header", "brand-sidebar"],
       "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-settings-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
     },
@@ -703,6 +712,7 @@
       "type": "registry:block",
       "title": "Lumos Ask Albus",
       "description": "AI assistant chat interface for identity and access management queries",
+      "relatedComponents": ["brand-header", "brand-sidebar"],
       "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-albus-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
     },
@@ -711,6 +721,7 @@
       "type": "registry:block",
       "title": "Lumos Albus Chat",
       "description": "Albus AI assistant chat page with message thread, data table responses, and quick action buttons",
+      "relatedComponents": ["brand-header", "brand-sidebar"],
       "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-albus-chat.tsx", "type": "registry:page", "target": "app/page.tsx"}]
     },
@@ -719,6 +730,7 @@
       "type": "registry:block",
       "title": "Lumos Onboarding",
       "description": "Employee onboarding index with provisioning progress and status",
+      "relatedComponents": ["brand-header", "brand-sidebar"],
       "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-onboarding-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
     },
@@ -727,6 +739,7 @@
       "type": "registry:block",
       "title": "Lumos Offboarding",
       "description": "Employee offboarding index with app revocation tracking",
+      "relatedComponents": ["brand-header", "brand-sidebar"],
       "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-offboarding-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
     },
@@ -735,6 +748,7 @@
       "type": "registry:block",
       "title": "Lumos Activity Log",
       "description": "Audit log of all admin actions with actor, resource, and timestamp",
+      "relatedComponents": ["brand-header", "brand-sidebar"],
       "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-activity-log-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
     },
@@ -743,6 +757,7 @@
       "type": "registry:block",
       "title": "Lumos Tasks",
       "description": "Admin tasks index with priority and status badges",
+      "relatedComponents": ["brand-header", "brand-sidebar"],
       "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-tasks-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
     },
@@ -751,6 +766,7 @@
       "type": "registry:block",
       "title": "Lumos Access Policies",
       "description": "Access policies index showing onboarding rules, app coverage, and user assignments",
+      "relatedComponents": ["brand-header", "brand-sidebar"],
       "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-access-policies-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
     },

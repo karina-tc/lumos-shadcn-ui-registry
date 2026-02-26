@@ -5,6 +5,7 @@ export interface Component {
   type: string;
   title: string;
   description?: string;
+  relatedComponents?: string[];
   files?: { path: string; type: string; target: string }[];
 }
 
@@ -32,9 +33,9 @@ export function getRegistryItem(name: string): Component {
 }
 
 export function getBlocks() {
-  return getRegistryItems().filter(
-    (component) => component.type === "registry:block",
-  );
+  return getRegistryItems()
+    .filter((component) => component.type === "registry:block")
+    .sort((a, b) => a.title.localeCompare(b.title, "en", { sensitivity: "base" }));
 }
 
 export function getUIPrimitives() {
