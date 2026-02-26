@@ -1,39 +1,6 @@
+import { LumosLayout } from "@/components/lumos-layout";
+import { PageHeader } from "@/components/page-header";
 export default function LumosOnboardingIndex() {
-  const navSections = [
-    {
-      label: "Products",
-      items: [
-        { label: "Ask Albus", href: "#" },
-        { label: "Analytics", href: "#" },
-        { label: "AppStore", href: "#" },
-        { label: "Access Reviews", href: "#" },
-        { label: "Onboarding", href: "#", active: true },
-        { label: "Offboarding", href: "#" },
-      ],
-    },
-    {
-      label: "Inventory",
-      items: [
-        { label: "Apps", href: "#" },
-        { label: "Identities", href: "#" },
-        { label: "Access Policies", href: "#" },
-        { label: "Accounts", href: "#" },
-        { label: "Managed Agreements", href: "#" },
-        { label: "Spend Records", href: "#" },
-        { label: "Knowledge Hub", href: "#" },
-      ],
-    },
-    {
-      label: "Workspace",
-      items: [
-        { label: "Activity Log", href: "#" },
-        { label: "Integrations", href: "#" },
-        { label: "Settings", href: "#" },
-        { label: "Tasks", href: "#" },
-      ],
-    },
-  ];
-
   const onboardings = [
     {
       employee: "Jamie Torres",
@@ -108,61 +75,10 @@ export default function LumosOnboardingIndex() {
   }
 
   return (
-    <div className="flex h-screen bg-background">
-      {/* Sidebar */}
-      <aside className="flex w-64 flex-shrink-0 flex-col border-r border-border bg-sidebar">
-        <div className="flex items-center gap-2 px-4 py-3 border-b border-border">
-          <div className="h-6 w-6 rounded-sm bg-primary" />
-          <span className="text-sm font-semibold text-foreground">Lumos</span>
-        </div>
-        <nav className="flex-1 overflow-y-auto px-2 py-3 space-y-4">
-          {navSections.map((section) => (
-            <div key={section.label}>
-              <p className="px-2 py-1 text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                {section.label}
-              </p>
-              <ul className="space-y-0.5">
-                {section.items.map((item) => (
-                  <li key={item.label}>
-                    <a
-                      href={item.href}
-                      className={`flex items-center rounded-md px-2 py-1.5 text-sm transition-colors ${
-                        item.active
-                          ? "bg-accent text-accent-foreground font-medium"
-                          : "text-sidebar-foreground hover:bg-accent hover:text-accent-foreground"
-                      }`}
-                    >
-                      {item.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </nav>
-      </aside>
-
-      {/* Main content */}
-      <div className="flex flex-1 flex-col overflow-hidden">
-        {/* Header */}
-        <header className="flex h-12 items-center gap-4 border-b border-border bg-background px-6">
-          <h1 className="text-sm font-medium text-foreground">Onboarding</h1>
-          <div className="ml-auto flex items-center gap-2">
-            <button className="inline-flex h-8 items-center gap-2 rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/85">
-              New Onboarding
-            </button>
-          </div>
-        </header>
-
-        {/* Content */}
-        <main className="flex-1 overflow-auto bg-secondary p-6">
+    <LumosLayout title="Onboarding" activeItem="Employee Lifecycle">
+        <main className="flex-1 overflow-auto bg-background p-6">
           <div className="flex flex-col gap-4">
-            <div>
-              <h2 className="text-lg font-semibold text-foreground">Onboarding</h2>
-              <p className="text-sm text-muted-foreground">
-                Track new employee onboarding and app provisioning progress
-              </p>
-            </div>
+            <PageHeader title="Onboarding" description="Track new employee onboarding and app provisioning progress" actions={<><button className="inline-flex h-8 items-center gap-2 rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/85">New Onboarding</button></>} />
 
             {/* Filter bar */}
             <div className="flex items-center gap-2">
@@ -217,7 +133,6 @@ export default function LumosOnboardingIndex() {
             </div>
           </div>
         </main>
-      </div>
-    </div>
+    </LumosLayout>
   );
 }

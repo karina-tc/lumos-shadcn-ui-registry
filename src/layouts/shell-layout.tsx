@@ -40,14 +40,14 @@ export default function ShellLayout({
       )}
     >
       <body>
-        <SidebarProvider>
-          <BrandHeader />
-          <BrandSidebar />
-          <main className="mt-16 flex w-full justify-center">
-            <div className="container">{children}</div>
-          </main>
-          <Toaster />
-        </SidebarProvider>
+            <BrandHeader />
+            <main className="mt-16 flex w-full justify-center">
+              <SidebarProvider>
+              <BrandSidebar />
+              </SidebarProvider>
+              <div className="flex-1">{children}</div>
+            </main>
+            <Toaster />
       </body>
     </html>
   );

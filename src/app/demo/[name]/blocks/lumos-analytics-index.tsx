@@ -1,39 +1,7 @@
+import { LumosLayout } from "@/components/lumos-layout";
+import { PageHeader } from "@/components/page-header";
+import { PageTabs } from "@/components/page-tabs";
 export default function LumosAnalyticsIndex() {
-  const navSections = [
-    {
-      label: "Products",
-      items: [
-        { label: "Ask Albus", href: "#" },
-        { label: "Analytics", href: "#", active: true },
-        { label: "AppStore", href: "#" },
-        { label: "Access Reviews", href: "#" },
-        { label: "Onboarding", href: "#" },
-        { label: "Offboarding", href: "#" },
-      ],
-    },
-    {
-      label: "Inventory",
-      items: [
-        { label: "Apps", href: "#" },
-        { label: "Identities", href: "#" },
-        { label: "Access Policies", href: "#" },
-        { label: "Accounts", href: "#" },
-        { label: "Managed Agreements", href: "#" },
-        { label: "Spend Records", href: "#" },
-        { label: "Knowledge Hub", href: "#" },
-      ],
-    },
-    {
-      label: "Workspace",
-      items: [
-        { label: "Activity Log", href: "#" },
-        { label: "Integrations", href: "#" },
-        { label: "Settings", href: "#" },
-        { label: "Tasks", href: "#" },
-      ],
-    },
-  ];
-
   const statCards = [
     {
       label: "Total Spend",
@@ -88,50 +56,11 @@ export default function LumosAnalyticsIndex() {
   const chartHeight = 120;
 
   return (
-    <div className="flex h-screen bg-background">
-      {/* Sidebar */}
-      <aside className="flex w-64 flex-shrink-0 flex-col border-r border-border bg-sidebar">
-        <div className="flex items-center gap-2 px-4 py-3 border-b border-border">
-          <div className="h-6 w-6 rounded-sm bg-primary" />
-          <span className="text-sm font-semibold text-foreground">Lumos</span>
-        </div>
-        <nav className="flex-1 overflow-y-auto px-2 py-3 space-y-4">
-          {navSections.map((section) => (
-            <div key={section.label}>
-              <p className="px-2 py-1 text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                {section.label}
-              </p>
-              <ul className="space-y-0.5">
-                {section.items.map((item) => (
-                  <li key={item.label}>
-                    <a
-                      href={item.href}
-                      className={`flex items-center rounded-md px-2 py-1.5 text-sm transition-colors ${
-                        item.active
-                          ? "bg-accent text-accent-foreground font-medium"
-                          : "text-sidebar-foreground hover:bg-accent hover:text-accent-foreground"
-                      }`}
-                    >
-                      {item.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </nav>
-      </aside>
-
-      {/* Main content */}
-      <div className="flex flex-1 flex-col overflow-hidden">
-        {/* Header */}
-        <header className="flex h-12 items-center border-b border-border bg-background px-6">
-          <h1 className="text-sm font-medium text-foreground">Analytics</h1>
-        </header>
-
-        {/* Content */}
-        <main className="flex-1 overflow-auto bg-secondary p-6">
+    <LumosLayout title="Analytics" activeItem="Analytics">
+        <main className="flex-1 overflow-auto bg-background p-6">
           <div className="flex flex-col gap-5">
+
+            <PageHeader title="Analytics" description="Spend, usage, and access insights across your workspace" />
 
             {/* Stat cards */}
             <div className="grid grid-cols-4 gap-4">
@@ -154,21 +83,10 @@ export default function LumosAnalyticsIndex() {
               ))}
             </div>
 
-            {/* Tabs */}
-            <div className="flex gap-1 border-b border-border">
-              {["Overview", "Spend", "AppStore", "Access Reviews"].map((tab) => (
-                <button
-                  key={tab}
-                  className={`px-4 py-2 text-sm font-medium transition-colors ${
-                    tab === "Overview"
-                      ? "border-b-2 border-primary text-primary"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
+            <PageTabs
+              tabs={["Overview", "Spend", "AppStore", "Access Reviews"]}
+              activeTab="Overview"
+            />
 
             {/* 2-column layout */}
             <div className="grid grid-cols-3 gap-4">
@@ -279,7 +197,6 @@ export default function LumosAnalyticsIndex() {
 
           </div>
         </main>
-      </div>
-    </div>
+    </LumosLayout>
   );
 }

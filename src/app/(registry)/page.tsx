@@ -21,11 +21,11 @@ export default function Home() {
       <div className="mb-8">
         <div className="space-y-2">
           <h1 className="font-bold text-3xl tracking-tight md:text-4xl">
-            Registry
+            Lumos Base System
           </h1>
           <p className="text-muted-foreground">
-            Distribute your design system tokens, custom components, hooks,
-            pages, and other files to any React project.
+            Lumos design tokens, components, and page blocks — use in V0 to
+            prototype with the real Lumos look and feel.
           </p>
         </div>
       </div>

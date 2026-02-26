@@ -6,11 +6,11 @@ import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 export default function ShellLayout({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider>
-      <BrandSidebar />
       <SidebarInset>
         <BrandHeader />
-        <main className="flex flex-1 flex-col gap-4 p-4 bg-secondary min-h-screen">
-          {children}
+        <main className="flex flex-1 flex-col gap-4 p-4 bg-background min-h-screen">
+          <BrandSidebar />
+          <div className="flex-1">{children}</div>
         </main>
       </SidebarInset>
     </SidebarProvider>

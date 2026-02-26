@@ -262,7 +262,7 @@
   --chart-4: var(--teal-500);
   --chart-5: var(--lemon-300);
 
-  --sidebar: var(--neutral-100);
+  --sidebar: var(--neutral-50);
   --sidebar-foreground: var(--neutral-900);
   --sidebar-primary: var(--orange-500);
   --sidebar-primary-foreground: var(--neutral-50);
@@ -408,4 +408,41 @@
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
   }
+}
+
+/* ─── Lumos typography utilities ────────────────────────────────── */
+@utility text-h1 {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+@utility text-h2 {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+@utility text-h3 {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+@utility text-body-medium {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+@utility text-body-normal {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+@utility text-body-bold {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+@utility text-subtext {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
 }

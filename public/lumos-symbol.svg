@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg
+  version="1.1"
+  id="Layer_1"
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  x="0px"
+  y="0px"
+  viewBox="0 0 140 140"
+  style="enable-background: new 0 0 140 140"
+  xml:space="preserve"
+>
+  <style type="text/css">
+    .st0 {
+      fill: url(#SVGID_1_);
+    }
+  </style>
+  <g id="Ebene_5">
+    <linearGradient
+      id="SVGID_1_"
+      gradientUnits="userSpaceOnUse"
+      x1="0.4468"
+      y1="1.5532"
+      x2="128.8677"
+      y2="129.984"
+      gradientTransform="matrix(1 0 0 -1 0 142)"
+    >
+      <stop offset="0" style="stop-color: #ee0979" />
+      <stop offset="0.14" style="stop-color: #ef0e78" />
+      <stop offset="0.3" style="stop-color: #f01b74" />
+      <stop offset="0.47" style="stop-color: #f2326f" />
+      <stop offset="0.65" style="stop-color: #f65267" />
+      <stop offset="0.83" style="stop-color: #fa7a5c" />
+      <stop offset="1" style="stop-color: #ffa751" />
+    </linearGradient>
+    <path
+      class="st0"
+      d="M140,39L140,39c0,21.5-17.9,39-40.1,39l0,0c-22.1,0-40-17.5-40-39l0,0c0-21.5,17.9-39,40-39l0,0
+		C122.1,0,140,17.5,140,39C140,39,140,39,140,39z M31.6,109.9V29.8H0V140h112v-30.1H31.6z"
+    />
+  </g>
+</svg>

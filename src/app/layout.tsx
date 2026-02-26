@@ -9,8 +9,8 @@ import { cn } from "@/lib/utils";
 import "@/app/globals.css";
 
 export const metadata: Metadata = {
-  title: "Registry Starter",
-  description: "Starter to help build a Shadcn Registry using Tailwind v4",
+  title: "Lumos Base System",
+  description: "Lumos design system tokens, components, and page blocks for V0 prototyping.",
   icons: [{ rel: "icon", url: "/favicon.svg", type: "image/svg+xml" }],
 };
 
@@ -37,6 +37,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={cn(
         GeistSans.variable,
         GeistMono.variable,
