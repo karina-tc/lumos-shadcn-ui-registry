@@ -3,6 +3,12 @@
 import { useState } from "react";
 import { Bell, ChevronDown, LogOut, PanelLeft, ScanFace, UserCog } from "lucide-react";
 import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+} from "@/components/ui/breadcrumb";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -64,13 +70,18 @@ export function BrandHeader({ title, sidenavOpen = true, onToggleSidenav }: Bran
       </div>
 
       {/* Breadcrumb — current page title */}
-      <div className="flex flex-1 items-center gap-1.5 px-5">
-        {title && (
-          <>
-            <span className="text-sm font-medium text-foreground">{title}</span>
-            <span className="text-xs text-muted-foreground">/</span>
-          </>
-        )}
+      <div className="flex flex-1 items-center px-5">
+        <Breadcrumb>
+          <BreadcrumbList>
+            {title ? (
+              <>
+                <BreadcrumbItem>
+                  <BreadcrumbPage className="text-sm font-medium">{title}</BreadcrumbPage>
+                </BreadcrumbItem>
+              </>
+            ) : null}
+          </BreadcrumbList>
+        </Breadcrumb>
       </div>
 
       {/* Mode switcher */}
