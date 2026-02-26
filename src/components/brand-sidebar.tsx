@@ -53,9 +53,10 @@ const defaultNav: NavSection[] = [
 interface BrandSidebarProps {
   navSections?: NavSection[];
   activeItem?: string;
+  open?: boolean;
 }
 
-export function BrandSidebar({ navSections = defaultNav, activeItem }: BrandSidebarProps) {
+export function BrandSidebar({ navSections = defaultNav, activeItem, open = true }: BrandSidebarProps) {
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
   const toggle = (label: string) => {
@@ -67,7 +68,7 @@ export function BrandSidebar({ navSections = defaultNav, activeItem }: BrandSide
   };
 
   return (
-    <div className="flex w-52 h-full shrink-0 flex-col border-r border-border bg-sidebar overflow-y-auto">
+    <div className={`flex h-full shrink-0 flex-col bg-sidebar overflow-y-auto overflow-x-hidden transition-[width] duration-300 ease-in-out ${open ? "w-52" : "w-0 border-r-0"}`}>
       <div className="flex flex-col gap-5 pt-6 pb-2 px-0">
         {navSections.map((section) => (
           <div key={section.title} className="flex flex-col">

@@ -60,7 +60,7 @@ export default function LumosAnalyticsIndex() {
         <main className="flex-1 overflow-auto bg-background p-6">
           <div className="flex flex-col gap-5">
 
-            <PageHeader title="Analytics" description="Spend, usage, and access insights across your workspace" />
+            <PageHeader title="Analytics" />
 
             {/* Stat cards */}
             <div className="grid grid-cols-4 gap-4">

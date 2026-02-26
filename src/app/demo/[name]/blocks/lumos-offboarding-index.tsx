@@ -78,7 +78,7 @@ export default function LumosOffboardingIndex() {
     <LumosLayout title="Offboarding" activeItem="Employee Lifecycle">
         <main className="flex-1 overflow-auto bg-background p-6">
           <div className="flex flex-col gap-4">
-            <PageHeader title="Offboarding" description="Track employee offboarding, app revocation, and data export status" actions={<><button className="inline-flex h-8 items-center gap-2 rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/85">New Offboarding</button></>} />
+            <PageHeader title="Offboarding" actions={<><button className="inline-flex h-8 items-center gap-2 rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/85">New Offboarding</button></>} />
 
             {/* Filter bar */}
             <div className="flex items-center gap-2">

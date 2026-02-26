@@ -1,4 +1,6 @@
 import React from "react";
+import LumosAlbusIndex from "@/app/demo/[name]/blocks/lumos-albus-index";
+import LumosAlbusChat from "@/app/demo/[name]/blocks/lumos-albus-chat";
 import LumosAppsIndex from "@/app/demo/[name]/blocks/lumos-apps-index";
 import LumosIdentitiesIndex from "@/app/demo/[name]/blocks/lumos-identities-index";
 import LumosAccountsIndex from "@/app/demo/[name]/blocks/lumos-accounts-index";
@@ -11,6 +13,16 @@ import LumosAccessPoliciesIndex from "@/app/demo/[name]/blocks/lumos-access-poli
 import LumosAnalyticsIndex from "@/app/demo/[name]/blocks/lumos-analytics-index";
 import LumosIntegrationsIndex from "@/app/demo/[name]/blocks/lumos-integrations-index";
 import LumosSettingsIndex from "@/app/demo/[name]/blocks/lumos-settings-index";
+
+export const lumosAlbusIndex = {
+  name: "lumos-albus-index",
+  components: { Default: <LumosAlbusIndex /> },
+};
+
+export const lumosAlbusChatIndex = {
+  name: "lumos-albus-chat",
+  components: { Default: <LumosAlbusChat /> },
+};
 
 export const lumosAppsIndex = {
   name: "lumos-apps-index",

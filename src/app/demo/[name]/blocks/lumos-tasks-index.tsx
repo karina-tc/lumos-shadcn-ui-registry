@@ -110,7 +110,7 @@ export default function LumosTasksIndex() {
     <LumosLayout title="Tasks" activeItem="Tasks">
         <main className="flex-1 overflow-auto bg-background p-6">
           <div className="flex flex-col gap-4">
-            <PageHeader title="Tasks" description="Pending admin actions and follow-ups across your workspace" actions={<><button className="inline-flex h-8 items-center gap-2 rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/85">New Task</button></>} />
+            <PageHeader title="Tasks" actions={<><button className="inline-flex h-8 items-center gap-2 rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/85">New Task</button></>} />
 
             {/* Filter bar */}
             <div className="flex items-center gap-2">

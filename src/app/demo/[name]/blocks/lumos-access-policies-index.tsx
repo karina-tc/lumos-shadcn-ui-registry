@@ -79,7 +79,7 @@ export default function LumosAccessPoliciesIndex() {
     <LumosLayout title="Access Policies" activeItem="Access Policies">
         <main className="flex-1 overflow-auto bg-background p-6">
           <div className="flex flex-col gap-4">
-            <PageHeader title="Access Policies" description="Define onboarding rules, app bundles, and user access assignments" actions={<><button className="inline-flex h-8 items-center gap-2 rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/85">New Policy</button></>} />
+            <PageHeader title="Access Policies" actions={<><button className="inline-flex h-8 items-center gap-2 rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/85">New Policy</button></>} />
 
             {/* Filter bar */}
             <div className="flex items-center gap-2">

@@ -23,7 +23,7 @@ export default function LumosIdentitiesIndex() {
         <main className="flex-1 overflow-auto bg-background p-6">
           <div className="flex flex-col gap-4">
             {/* Page title + description */}
-            <PageHeader title="Identities" description="All people and employees in your organization" actions={<><button className="inline-flex h-8 items-center gap-2 rounded-full border border-border bg-background px-4 text-sm font-medium text-foreground hover:bg-secondary">Sync</button><button className="inline-flex h-8 items-center gap-2 rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/85">Invite</button></>} />
+            <PageHeader title="Identities" actions={<><button className="inline-flex h-8 items-center gap-2 rounded-full border border-border bg-background px-4 text-sm font-medium text-foreground hover:bg-secondary">Sync</button><button className="inline-flex h-8 items-center gap-2 rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/85">Invite</button></>} />
 
             {/* Filter bar */}
             <div className="flex items-center gap-2">

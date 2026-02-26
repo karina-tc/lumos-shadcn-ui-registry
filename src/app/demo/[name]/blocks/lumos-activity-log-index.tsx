@@ -64,7 +64,7 @@ export default function LumosActivityLogIndex() {
     <LumosLayout title="Activity Log" activeItem="Activity Log">
         <main className="flex-1 overflow-auto bg-background p-6">
           <div className="flex flex-col gap-4">
-            <PageHeader title="Activity Log" description="Audit trail of all admin actions across your workspace" />
+            <PageHeader title="Activity Log" />
 
             {/* Search + filter bar */}
             <div className="flex items-center gap-2">

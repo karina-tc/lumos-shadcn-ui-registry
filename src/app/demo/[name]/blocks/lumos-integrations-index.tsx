@@ -33,7 +33,7 @@ export default function LumosIntegrationsIndex() {
           <div className="flex flex-col gap-6">
 
             {/* Page heading + description + search */}
-            <PageHeader title="Integrations" description="Connect your tools to automate provisioning and sync data" actions={<><button className="inline-flex h-8 items-center gap-2 rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/85">Add Integration</button></>} />
+            <PageHeader title="Integrations" actions={<><button className="inline-flex h-8 items-center gap-2 rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/85">Add Integration</button></>} />
 
             {/* Search */}
             <input

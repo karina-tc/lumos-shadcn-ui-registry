@@ -16,7 +16,7 @@ export default function LumosAccountsIndex() {
         <main className="flex-1 overflow-auto bg-background p-6">
           <div className="flex flex-col gap-4">
             {/* Page title + description */}
-            <PageHeader title="Accounts" description="All user accounts across connected applications" actions={<><button className="inline-flex h-8 items-center gap-2 rounded-full border border-border bg-background px-4 text-sm font-medium text-foreground hover:bg-secondary">Export</button></>} />
+            <PageHeader title="Accounts" actions={<><button className="inline-flex h-8 items-center gap-2 rounded-full border border-border bg-background px-4 text-sm font-medium text-foreground hover:bg-secondary">Export</button></>} />
 
             <PageTabs
               tabs={["All", "Inactive", "Terminated", "Unmatched"]}

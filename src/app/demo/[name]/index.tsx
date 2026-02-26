@@ -4,6 +4,8 @@ import type { ReactElement, ReactNode } from "react";
 import { blank } from "@/app/demo/[name]/blocks/blank";
 import { dashboard } from "@/app/demo/[name]/blocks/dashboard";
 import {
+  lumosAlbusIndex,
+  lumosAlbusChatIndex,
   lumosAppsIndex,
   lumosIdentitiesIndex,
   lumosAccountsIndex,
@@ -64,6 +66,8 @@ export const demos: { [name: string]: Demo } = {
   // blocks
   blank,
   dashboard,
+  "lumos-albus-index": lumosAlbusIndex,
+  "lumos-albus-chat": lumosAlbusChatIndex,
   "lumos-apps-index": lumosAppsIndex,
   "lumos-identities-index": lumosIdentitiesIndex,
   "lumos-accounts-index": lumosAccountsIndex,

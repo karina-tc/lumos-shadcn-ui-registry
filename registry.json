@@ -699,6 +699,22 @@
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-settings-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
     },
     {
+      "name": "lumos-albus-index",
+      "type": "registry:block",
+      "title": "Lumos Ask Albus",
+      "description": "AI assistant chat interface for identity and access management queries",
+      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
+      "files": [{"path": "src/app/demo/[name]/blocks/lumos-albus-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
+    },
+    {
+      "name": "lumos-albus-chat",
+      "type": "registry:block",
+      "title": "Lumos Albus Chat",
+      "description": "Albus AI assistant chat page with message thread, data table responses, and quick action buttons",
+      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
+      "files": [{"path": "src/app/demo/[name]/blocks/lumos-albus-chat.tsx", "type": "registry:page", "target": "app/page.tsx"}]
+    },
+    {
       "name": "lumos-onboarding-index",
       "type": "registry:block",
       "title": "Lumos Onboarding",
