@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import type { Component as RegistryComponent } from "@/lib/registry";
 import { getRegistryItem, getRegistryItems } from "@/lib/registry";
 import { getPrompt } from "@/lib/utils";
 
@@ -34,14 +35,14 @@ export default async function RegistryItemPage({
     notFound();
   }
 
-  const related: { name: string; title: string }[] = (
+  const related: RegistryComponent[] = (
     component.relatedComponents?.map((id) => {
       try {
         return getRegistryItem(id);
       } catch {
         return null;
       }
-    }).filter((x): x is { name: string; title: string } => x != null) ?? []
+    }).filter((x): x is RegistryComponent => x != null) ?? []
   );
 
   return (
