@@ -1,4 +1,5 @@
 import React from "react";
+import BlankPage from "@/app/demo/[name]/blocks/blank-page";
 import LumosAlbusIndex from "@/app/demo/[name]/blocks/lumos-albus-index";
 import LumosAlbusChat from "@/app/demo/[name]/blocks/lumos-albus-chat";
 import LumosAppsIndex from "@/app/demo/[name]/blocks/lumos-apps-index";
@@ -13,6 +14,11 @@ import LumosAccessPoliciesIndex from "@/app/demo/[name]/blocks/lumos-access-poli
 import LumosAnalyticsIndex from "@/app/demo/[name]/blocks/lumos-analytics-index";
 import LumosIntegrationsIndex from "@/app/demo/[name]/blocks/lumos-integrations-index";
 import LumosSettingsIndex from "@/app/demo/[name]/blocks/lumos-settings-index";
+
+export const blank = {
+  name: "blank",
+  components: { Default: <BlankPage /> },
+};
 
 export const lumosAlbusIndex = {
   name: "lumos-albus-index",
