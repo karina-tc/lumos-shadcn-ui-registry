@@ -1,9 +1,8 @@
 import type { ReactElement, ReactNode } from "react";
 
 // blocks
-import { blank } from "@/app/demo/[name]/blocks/blank";
-import { dashboard } from "@/app/demo/[name]/blocks/dashboard";
 import {
+  blank,
   lumosAlbusIndex,
   lumosAlbusChatIndex,
   lumosAppsIndex,
@@ -65,7 +64,6 @@ interface Demo {
 export const demos: { [name: string]: Demo } = {
   // blocks
   blank,
-  dashboard,
   "lumos-albus-index": lumosAlbusIndex,
   "lumos-albus-chat": lumosAlbusChatIndex,
   "lumos-apps-index": lumosAppsIndex,

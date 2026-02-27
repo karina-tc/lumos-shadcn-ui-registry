@@ -61,55 +61,6 @@
       ]
     },
     {
-      "name": "blank",
-      "type": "registry:block",
-      "title": "Blank",
-      "description": "A blank application with all brand components and code",
-      "relatedComponents": ["brand-header", "brand-sidebar"],
-      "registryDependencies": [
-        "https://lumos-shadcn-ui-registry.vercel.app/r/brand-header.json",
-        "https://lumos-shadcn-ui-registry.vercel.app/r/brand-sidebar.json",
-        "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"
-      ],
-      "files": [
-        {
-          "path": "src/layouts/minimal-layout.tsx",
-          "type": "registry:file",
-          "target": "app/layout.tsx"
-        },
-        {
-          "path": "src/app/demo/[name]/blocks/blank-page.tsx",
-          "type": "registry:page",
-          "target": "app/page.tsx"
-        }
-      ]
-    },
-    {
-      "name": "dashboard",
-      "type": "registry:block",
-      "title": "Dashboard",
-      "description": "A dashboard application with your brand themed components",
-      "relatedComponents": ["brand-header", "brand-sidebar"],
-      "registryDependencies": [
-        "https://lumos-shadcn-ui-registry.vercel.app/r/sonner.json",
-        "https://lumos-shadcn-ui-registry.vercel.app/r/brand-header.json",
-        "https://lumos-shadcn-ui-registry.vercel.app/r/brand-sidebar.json",
-        "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"
-      ],
-      "files": [
-        {
-          "path": "src/layouts/shell-layout.tsx",
-          "type": "registry:file",
-          "target": "app/layout.tsx"
-        },
-        {
-          "path": "src/app/demo/[name]/blocks/dashboard-page.tsx",
-          "type": "registry:page",
-          "target": "app/page.tsx"
-        }
-      ]
-    },
-    {
       "name": "lumos-apps-index",
       "type": "registry:block",
       "title": "Lumos Apps",
@@ -172,6 +123,30 @@
       "files": [
         {
           "path": "src/app/demo/[name]/blocks/lumos-access-reviews-index.tsx",
+          "type": "registry:page",
+          "target": "app/page.tsx"
+        }
+      ]
+    },
+    {
+      "name": "blank",
+      "type": "registry:block",
+      "title": "Blank",
+      "description": "A blank application shell with the brand header and sidebar included",
+      "relatedComponents": ["brand-header", "brand-sidebar"],
+      "registryDependencies": [
+        "https://lumos-shadcn-ui-registry.vercel.app/r/brand-header.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/brand-sidebar.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"
+      ],
+      "files": [
+        {
+          "path": "src/layouts/shell-layout.tsx",
+          "type": "registry:file",
+          "target": "app/layout.tsx"
+        },
+        {
+          "path": "src/app/demo/[name]/blocks/blank-page.tsx",
           "type": "registry:page",
           "target": "app/page.tsx"
         }

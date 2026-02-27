@@ -1,9 +1,11 @@
+import { LumosLayout } from "@/components/lumos-layout";
+
 export default function BlankPage() {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 rounded-md py-96">
-      <div className="text-muted-foreground">
-        Start prompting to use your component!
+    <LumosLayout title="Home">
+      <div className="flex h-full items-center justify-center">
+        <p className="text-sm text-muted-foreground">Your content goes here.</p>
       </div>
-    </div>
+    </LumosLayout>
   );
 }
