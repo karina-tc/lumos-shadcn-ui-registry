@@ -165,17 +165,10 @@ export default function Home() {
             contexts.
           </p>
           <p className="mt-2 text-muted-foreground">
-            To get begin, start with a block{" "}
-            <span className="italic">
-              (like the{" "}
-              <a href="/registry/blank" className="underline">
-                blank block
-              </a>
-              )
-            </span>{" "}
-            and click the <span className="font-bold">Open in v0</span> button.
-            You can also open individual UI primitives or components in v0 if
-            you want a smaller or more specific starting point.
+          To get begin, start with a block and click the{" "}
+            <span className="font-bold">Open in v0</span> button. You can also
+            open individual UI primitives or components in v0 if you want a
+            smaller or more specific starting point.
           </p>
 
           <p className="mt-4 text-[#1B1F23] dark:text-white">
