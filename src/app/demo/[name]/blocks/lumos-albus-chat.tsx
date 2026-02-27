@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { LumosLayout } from "@/components/lumos-layout";
+import { AlbusSymbol } from "@/components/albus-symbol";
 import { AlbusChatInput } from "@/components/albus-chat-input";
 import { AlbusHistoryPanel } from "@/components/albus-history-panel";
 import { Plus, Bookmark, History } from "lucide-react";
@@ -83,7 +84,7 @@ export default function LumosAlbusChat() {
             {/* Albus response */}
             <div className="flex items-start gap-3">
               <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-[20px] border-[1.4px] border-[#f83bf9] bg-background shadow-[0_0_6px_0_#fce7fd]">
-                <img src="/albus-symbol.svg" alt="Albus" className="h-4 w-4" />
+                <AlbusSymbol className="h-4 w-4" />
               </div>
               <div className="flex flex-col gap-3">
                 <div className="py-2 text-sm text-foreground">

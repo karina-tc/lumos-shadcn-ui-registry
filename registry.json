@@ -170,7 +170,8 @@
       "registryDependencies": [
         "sidebar",
         "separator",
-        "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-symbol.json"
       ],
       "files": [
         {
@@ -678,7 +679,7 @@
       "title": "Lumos Ask Albus",
       "description": "AI assistant chat interface for identity and access management queries",
       "relatedComponents": ["brand-header", "brand-sidebar"],
-      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json", "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json", "https://lumos-shadcn-ui-registry.vercel.app/r/albus-chat-input.json"],
+      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json", "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json", "https://lumos-shadcn-ui-registry.vercel.app/r/albus-chat-input.json", "https://lumos-shadcn-ui-registry.vercel.app/r/albus-symbol.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-albus-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
     },
     {
@@ -687,7 +688,7 @@
       "title": "Lumos Albus Chat",
       "description": "Albus AI assistant chat page with message thread, data table responses, and quick action buttons",
       "relatedComponents": ["brand-header", "brand-sidebar"],
-      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json", "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json", "https://lumos-shadcn-ui-registry.vercel.app/r/albus-chat-input.json", "https://lumos-shadcn-ui-registry.vercel.app/r/albus-history-panel.json"],
+      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json", "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json", "https://lumos-shadcn-ui-registry.vercel.app/r/albus-chat-input.json", "https://lumos-shadcn-ui-registry.vercel.app/r/albus-history-panel.json", "https://lumos-shadcn-ui-registry.vercel.app/r/albus-symbol.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-albus-chat.tsx", "type": "registry:page", "target": "app/page.tsx"}]
     },
     {
@@ -734,6 +735,30 @@
       "relatedComponents": ["brand-header", "brand-sidebar"],
       "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json", "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json", "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-access-policies-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
+    },
+    {
+      "name": "lumos-symbol",
+      "type": "registry:component",
+      "title": "Lumos Symbol",
+      "description": "Lumos wordmark SVG as an inline React component",
+      "files": [
+        {
+          "path": "src/components/lumos-symbol.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "albus-symbol",
+      "type": "registry:component",
+      "title": "Albus Symbol",
+      "description": "Albus icon SVG as an inline React component",
+      "files": [
+        {
+          "path": "src/components/albus-symbol.tsx",
+          "type": "registry:component"
+        }
+      ]
     },
     {
       "name": "lumos-layout",

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Bell, ChevronDown, LogOut, PanelLeft, ScanFace, UserCog } from "lucide-react";
+import { LumosSymbol } from "@/components/lumos-symbol";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -61,7 +62,7 @@ export function BrandHeader({ title, sidenavOpen = true, onToggleSidenav }: Bran
       >
         <SidenavToggle open={sidenavOpen} onClick={onToggleSidenav} />
         <div className="flex items-center gap-1.5 ml-3 mb-1 mr-1">
-          <img src="/lumos-symbol.svg" alt="" className="size-5 shrink-0" />
+          <LumosSymbol className="size-5 shrink-0" />
           <div className="text-h2 text-foreground mt-1">Lumos</div>
         </div>
         <button className="flex h-5 w-5 shrink-0 items-center justify-center text-muted-foreground hover:text-foreground">
