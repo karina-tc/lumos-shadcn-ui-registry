@@ -35,9 +35,9 @@ export default function RootLayout({
         "bg-background text-foreground",
       )}
     >
-      <body>
-        <main className="mt-16 flex w-full justify-center">
-          <div className="container">{children}</div>
+      <body className="h-full">
+        <main className="flex h-full w-full justify-center">
+          <div className="h-full w-full">{children}</div>
         </main>
       </body>
     </html>
