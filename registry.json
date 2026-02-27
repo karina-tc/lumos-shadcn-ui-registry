@@ -67,7 +67,9 @@
       "description": "Apps inventory index with table, tabs, search and filter",
       "relatedComponents": ["brand-header", "brand-sidebar"],
       "registryDependencies": [
-        "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json"
       ],
       "files": [
         {
@@ -84,7 +86,9 @@
       "description": "Identities (people/employees) index with avatar initials, department, and status",
       "relatedComponents": ["brand-header", "brand-sidebar"],
       "registryDependencies": [
-        "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json"
       ],
       "files": [
         {
@@ -101,7 +105,10 @@
       "description": "Accounts index with tabs (All, Inactive, Terminated, Unmatched)",
       "relatedComponents": ["brand-header", "brand-sidebar"],
       "registryDependencies": [
-        "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-tabs.json"
       ],
       "files": [
         {
@@ -118,7 +125,10 @@
       "description": "Access review campaigns index with progress tracking and status badges",
       "relatedComponents": ["brand-header", "brand-sidebar"],
       "registryDependencies": [
-        "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-tabs.json"
       ],
       "files": [
         {
@@ -661,7 +671,7 @@
       "title": "Lumos Analytics",
       "description": "Analytics dashboard with spend stats, monthly chart, top apps, and access review summary",
       "relatedComponents": ["brand-header", "brand-sidebar"],
-      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
+      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json", "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json", "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json", "https://lumos-shadcn-ui-registry.vercel.app/r/page-tabs.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-analytics-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
     },
     {
@@ -670,7 +680,7 @@
       "title": "Lumos Integrations",
       "description": "Integrations hub with connected/disconnected status cards grouped by category",
       "relatedComponents": ["brand-header", "brand-sidebar"],
-      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
+      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json", "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json", "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-integrations-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
     },
     {
@@ -679,7 +689,7 @@
       "title": "Lumos Settings",
       "description": "Settings page with vertical category nav and General organization settings form",
       "relatedComponents": ["brand-header", "brand-sidebar"],
-      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
+      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json", "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json", "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-settings-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
     },
     {
@@ -688,7 +698,7 @@
       "title": "Lumos Ask Albus",
       "description": "AI assistant chat interface for identity and access management queries",
       "relatedComponents": ["brand-header", "brand-sidebar"],
-      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
+      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json", "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json", "https://lumos-shadcn-ui-registry.vercel.app/r/albus-chat-input.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-albus-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
     },
     {
@@ -697,7 +707,7 @@
       "title": "Lumos Albus Chat",
       "description": "Albus AI assistant chat page with message thread, data table responses, and quick action buttons",
       "relatedComponents": ["brand-header", "brand-sidebar"],
-      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
+      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json", "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json", "https://lumos-shadcn-ui-registry.vercel.app/r/albus-chat-input.json", "https://lumos-shadcn-ui-registry.vercel.app/r/albus-history-panel.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-albus-chat.tsx", "type": "registry:page", "target": "app/page.tsx"}]
     },
     {
@@ -706,7 +716,7 @@
       "title": "Lumos Onboarding",
       "description": "Employee onboarding index with provisioning progress and status",
       "relatedComponents": ["brand-header", "brand-sidebar"],
-      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
+      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json", "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json", "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-onboarding-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
     },
     {
@@ -715,7 +725,7 @@
       "title": "Lumos Offboarding",
       "description": "Employee offboarding index with app revocation tracking",
       "relatedComponents": ["brand-header", "brand-sidebar"],
-      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
+      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json", "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json", "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-offboarding-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
     },
     {
@@ -724,7 +734,7 @@
       "title": "Lumos Activity Log",
       "description": "Audit log of all admin actions with actor, resource, and timestamp",
       "relatedComponents": ["brand-header", "brand-sidebar"],
-      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
+      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json", "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json", "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-activity-log-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
     },
     {
@@ -733,7 +743,7 @@
       "title": "Lumos Tasks",
       "description": "Admin tasks index with priority and status badges",
       "relatedComponents": ["brand-header", "brand-sidebar"],
-      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
+      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json", "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json", "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-tasks-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
     },
     {
@@ -742,8 +752,103 @@
       "title": "Lumos Access Policies",
       "description": "Access policies index showing onboarding rules, app coverage, and user assignments",
       "relatedComponents": ["brand-header", "brand-sidebar"],
-      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json"],
+      "registryDependencies": ["https://lumos-shadcn-ui-registry.vercel.app/r/theme.json", "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json", "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json"],
       "files": [{"path": "src/app/demo/[name]/blocks/lumos-access-policies-index.tsx", "type": "registry:page", "target": "app/page.tsx"}]
+    },
+    {
+      "name": "lumos-layout",
+      "type": "registry:component",
+      "title": "Lumos Layout",
+      "description": "Full-page shell with collapsible BrandSidebar and BrandHeader",
+      "registryDependencies": [
+        "https://lumos-shadcn-ui-registry.vercel.app/r/brand-header.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/brand-sidebar.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/lumos-layout.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "page-header",
+      "type": "registry:component",
+      "title": "Page Header",
+      "description": "Page title, description, and actions row",
+      "files": [
+        {
+          "path": "src/components/page-header.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "page-tabs",
+      "type": "registry:component",
+      "title": "Page Tabs",
+      "description": "Underline-style tabs for page-level navigation",
+      "files": [
+        {
+          "path": "src/components/page-tabs.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "albus-mode-menu",
+      "type": "registry:component",
+      "title": "Albus Mode Menu",
+      "description": "Portal dropdown for switching between Ask and Deep Research modes",
+      "files": [
+        {
+          "path": "src/components/albus-mode-menu.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "albus-suggestions-panel",
+      "type": "registry:component",
+      "title": "Albus Suggestions Panel",
+      "description": "Animated portal suggestions panel for Albus chat input",
+      "registryDependencies": ["button"],
+      "files": [
+        {
+          "path": "src/components/albus-suggestions-panel.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "albus-chat-input",
+      "type": "registry:component",
+      "title": "Albus Chat Input",
+      "description": "Rich chat textarea with mode selector, suggestion panel, and gradient focus ring",
+      "registryDependencies": [
+        "button",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/albus-mode-menu.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/albus-suggestions-panel.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/albus-chat-input.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "albus-history-panel",
+      "type": "registry:component",
+      "title": "Albus History Panel",
+      "description": "Slide-in sheet showing recent and bookmarked Albus sessions",
+      "registryDependencies": ["sheet", "button", "input"],
+      "files": [
+        {
+          "path": "src/components/albus-history-panel.tsx",
+          "type": "registry:component"
+        }
+      ]
     },
     {
       "name": "lumos-button",
