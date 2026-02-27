@@ -41,11 +41,11 @@ export default function ShellLayout({
     >
       <body>
             <BrandHeader />
-            <main className="mt-16 flex w-full justify-center">
+            <main className="flex h-full w-full justify-center">
               <SidebarProvider>
               <BrandSidebar />
               </SidebarProvider>
-              <div className="flex-1">{children}</div>
+              <div className="h-full w-full">{children}</div>
             </main>
             <Toaster />
       </body>
