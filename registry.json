@@ -176,16 +176,6 @@
         {
           "path": "src/components/brand-header.tsx",
           "type": "registry:component"
-        },
-        {
-          "path": "src/layouts/shell-layout.tsx",
-          "type": "registry:file",
-          "target": "app/layout.tsx"
-        },
-        {
-          "path": "src/app/demo/[name]/blocks/blank-page.tsx",
-          "type": "registry:page",
-          "target": "app/page.tsx"
         }
       ]
     },
@@ -205,16 +195,6 @@
         {
           "path": "src/components/brand-sidebar.tsx",
           "type": "registry:component"
-        },
-        {
-          "path": "src/layouts/shell-layout.tsx",
-          "type": "registry:file",
-          "target": "app/layout.tsx"
-        },
-        {
-          "path": "src/app/demo/[name]/blocks/blank-page.tsx",
-          "type": "registry:page",
-          "target": "app/page.tsx"
         }
       ]
     },
@@ -768,6 +748,11 @@
         {
           "path": "src/components/lumos-layout.tsx",
           "type": "registry:component"
+        },
+        {
+          "path": "src/layouts/lumos-app-layout.tsx",
+          "type": "registry:file",
+          "target": "app/layout.tsx"
         }
       ]
     },
