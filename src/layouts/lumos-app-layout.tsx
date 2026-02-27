@@ -32,10 +32,10 @@ export default function RootLayout({
         GeistSans.variable,
         GeistMono.variable,
         MontserratSerif.variable,
-        "bg-background text-foreground",
+        "h-full bg-background text-foreground",
       )}
     >
-      <body>{children}</body>
+      <body className="h-full">{children}</body>
     </html>
   );
 }
