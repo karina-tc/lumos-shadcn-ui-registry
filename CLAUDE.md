@@ -144,3 +144,9 @@ Use the `/validate-registry` skill to check:
 - Demo index entries match registry.json items
 - No orphaned component files
 - Build succeeds
+
+## Importing from Figma
+
+Use the `/import-figma-component` skill to convert a Figma component into a coded registry component. Requires Figma MCP server to be configured.
+
+The skill reads Figma auto layout, variants, tokens, and properties, maps them to Tailwind/CVA patterns using the Lumos token system, and creates the component file, demo, and registry entry. See the skill for the full Figma-to-code translation guide.
