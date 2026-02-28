@@ -933,8 +933,19 @@
       "files": [
         { "path": "src/app/demo/[name]/blocks/full-app/root-layout.tsx", "type": "registry:file", "target": "app/layout.tsx" },
         { "path": "src/app/demo/[name]/blocks/full-app/apps-page.tsx", "type": "registry:page", "target": "app/page.tsx" },
+        { "path": "src/app/demo/[name]/blocks/full-app/identities-page.tsx", "type": "registry:page", "target": "app/identities/page.tsx" },
+        { "path": "src/app/demo/[name]/blocks/full-app/accounts-page.tsx", "type": "registry:page", "target": "app/accounts/page.tsx" },
+        { "path": "src/app/demo/[name]/blocks/full-app/access-reviews-page.tsx", "type": "registry:page", "target": "app/access-reviews/page.tsx" },
+        { "path": "src/app/demo/[name]/blocks/full-app/access-policies-page.tsx", "type": "registry:page", "target": "app/access-policies/page.tsx" },
         { "path": "src/app/demo/[name]/blocks/full-app/analytics-page.tsx", "type": "registry:page", "target": "app/analytics/page.tsx" },
-        { "path": "src/app/demo/[name]/blocks/full-app/settings-page.tsx", "type": "registry:page", "target": "app/settings/page.tsx" }
+        { "path": "src/app/demo/[name]/blocks/full-app/integrations-page.tsx", "type": "registry:page", "target": "app/integrations/page.tsx" },
+        { "path": "src/app/demo/[name]/blocks/full-app/settings-page.tsx", "type": "registry:page", "target": "app/settings/page.tsx" },
+        { "path": "src/app/demo/[name]/blocks/full-app/albus-page.tsx", "type": "registry:page", "target": "app/albus/page.tsx" },
+        { "path": "src/app/demo/[name]/blocks/full-app/albus-chat-page.tsx", "type": "registry:page", "target": "app/albus/chat/page.tsx" },
+        { "path": "src/app/demo/[name]/blocks/full-app/onboarding-page.tsx", "type": "registry:page", "target": "app/onboarding/page.tsx" },
+        { "path": "src/app/demo/[name]/blocks/full-app/offboarding-page.tsx", "type": "registry:page", "target": "app/offboarding/page.tsx" },
+        { "path": "src/app/demo/[name]/blocks/full-app/activity-log-page.tsx", "type": "registry:page", "target": "app/activity-log/page.tsx" },
+        { "path": "src/app/demo/[name]/blocks/full-app/tasks-page.tsx", "type": "registry:page", "target": "app/tasks/page.tsx" }
       ]
     }
   ]
