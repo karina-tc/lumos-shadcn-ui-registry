@@ -3,12 +3,17 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 
+interface SubItem {
+  label: string;
+  href?: string;
+}
+
 interface NavItem {
   label: string;
   href?: string;
   active?: boolean;
   badge?: number;
-  subItems?: string[];
+  subItems?: (string | SubItem)[];
 }
 
 interface NavSection {
@@ -76,47 +81,72 @@ export function BrandSidebar({ navSections = defaultNav, activeItem, open = true
               <p className="text-xs text-muted-foreground">{section.title}</p>
             </div>
 
-            {section.items.map((item) => (
+            {section.items.map((item) => {
+              const isActive = item.active || item.label === activeItem;
+              const itemClass = `w-full h-8 rounded-2xl px-3 flex items-center gap-2 text-sm transition-colors hover:bg-muted ${
+                isActive
+                  ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
+                  : "text-sidebar-foreground"
+              }`;
+
+              const itemContent = (
+                <>
+                  <span className="flex-1 text-left truncate">{item.label}</span>
+                  {item.badge != null && (
+                    <span className="bg-muted text-muted-foreground text-xs rounded-2xl px-1.5 py-0.5 min-w-[1.25rem] text-center">
+                      {item.badge}
+                    </span>
+                  )}
+                  {item.subItems && (
+                    <ChevronDown
+                      className={`h-4 w-4 text-muted-foreground shrink-0 transition-transform ${
+                        expanded.has(item.label) ? "rotate-180" : ""
+                      }`}
+                    />
+                  )}
+                </>
+              );
+
+              return (
               <div key={item.label}>
                 <div className="px-1 py-0.5">
-                  <button
-                    className={`w-full h-8 rounded-2xl px-3 flex items-center gap-2 text-sm transition-colors hover:bg-muted ${
-                      item.active || item.label === activeItem
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-                        : "text-sidebar-foreground"
-                    }`}
-                    onClick={() => item.subItems && toggle(item.label)}
-                  >
-                    <span className="flex-1 text-left truncate">{item.label}</span>
-                    {item.badge != null && (
-                      <span className="bg-muted text-muted-foreground text-xs rounded-2xl px-1.5 py-0.5 min-w-[1.25rem] text-center">
-                        {item.badge}
-                      </span>
-                    )}
-                    {item.subItems && (
-                      <ChevronDown
-                        className={`h-4 w-4 text-muted-foreground shrink-0 transition-transform ${
-                          expanded.has(item.label) ? "rotate-180" : ""
-                        }`}
-                      />
-                    )}
-                  </button>
+                  {item.href && !item.subItems ? (
+                    <a href={item.href} className={itemClass}>
+                      {itemContent}
+                    </a>
+                  ) : (
+                    <button
+                      className={itemClass}
+                      onClick={() => item.subItems && toggle(item.label)}
+                    >
+                      {itemContent}
+                    </button>
+                  )}
                 </div>
 
                 {item.subItems && expanded.has(item.label) && (
                   <div className="flex flex-col pl-4">
-                    {item.subItems.map((sub) => (
-                      <div key={sub} className="py-0.5 border-l border-sidebar-border">
-                        <button className="w-full h-8 flex items-center gap-2 text-sm text-sidebar-foreground hover:bg-muted transition-colors">
+                    {item.subItems.map((sub) => {
+                      const subLabel = typeof sub === "string" ? sub : sub.label;
+                      const subHref = typeof sub === "string" ? undefined : sub.href;
+                      const SubTag = subHref ? "a" : "button";
+                      return (
+                      <div key={subLabel} className="py-0.5 border-l border-sidebar-border">
+                        <SubTag
+                          {...(subHref ? { href: subHref } : {})}
+                          className="w-full h-8 flex items-center gap-2 text-sm text-sidebar-foreground hover:bg-muted transition-colors"
+                        >
                           <span className="w-5 shrink-0" />
-                          <span className="flex-1 text-left truncate">{sub}</span>
-                        </button>
+                          <span className="flex-1 text-left truncate">{subLabel}</span>
+                        </SubTag>
                       </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>
-            ))}
+              );
+            })}
           </div>
         ))}
       </div>

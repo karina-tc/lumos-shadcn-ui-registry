@@ -897,6 +897,45 @@
           "type": "registry:component"
         }
       ]
+    },
+    {
+      "name": "full-app-layout",
+      "type": "registry:component",
+      "title": "Full App Shell",
+      "description": "Route-aware layout shell with BrandHeader + BrandSidebar navigation for the full Lumos app",
+      "registryDependencies": [
+        "https://lumos-shadcn-ui-registry.vercel.app/r/brand-header.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/brand-sidebar.json"
+      ],
+      "files": [
+        {
+          "path": "src/app/demo/[name]/blocks/full-app/full-app-layout.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "lumos-full-app",
+      "type": "registry:block",
+      "title": "Lumos Full App",
+      "description": "Complete Lumos application with all pages, shared layout, and working sidebar navigation",
+      "relatedComponents": ["brand-header", "brand-sidebar"],
+      "registryDependencies": [
+        "https://lumos-shadcn-ui-registry.vercel.app/r/theme.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/full-app-layout.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-tabs.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/albus-chat-input.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/albus-history-panel.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/albus-symbol.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-symbol.json"
+      ],
+      "files": [
+        { "path": "src/app/demo/[name]/blocks/full-app/root-layout.tsx", "type": "registry:file", "target": "app/layout.tsx" },
+        { "path": "src/app/demo/[name]/blocks/full-app/apps-page.tsx", "type": "registry:page", "target": "app/page.tsx" },
+        { "path": "src/app/demo/[name]/blocks/full-app/analytics-page.tsx", "type": "registry:page", "target": "app/analytics/page.tsx" },
+        { "path": "src/app/demo/[name]/blocks/full-app/settings-page.tsx", "type": "registry:page", "target": "app/settings/page.tsx" }
+      ]
     }
   ]
 }
