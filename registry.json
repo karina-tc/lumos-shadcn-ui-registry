@@ -182,6 +182,8 @@
       "registryDependencies": [
         "sidebar",
         "separator",
+        "breadcrumb",
+        "dropdown-menu",
         "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-symbol.json"
       ],
       "files": [
