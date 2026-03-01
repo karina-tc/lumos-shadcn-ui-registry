@@ -4,13 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "npm run registry:build && next dev --turbopack",
+    "dev:local": "REGISTRY_URL=http://localhost:3000 npm run registry:build && next dev --turbopack",
     "build": "npm run registry:build && next build",
     "start": "next start",
     "lint": "biome check",
     "lint:fix": "biome check --write",
     "test": "vitest run",
     "test:watch": "vitest",
-    "registry:build": "npx shadcn@latest build"
+    "registry:build": "node scripts/registry-build.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
