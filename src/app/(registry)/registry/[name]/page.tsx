@@ -65,6 +65,11 @@ export default async function RegistryItemPage({
         component={component}
         baseUrl={process.env.VERCEL_PROJECT_PRODUCTION_URL ?? ""}
         prompt={getPrompt()}
+        previewUrl={
+          name === "full-app-layout" || name === "lumos-full-app"
+            ? "/preview"
+            : undefined
+        }
       />
 
       {related.length > 0 && (

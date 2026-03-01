@@ -24,12 +24,14 @@ interface ComponentCardProps {
   component: Component;
   baseUrl: string;
   prompt: string;
+  previewUrl?: string;
 }
 
 export function ComponentCard({
   component,
   baseUrl,
   prompt,
+  previewUrl,
 }: ComponentCardProps) {
   const [copied, setCopied] = useState(false);
 
@@ -97,7 +99,7 @@ export function ComponentCard({
           >
             <iframe
               id="iframe"
-              src={`/demo/${component.name}`}
+              src={previewUrl ?? `/demo/${component.name}`}
               className="h-full w-full"
               title="Page Preview"
             />
