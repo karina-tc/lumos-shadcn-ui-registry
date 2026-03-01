@@ -1,8 +1,25 @@
+import { Geist, Geist_Mono, Montserrat } from "next/font/google";
 import type { ReactNode } from "react";
 
 import { FullAppShell } from "@/components/full-app-layout";
+import { cn } from "@/lib/utils";
 
 import "@/app/globals.css";
+
+const GeistSans = Geist({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
+
+const GeistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+});
+
+const MontserratSerif = Montserrat({
+  subsets: ["latin"],
+  variable: "--font-serif",
+});
 
 export default function RootLayout({
   children,
@@ -10,7 +27,15 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full bg-background text-foreground">
+    <html
+      lang="en"
+      className={cn(
+        GeistSans.variable,
+        GeistMono.variable,
+        MontserratSerif.variable,
+        "h-full bg-background text-foreground",
+      )}
+    >
       <body className="h-full">
         <FullAppShell>{children}</FullAppShell>
       </body>
