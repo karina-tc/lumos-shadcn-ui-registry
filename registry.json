@@ -72,8 +72,8 @@
         "brand-sidebar"
       ],
       "registryDependencies": [
-        "lumos-layout",
-        "page-header"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json"
       ],
       "files": [
         {
@@ -93,8 +93,8 @@
         "brand-sidebar"
       ],
       "registryDependencies": [
-        "lumos-layout",
-        "page-header"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json"
       ],
       "files": [
         {
@@ -114,9 +114,9 @@
         "brand-sidebar"
       ],
       "registryDependencies": [
-        "lumos-layout",
-        "page-header",
-        "page-tabs"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-tabs.json"
       ],
       "files": [
         {
@@ -136,9 +136,9 @@
         "brand-sidebar"
       ],
       "registryDependencies": [
-        "lumos-layout",
-        "page-header",
-        "page-tabs"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-tabs.json"
       ],
       "files": [
         {
@@ -158,8 +158,8 @@
         "brand-sidebar"
       ],
       "registryDependencies": [
-        "brand-header",
-        "brand-sidebar"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/brand-header.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/brand-sidebar.json"
       ],
       "files": [
         {
@@ -182,7 +182,7 @@
       "registryDependencies": [
         "sidebar",
         "separator",
-        "lumos-symbol"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-symbol.json"
       ],
       "files": [
         {
@@ -640,9 +640,9 @@
         "brand-sidebar"
       ],
       "registryDependencies": [
-        "lumos-layout",
-        "page-header",
-        "page-tabs"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-tabs.json"
       ],
       "files": [
         {
@@ -662,8 +662,8 @@
         "brand-sidebar"
       ],
       "registryDependencies": [
-        "lumos-layout",
-        "page-header"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json"
       ],
       "files": [
         {
@@ -683,8 +683,8 @@
         "brand-sidebar"
       ],
       "registryDependencies": [
-        "lumos-layout",
-        "page-header"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json"
       ],
       "files": [
         {
@@ -704,9 +704,9 @@
         "brand-sidebar"
       ],
       "registryDependencies": [
-        "lumos-layout",
-        "albus-chat-input",
-        "albus-symbol"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/albus-chat-input.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/albus-symbol.json"
       ],
       "files": [
         {
@@ -726,10 +726,10 @@
         "brand-sidebar"
       ],
       "registryDependencies": [
-        "lumos-layout",
-        "albus-chat-input",
-        "albus-history-panel",
-        "albus-symbol"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/albus-chat-input.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/albus-history-panel.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/albus-symbol.json"
       ],
       "files": [
         {
@@ -749,8 +749,8 @@
         "brand-sidebar"
       ],
       "registryDependencies": [
-        "lumos-layout",
-        "page-header"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json"
       ],
       "files": [
         {
@@ -770,8 +770,8 @@
         "brand-sidebar"
       ],
       "registryDependencies": [
-        "lumos-layout",
-        "page-header"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json"
       ],
       "files": [
         {
@@ -791,8 +791,8 @@
         "brand-sidebar"
       ],
       "registryDependencies": [
-        "lumos-layout",
-        "page-header"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json"
       ],
       "files": [
         {
@@ -812,8 +812,8 @@
         "brand-sidebar"
       ],
       "registryDependencies": [
-        "lumos-layout",
-        "page-header"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json"
       ],
       "files": [
         {
@@ -833,8 +833,8 @@
         "brand-sidebar"
       ],
       "registryDependencies": [
-        "lumos-layout",
-        "page-header"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json"
       ],
       "files": [
         {
@@ -874,8 +874,8 @@
       "title": "Lumos Layout",
       "description": "Full-page shell with collapsible BrandSidebar and BrandHeader",
       "registryDependencies": [
-        "brand-header",
-        "brand-sidebar"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/brand-header.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/brand-sidebar.json"
       ],
       "files": [
         {
@@ -947,8 +947,8 @@
       "description": "Rich chat textarea with mode selector, suggestion panel, and gradient focus ring",
       "registryDependencies": [
         "button",
-        "albus-mode-menu",
-        "albus-suggestions-panel"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/albus-mode-menu.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/albus-suggestions-panel.json"
       ],
       "files": [
         {
@@ -1022,8 +1022,8 @@
       "title": "Full App Shell",
       "description": "Route-aware layout shell with BrandHeader + BrandSidebar navigation for the full Lumos app",
       "registryDependencies": [
-        "brand-header",
-        "brand-sidebar"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/brand-header.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/brand-sidebar.json"
       ],
       "files": [
         {
@@ -1042,13 +1042,13 @@
         "brand-sidebar"
       ],
       "registryDependencies": [
-        "full-app-layout",
-        "page-header",
-        "page-tabs",
-        "albus-chat-input",
-        "albus-history-panel",
-        "albus-symbol",
-        "lumos-symbol"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/full-app-layout.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-header.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/page-tabs.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/albus-chat-input.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/albus-history-panel.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/albus-symbol.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-symbol.json"
       ],
       "files": [
         {
