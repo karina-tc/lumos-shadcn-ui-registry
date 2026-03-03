@@ -1129,6 +1129,42 @@
           "target": "app/tasks/page.tsx"
         }
       ]
+    },
+    {
+      "name": "use-when-selector",
+      "type": "registry:component",
+      "title": "Use When Selector",
+      "description": "Multi-level popover selector for scoping knowledge to global context, product areas, specific apps, or entitlements",
+      "registryDependencies": [
+        "popover",
+        "input",
+        "select"
+      ],
+      "files": [
+        {
+          "path": "src/components/use-when-selector.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "knowledge-modal",
+      "type": "registry:component",
+      "title": "Knowledge Modal",
+      "description": "Modal dialog for adding Albus knowledge entries with name, use case scoping, context textarea, and sensitive flag",
+      "registryDependencies": [
+        "button",
+        "input",
+        "checkbox",
+        "tooltip",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/use-when-selector.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/knowledge-modal.tsx",
+          "type": "registry:component"
+        }
+      ]
     }
   ]
 }

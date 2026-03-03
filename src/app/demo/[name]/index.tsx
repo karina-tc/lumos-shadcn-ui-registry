@@ -25,6 +25,7 @@ import { brandSidebar } from "@/app/demo/[name]/components/brand-sidebar";
 import { lumosButton } from "@/app/demo/[name]/components/lumos-button";
 import { lumosBadge } from "@/app/demo/[name]/components/lumos-badge";
 import { lumosCard } from "@/app/demo/[name]/components/lumos-card";
+import { knowledgeModal } from "@/app/demo/[name]/components/knowledge-modal";
 
 // ui
 import { accordion } from "@/app/demo/[name]/ui/accordion";
@@ -85,6 +86,7 @@ export const demos: { [name: string]: Demo } = {
   "lumos-button": lumosButton,
   "lumos-badge": lumosBadge,
   "lumos-card": lumosCard,
+  "knowledge-modal": knowledgeModal,
 
   // ui
   accordion,
