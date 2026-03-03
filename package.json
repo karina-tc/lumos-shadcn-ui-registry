@@ -4,11 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "npm run registry:build && next dev --turbopack",
+    "dev:local": "REGISTRY_URL=http://localhost:3000 npm run registry:build && next dev --turbopack",
     "build": "npm run registry:build && next build",
     "start": "next start",
     "lint": "biome check",
     "lint:fix": "biome check --write",
-    "registry:build": "npx shadcn@latest build"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "registry:build": "node scripts/registry-build.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
@@ -47,6 +50,7 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react-swc": "^3.10.2",
+    "vitest": "^3.1.0",
     "jsdom": "^25.0.1",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.11",
