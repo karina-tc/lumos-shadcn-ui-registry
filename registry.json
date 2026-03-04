@@ -947,6 +947,9 @@
       "type": "registry:component",
       "title": "Albus Mention Data",
       "description": "Search index and fuzzy search utilities for @mention references in Albus chat",
+      "dependencies": [
+        "fuse.js"
+      ],
       "files": [
         {
           "path": "src/components/albus-mention-data.ts",

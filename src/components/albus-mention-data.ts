@@ -1,3 +1,5 @@
+import Fuse from "fuse.js";
+
 export type MentionObjectType = "app" | "knowledge" | "attribute" | "identity";
 
 export interface MentionItem {
@@ -269,21 +271,14 @@ export const groupOrder: MentionObjectType[] = [
   "identity",
 ];
 
-function scoreFuzzyMatch(name: string, query: string): number {
-  const lower = name.toLowerCase();
-  const q = query.toLowerCase();
-  if (lower === q) return 0;
-  if (lower.startsWith(q)) return 1;
-  if (lower.includes(q)) return 2;
-  // check tag-style match (e.g. "akt" matching "okta" via character reorder isn't fuzzy enough, skip)
-  // simple subsequence check
-  let qi = 0;
-  for (let i = 0; i < lower.length && qi < q.length; i++) {
-    if (lower[i] === q[qi]) qi++;
-  }
-  if (qi === q.length) return 3;
-  return 999;
-}
+const fuse = new Fuse(mentionIndex, {
+  keys: [
+    { name: "name", weight: 2 },
+    { name: "tag", weight: 1 },
+  ],
+  threshold: 0.4,
+  includeScore: true,
+});
 
 export interface GroupedResults {
   type: MentionObjectType;
@@ -293,20 +288,13 @@ export interface GroupedResults {
 
 export function searchMentions(query: string): GroupedResults[] {
   const q = query.trim();
+  if (!q) return getDefaultMentions();
 
-  const scored = mentionIndex
-    .map((item) => {
-      const nameScore = scoreFuzzyMatch(item.name, q);
-      const tagScore = scoreFuzzyMatch(item.tag, q);
-      return { item, score: Math.min(nameScore, tagScore) };
-    })
-    .filter((r) => r.score < 999)
-    .sort((a, b) => a.score - b.score || a.item.name.localeCompare(b.item.name))
-    .slice(0, 10);
+  const results = fuse.search(q, { limit: 10 });
 
   const groups: GroupedResults[] = [];
   for (const type of groupOrder) {
-    const items = scored
+    const items = results
       .filter((r) => r.item.objectType === type)
       .map((r) => r.item);
     if (items.length > 0) {
