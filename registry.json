@@ -943,14 +943,65 @@
       ]
     },
     {
+      "name": "albus-mention-data",
+      "type": "registry:component",
+      "title": "Albus Mention Data",
+      "description": "Search index and fuzzy search utilities for @mention references in Albus chat",
+      "files": [
+        {
+          "path": "src/components/albus-mention-data.ts",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "albus-mention-element",
+      "type": "registry:component",
+      "title": "Albus Mention Element",
+      "description": "Inline pill component for @mention references rendered in the Slate editor",
+      "dependencies": [
+        "slate-react"
+      ],
+      "files": [
+        {
+          "path": "src/components/albus-mention-element.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "albus-mention-search",
+      "type": "registry:component",
+      "title": "Albus Mention Search",
+      "description": "Floating search menu for @mention references with grouped results and keyboard navigation",
+      "registryDependencies": [
+        "https://lumos-shadcn-ui-registry.vercel.app/r/albus-mention-data.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/albus-mention-search.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "albus-chat-input",
       "type": "registry:component",
       "title": "Albus Chat Input",
-      "description": "Rich chat textarea with mode selector, suggestion panel, and gradient focus ring",
+      "description": "Rich Slate.js chat editor with @mention search, inline pills, mode selector, suggestion panel, and gradient focus ring",
+      "dependencies": [
+        "slate",
+        "slate-react",
+        "slate-history",
+        "is-hotkey"
+      ],
       "registryDependencies": [
         "button",
         "https://lumos-shadcn-ui-registry.vercel.app/r/albus-mode-menu.json",
-        "https://lumos-shadcn-ui-registry.vercel.app/r/albus-suggestions-panel.json"
+        "https://lumos-shadcn-ui-registry.vercel.app/r/albus-suggestions-panel.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/albus-mention-element.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/albus-mention-search.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/albus-mention-data.json"
       ],
       "files": [
         {

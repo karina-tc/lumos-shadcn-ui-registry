@@ -1,28 +1,124 @@
 "use client";
 
-import { useState, useRef, useEffect, type CSSProperties } from "react";
-import { createPortal } from "react-dom";
-import { ArrowUp, ChevronDown, Plus } from "lucide-react";
-import { AlbusModeMenu, albusModes, type AlbusMode } from "@/components/albus-mode-menu";
+import {
+  type GroupedResults,
+  type MentionItem,
+  getDefaultMentions,
+  searchMentions,
+} from "@/components/albus-mention-data";
+import {
+  AlbusMentionElement,
+  type MentionElementData,
+} from "@/components/albus-mention-element";
+import { AlbusMentionSearch } from "@/components/albus-mention-search";
+import {
+  type AlbusMode,
+  AlbusModeMenu,
+  albusModes,
+} from "@/components/albus-mode-menu";
 import {
   AlbusSuggestionsPanel,
   type SuggestionsPosition,
 } from "@/components/albus-suggestions-panel";
 import { Button } from "@/components/ui/button";
+import { ArrowUp, ChevronDown, Plus } from "lucide-react";
+import {
+  type CSSProperties,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { createPortal } from "react-dom";
+import {
+  type BaseEditor,
+  type Descendant,
+  Editor,
+  Range,
+  type Element as SlateElement,
+  Transforms,
+  createEditor,
+} from "slate";
+import { withHistory } from "slate-history";
+import {
+  Editable,
+  ReactEditor,
+  type RenderElementProps,
+  Slate,
+  withReact,
+} from "slate-react";
 
 export type { SuggestionsPosition };
 
+// ---------------------------------------------------------------------------
+// Slate custom types
+// ---------------------------------------------------------------------------
+type ParagraphElement = { type: "paragraph"; children: Descendant[] };
+type CustomElement = ParagraphElement | MentionElementData;
+type CustomText = { text: string };
+
+declare module "slate" {
+  interface CustomTypes {
+    Editor: BaseEditor & ReactEditor;
+    Element: CustomElement;
+    Text: CustomText;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+function withMentions(editor: Editor) {
+  const { isInline, isVoid, markableVoid } = editor;
+  editor.isInline = (element: SlateElement) =>
+    (element as unknown as MentionElementData).type === "mention" ||
+    isInline(element);
+  editor.isVoid = (element: SlateElement) =>
+    (element as unknown as MentionElementData).type === "mention" ||
+    isVoid(element);
+  editor.markableVoid = (element: SlateElement) =>
+    (element as unknown as MentionElementData).type === "mention" ||
+    markableVoid(element);
+  return editor;
+}
+
+function serializeToPlainText(nodes: Descendant[]): string {
+  return nodes
+    .map((n) => {
+      if ("text" in n) return n.text;
+      const el = n as unknown as CustomElement;
+      if (el.type === "mention") return `@${(el as MentionElementData).tag}`;
+      return serializeToPlainText((el as ParagraphElement).children);
+    })
+    .join("");
+}
+
+const EMPTY_VALUE: Descendant[] = [
+  { type: "paragraph", children: [{ text: "" }] },
+];
+
+function makeEmptyValue(): Descendant[] {
+  return [{ type: "paragraph", children: [{ text: "" }] }];
+}
+
+// ---------------------------------------------------------------------------
+// Props
+// ---------------------------------------------------------------------------
 export interface AlbusChatInputProps {
-  value: string;
-  onChange: (value: string) => void;
+  value?: string;
+  onChange?: (value: string) => void;
   placeholder?: string;
   suggestions?: string[];
   suggestionsPosition?: SuggestionsPosition;
   showModeSelector?: boolean;
-  onSend?: () => void;
+  onSend?: (value: Descendant[]) => void;
   className?: string;
 }
 
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
 export function AlbusChatInput({
   value,
   onChange,
@@ -33,6 +129,10 @@ export function AlbusChatInput({
   onSend,
   className,
 }: AlbusChatInputProps) {
+  const editor = useMemo(
+    () => withMentions(withHistory(withReact(createEditor()))),
+    [],
+  );
   const [focused, setFocused] = useState(false);
   const [mode, setMode] = useState<AlbusMode>("ask");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -40,28 +140,240 @@ export function AlbusChatInput({
   const [suggestionsStyle, setSuggestionsStyle] = useState<CSSProperties>({});
   const [suggestionsRevealed, setSuggestionsRevealed] = useState(false);
   const [suggestionsVisible, setSuggestionsVisible] = useState(true);
+
+  // Mention search state
+  const [mentionTarget, setMentionTarget] = useState<Range | null>(null);
+  const [mentionQuery, setMentionQuery] = useState("");
+  const [mentionIndex, setMentionIndex] = useState(0);
+  const [mentionStyle, setMentionStyle] = useState<CSSProperties>({});
+  const mentionRef = useRef<HTMLDivElement>(null);
+
   const blurTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const menuContainerRef = useRef<HTMLDivElement>(null);
   const menuDropdownRef = useRef<HTMLDivElement>(null);
   const inputContainerRef = useRef<HTMLDivElement>(null);
 
+  // Track plain text state for suggestions visibility & send button
+  const [plainText, setPlainText] = useState("");
+
+  // Sync external value → editor (only for controlled clear / suggestion fill)
+  const lastExternalValue = useRef(value);
+  useEffect(() => {
+    if (value !== undefined && value !== lastExternalValue.current) {
+      lastExternalValue.current = value;
+      // If value is empty string, clear the editor
+      if (value === "") {
+        // Clear all content
+        Transforms.delete(editor, {
+          at: {
+            anchor: Editor.start(editor, []),
+            focus: Editor.end(editor, []),
+          },
+        });
+        // Reset to empty paragraph
+        const point = { path: [0, 0], offset: 0 };
+        Transforms.select(editor, { anchor: point, focus: point });
+        setPlainText("");
+      } else if (value.length > 0) {
+        // Set text from suggestion
+        Transforms.delete(editor, {
+          at: {
+            anchor: Editor.start(editor, []),
+            focus: Editor.end(editor, []),
+          },
+        });
+        Transforms.insertText(editor, value, { at: Editor.start(editor, []) });
+        setPlainText(value);
+      }
+    }
+  }, [value, editor]);
+
+  // Mention groups
+  const mentionGroups: GroupedResults[] = useMemo(
+    () => (mentionQuery ? searchMentions(mentionQuery) : getDefaultMentions()),
+    [mentionQuery],
+  );
+  const flatMentionItems = useMemo(
+    () => mentionGroups.flatMap((g) => g.items),
+    [mentionGroups],
+  );
+
+  // Position the mention search dropdown
+  useEffect(() => {
+    if (!mentionTarget) return;
+    try {
+      const domRange = ReactEditor.toDOMRange(editor, mentionTarget);
+      const rect = domRange.getBoundingClientRect();
+      setMentionStyle({
+        position: "fixed",
+        top: rect.bottom + 4,
+        left: rect.left,
+      });
+    } catch {
+      // range may become stale
+    }
+  }, [editor, mentionTarget]);
+
+  // Insert a mention node
+  const insertMention = useCallback(
+    (item: MentionItem) => {
+      if (mentionTarget) {
+        Transforms.select(editor, mentionTarget);
+      }
+      const mention: MentionElementData = {
+        type: "mention",
+        tag: item.tag,
+        name: item.name,
+        icon: item.icon,
+        itemId: item.id,
+        objectType: item.objectType,
+        children: [{ text: "" }],
+      };
+      Transforms.insertNodes(editor, mention);
+      Transforms.move(editor);
+      // Insert a trailing space
+      Transforms.insertText(editor, " ");
+      setMentionTarget(null);
+      ReactEditor.focus(editor);
+    },
+    [editor, mentionTarget],
+  );
+
+  // Handle editor change — detect @ trigger
+  const handleEditorChange = useCallback(
+    (newValue: Descendant[]) => {
+      const txt = serializeToPlainText(newValue);
+      setPlainText(txt);
+      lastExternalValue.current = txt;
+      onChange?.(txt);
+
+      const { selection } = editor;
+      if (selection && Range.isCollapsed(selection)) {
+        const [start] = Range.edges(selection);
+        const wordBefore = Editor.before(editor, start, { unit: "word" });
+        const before = wordBefore && Editor.before(editor, wordBefore);
+        const beforeRange = before
+          ? Editor.range(editor, before, start)
+          : wordBefore
+            ? Editor.range(editor, wordBefore, start)
+            : null;
+        const beforeText = beforeRange
+          ? Editor.string(editor, beforeRange)
+          : "";
+        const atMatch = beforeText.match(/@(\w*)$/);
+
+        // Also check from line start for just "@"
+        const lineStart = Editor.before(editor, start, { unit: "line" });
+        const lineRange = lineStart
+          ? Editor.range(editor, lineStart, start)
+          : null;
+        const lineText = lineRange ? Editor.string(editor, lineRange) : "";
+        const lineAtMatch = lineText.match(/@(\w*)$/);
+
+        const match = atMatch || lineAtMatch;
+
+        if (match) {
+          const query = match[1] || "";
+          const matchOffset = match.index ?? 0;
+
+          // Calculate the range of the "@query" in the editor
+          const sourceRange = atMatch ? beforeRange : lineRange;
+          if (sourceRange) {
+            const rangeStart = {
+              ...sourceRange.anchor,
+              offset: sourceRange.anchor.offset + matchOffset,
+            };
+            const newTarget = Editor.range(editor, rangeStart, start);
+            setMentionTarget(newTarget);
+            setMentionQuery(query);
+            setMentionIndex(0);
+            return;
+          }
+        }
+      }
+      setMentionTarget(null);
+    },
+    [editor, onChange],
+  );
+
+  // Render elements
+  const renderElement = useCallback((props: RenderElementProps) => {
+    const el = props.element as unknown as CustomElement;
+    if (el.type === "mention") {
+      return <AlbusMentionElement {...props} />;
+    }
+    return <p {...props.attributes}>{props.children}</p>;
+  }, []);
+
+  // Keyboard handler for mention nav + send
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent) => {
+      // Mention menu navigation
+      if (mentionTarget && flatMentionItems.length > 0) {
+        switch (event.key) {
+          case "ArrowDown": {
+            event.preventDefault();
+            setMentionIndex((prev) =>
+              prev >= flatMentionItems.length - 1 ? 0 : prev + 1,
+            );
+            return;
+          }
+          case "ArrowUp": {
+            event.preventDefault();
+            setMentionIndex((prev) =>
+              prev <= 0 ? flatMentionItems.length - 1 : prev - 1,
+            );
+            return;
+          }
+          case "Enter": {
+            event.preventDefault();
+            insertMention(flatMentionItems[mentionIndex]);
+            return;
+          }
+          case "Escape": {
+            event.preventDefault();
+            setMentionTarget(null);
+            return;
+          }
+        }
+      }
+
+      // Send on Enter (without Shift)
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        if (plainText.trim()) {
+          onSend?.(editor.children);
+        }
+      }
+    },
+    [
+      mentionTarget,
+      flatMentionItems,
+      mentionIndex,
+      insertMention,
+      plainText,
+      onSend,
+      editor,
+    ],
+  );
+
+  // Suggestions
   useEffect(() => {
     if (focused && suggestions.length > 0) {
       const id = requestAnimationFrame(() => setSuggestionsRevealed(true));
       return () => cancelAnimationFrame(id);
-    } else {
-      setSuggestionsRevealed(false);
     }
+    setSuggestionsRevealed(false);
   }, [focused, suggestions.length]);
 
   useEffect(() => {
-    if (value.trim() === "") {
+    if (plainText.trim() === "") {
       setSuggestionsVisible(true);
       return;
     }
     const id = setTimeout(() => setSuggestionsVisible(false), 1000);
     return () => clearTimeout(id);
-  }, [value]);
+  }, [plainText]);
 
   const handleFocus = () => {
     if (blurTimeout.current) clearTimeout(blurTimeout.current);
@@ -83,19 +395,26 @@ export function AlbusChatInput({
               top: rect.bottom + gap,
               left: rect.left,
               width: rect.width,
-            }
+            },
       );
     }
   };
 
   const handleBlur = () => {
-    blurTimeout.current = setTimeout(() => setFocused(false), 150);
+    blurTimeout.current = setTimeout(() => {
+      setFocused(false);
+      setMentionTarget(null);
+    }, 150);
   };
 
+  // Mode menu outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      const target = e.target as Node;
-      if (!menuContainerRef.current?.contains(target) && !menuDropdownRef.current?.contains(target)) {
+      const target = e.target as globalThis.Node;
+      if (
+        !menuContainerRef.current?.contains(target) &&
+        !menuDropdownRef.current?.contains(target)
+      ) {
         setMenuOpen(false);
       }
     };
@@ -103,14 +422,23 @@ export function AlbusChatInput({
     return () => document.removeEventListener("mousedown", handler);
   }, [menuOpen]);
 
-  const currentMode = albusModes.find((m) => m.id === mode)!;
+  const currentMode = albusModes.find((m) => m.id === mode) ?? albusModes[0];
   const resolvedPlaceholder =
     showModeSelector && mode === "deep-research"
       ? "What would you like me to investigate?"
       : placeholder;
 
+  const handleSend = useCallback(() => {
+    if (plainText.trim()) {
+      onSend?.(editor.children);
+    }
+  }, [plainText, onSend, editor]);
+
   return (
-    <div ref={inputContainerRef} className={`relative w-full ${className ?? ""}`}>
+    <div
+      ref={inputContainerRef}
+      className={`relative w-full ${className ?? ""}`}
+    >
       <div className="w-full rounded-[20px] bg-[#eff1f3]">
         <div
           className="rounded-2xl p-[2px] transition-all duration-300"
@@ -124,40 +452,52 @@ export function AlbusChatInput({
           }
         >
           <div className="flex h-[120px] min-h-[120px] flex-col justify-between overflow-hidden rounded-[12px] border border-[#eff1f3] bg-white p-3 shadow-[0px_6px_8px_-8px_#d3d6de]">
-            <div className="w-full py-1">
-              <textarea
-                placeholder={resolvedPlaceholder}
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    onSend?.();
+            <div className="w-full flex-1 overflow-y-auto py-1">
+              <Slate
+                editor={editor}
+                initialValue={makeEmptyValue()}
+                onChange={handleEditorChange}
+              >
+                <Editable
+                  renderElement={renderElement}
+                  placeholder={resolvedPlaceholder}
+                  onKeyDown={handleKeyDown}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                  className="[&_[data-slate-placeholder]]:!text-[#79829c] [&_[data-slate-placeholder]]:!opacity-100 h-full w-full resize-none bg-transparent text-foreground text-sm leading-[1.4] outline-none"
+                  aria-expanded={!!mentionTarget}
+                  aria-activedescendant={
+                    mentionTarget ? `mention-option-${mentionIndex}` : undefined
                   }
-                }}
-                rows={2}
-                className="w-full resize-none bg-transparent text-sm leading-[1.4] text-foreground placeholder:text-[#79829c] focus:outline-none"
-              />
+                  aria-controls={mentionTarget ? "mention-search" : undefined}
+                />
+              </Slate>
             </div>
 
             <div className="flex items-center justify-between pt-3">
               <div className="flex items-center gap-2">
-                <Button variant="tertiary" size="icon" className="size-7 rounded-full">
+                <Button
+                  variant="tertiary"
+                  size="icon"
+                  className="size-7 rounded-full"
+                >
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
 
               <div className="flex items-center gap-3">
                 {showModeSelector && (
-                  <div ref={menuContainerRef} className="relative pr-3 border-r border-[#eff1f3]">
+                  <div
+                    ref={menuContainerRef}
+                    className="relative border-[#eff1f3] border-r pr-3"
+                  >
                     <Button
                       variant="tertiary"
-                      className="gap-1 px-2 h-7"
+                      className="h-7 gap-1 px-2"
                       onClick={() => {
                         if (!menuOpen && menuContainerRef.current) {
-                          const rect = menuContainerRef.current.getBoundingClientRect();
+                          const rect =
+                            menuContainerRef.current.getBoundingClientRect();
                           setMenuStyle({
                             position: "fixed",
                             bottom: window.innerHeight - rect.top + 8,
@@ -178,9 +518,9 @@ export function AlbusChatInput({
                 <Button
                   variant="tertiary"
                   size="icon"
-                  disabled={!value}
+                  disabled={!plainText.trim()}
                   className="size-7 rounded-full"
-                  onClick={onSend}
+                  onClick={handleSend}
                 >
                   <ArrowUp className="h-3.5 w-3.5" />
                 </Button>
@@ -190,18 +530,44 @@ export function AlbusChatInput({
         </div>
       </div>
 
-      {suggestions.length > 0 && focused && suggestionsVisible && (
-        <AlbusSuggestionsPanel
-          suggestions={suggestions}
-          position={suggestionsPosition}
-          style={suggestionsStyle}
-          revealed={suggestionsRevealed}
-          onSelect={(s) => {
-            onChange(s);
-            setFocused(false);
-          }}
+      {/* Mention search menu */}
+      {mentionTarget && (
+        <AlbusMentionSearch
+          ref={mentionRef}
+          groups={mentionGroups}
+          activeIndex={mentionIndex}
+          style={mentionStyle}
+          onSelect={insertMention}
         />
       )}
+
+      {/* Suggestions panel */}
+      {suggestions.length > 0 &&
+        focused &&
+        suggestionsVisible &&
+        !mentionTarget && (
+          <AlbusSuggestionsPanel
+            suggestions={suggestions}
+            position={suggestionsPosition}
+            style={suggestionsStyle}
+            revealed={suggestionsRevealed}
+            onSelect={(s) => {
+              // Insert suggestion text into editor
+              Transforms.delete(editor, {
+                at: {
+                  anchor: Editor.start(editor, []),
+                  focus: Editor.end(editor, []),
+                },
+              });
+              Transforms.insertText(editor, s, {
+                at: Editor.start(editor, []),
+              });
+              setPlainText(s);
+              onChange?.(s);
+              setFocused(false);
+            }}
+          />
+        )}
 
       {showModeSelector && menuOpen && (
         <AlbusModeMenu
