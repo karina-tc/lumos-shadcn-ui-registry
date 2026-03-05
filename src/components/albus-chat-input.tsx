@@ -6,7 +6,6 @@ import {
   type MentionItem,
   type MentionObjectType,
   attributeValues,
-  categoryAttributes,
   getPopularItems,
   groupLabels,
   searchMentions,
@@ -340,18 +339,6 @@ export function AlbusChatInput({
                 setCategoryAutoMatched(true);
                 setSelectedAttribute(null);
               }
-              // If the path includes an attribute, navigate to it
-              if (parsed.attribute && selectedCategory === parsed.category && !selectedAttribute) {
-                const attrs = categoryAttributes[parsed.category] ?? [];
-                const matchedAttr = attrs.find(
-                  (a) =>
-                    a.key === parsed.attribute ||
-                    a.label.toLowerCase() === parsed.attribute?.toLowerCase(),
-                );
-                if (matchedAttr) {
-                  setSelectedAttribute(matchedAttr);
-                }
-              }
               return;
             }
 
@@ -370,7 +357,7 @@ export function AlbusChatInput({
       setSelectedAttribute(null);
       setCategoryAutoMatched(false);
     },
-    [editor, onChange, selectedCategory, selectedAttribute, categoryAutoMatched],
+    [editor, onChange, selectedCategory],
   );
 
   // Decorate: highlight the @query range with a gray pill
@@ -397,20 +384,37 @@ export function AlbusChatInput({
             className="inline-flex items-baseline rounded-md bg-neutral-100 px-1 py-[1px] text-neutral-700"
           >
             {children}
-            {mentionQuery === "" && (
-              <span
-                contentEditable={false}
-                className="pointer-events-none ml-0.5 select-none text-neutral-400 text-sm"
-              >
-                Search...
-              </span>
-            )}
+            {(() => {
+              if (parsedQuery.mode === "scoped") {
+                const showColon = !mentionQuery.includes(":");
+                const hint = showColon ? ": search" : " search";
+                return (
+                  <span
+                    contentEditable={false}
+                    className="pointer-events-none ml-0.5 select-none text-neutral-400 text-sm"
+                  >
+                    {hint}
+                  </span>
+                );
+              }
+              if (mentionQuery === "") {
+                return (
+                  <span
+                    contentEditable={false}
+                    className="pointer-events-none ml-0.5 select-none text-neutral-400 text-sm"
+                  >
+                    Search...
+                  </span>
+                );
+              }
+              return null;
+            })()}
           </span>
         );
       }
       return <span {...attributes}>{children}</span>;
     },
-    [mentionQuery],
+    [mentionQuery, parsedQuery],
   );
 
   // Render elements
@@ -437,9 +441,10 @@ export function AlbusChatInput({
     setSelectedAttribute(null);
     if (categoryAutoMatched) {
       setMentionTarget(null);
+      ReactEditor.focus(editor);
     }
     setCategoryAutoMatched(false);
-  }, [categoryAutoMatched]);
+  }, [categoryAutoMatched, editor]);
 
   const handleAttributeSelect = useCallback((attr: AttributeDef) => {
     setSelectedAttribute(attr);
