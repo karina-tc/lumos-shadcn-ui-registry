@@ -3,7 +3,8 @@
 import {
   type GroupedResults,
   type MentionItem,
-  getDefaultMentions,
+  type MentionObjectType,
+  getMentionsByCategory,
   searchMentions,
 } from "@/components/albus-mention-data";
 import {
@@ -30,13 +31,15 @@ import {
   useRef,
   useState,
 } from "react";
-import { createPortal } from "react-dom";
 import {
   type BaseEditor,
   type Descendant,
   Editor,
+  type Node,
+  type Path,
   Range,
   type Element as SlateElement,
+  Text,
   Transforms,
   createEditor,
 } from "slate";
@@ -45,6 +48,7 @@ import {
   Editable,
   ReactEditor,
   type RenderElementProps,
+  type RenderLeafProps,
   Slate,
   withReact,
 } from "slate-react";
@@ -56,7 +60,7 @@ export type { SuggestionsPosition };
 // ---------------------------------------------------------------------------
 type ParagraphElement = { type: "paragraph"; children: Descendant[] };
 type CustomElement = ParagraphElement | MentionElementData;
-type CustomText = { text: string };
+type CustomText = { text: string; mentionSearch?: boolean };
 
 declare module "slate" {
   interface CustomTypes {
@@ -93,10 +97,6 @@ function serializeToPlainText(nodes: Descendant[]): string {
     })
     .join("");
 }
-
-const EMPTY_VALUE: Descendant[] = [
-  { type: "paragraph", children: [{ text: "" }] },
-];
 
 function makeEmptyValue(): Descendant[] {
   return [{ type: "paragraph", children: [{ text: "" }] }];
@@ -146,6 +146,8 @@ export function AlbusChatInput({
   const [mentionQuery, setMentionQuery] = useState("");
   const [mentionIndex, setMentionIndex] = useState(0);
   const [mentionStyle, setMentionStyle] = useState<CSSProperties>({});
+  const [selectedCategory, setSelectedCategory] =
+    useState<MentionObjectType | null>(null);
   const mentionRef = useRef<HTMLDivElement>(null);
 
   const blurTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -161,21 +163,17 @@ export function AlbusChatInput({
   useEffect(() => {
     if (value !== undefined && value !== lastExternalValue.current) {
       lastExternalValue.current = value;
-      // If value is empty string, clear the editor
       if (value === "") {
-        // Clear all content
         Transforms.delete(editor, {
           at: {
             anchor: Editor.start(editor, []),
             focus: Editor.end(editor, []),
           },
         });
-        // Reset to empty paragraph
         const point = { path: [0, 0], offset: 0 };
         Transforms.select(editor, { anchor: point, focus: point });
         setPlainText("");
       } else if (value.length > 0) {
-        // Set text from suggestion
         Transforms.delete(editor, {
           at: {
             anchor: Editor.start(editor, []),
@@ -188,31 +186,49 @@ export function AlbusChatInput({
     }
   }, [value, editor]);
 
-  // Mention groups
-  const mentionGroups: GroupedResults[] = useMemo(
-    () => (mentionQuery ? searchMentions(mentionQuery) : getDefaultMentions()),
-    [mentionQuery],
-  );
+  // Mention groups — search results or category items
+  const mentionGroups: GroupedResults[] = useMemo(() => {
+    if (mentionQuery) return searchMentions(mentionQuery);
+    if (selectedCategory) return getMentionsByCategory(selectedCategory);
+    return [];
+  }, [mentionQuery, selectedCategory]);
+
   const flatMentionItems = useMemo(
     () => mentionGroups.flatMap((g) => g.items),
     [mentionGroups],
   );
 
-  // Position the mention search dropdown
+  // Position the mention search dropdown anchored to the pill
   useEffect(() => {
     if (!mentionTarget) return;
-    try {
-      const domRange = ReactEditor.toDOMRange(editor, mentionTarget);
-      const rect = domRange.getBoundingClientRect();
-      setMentionStyle({
-        position: "fixed",
-        top: rect.bottom + 4,
-        left: rect.left,
-      });
-    } catch {
-      // range may become stale
-    }
-  }, [editor, mentionTarget]);
+    const position = () => {
+      const pill = document.querySelector("[data-mention-pill]");
+      if (pill) {
+        const rect = pill.getBoundingClientRect();
+        setMentionStyle({
+          position: "fixed",
+          top: rect.bottom + 6,
+          left: rect.left,
+        });
+        return;
+      }
+      // Fallback to DOMRange
+      try {
+        const domRange = ReactEditor.toDOMRange(editor, mentionTarget);
+        const rect = domRange.getBoundingClientRect();
+        setMentionStyle({
+          position: "fixed",
+          top: rect.bottom + 6,
+          left: rect.left,
+        });
+      } catch {
+        // range may become stale
+      }
+    };
+    // RAF to wait for decoration render
+    const id = requestAnimationFrame(position);
+    return () => cancelAnimationFrame(id);
+  }, [editor, mentionTarget, mentionQuery]);
 
   // Insert a mention node
   const insertMention = useCallback(
@@ -224,16 +240,15 @@ export function AlbusChatInput({
         type: "mention",
         tag: item.tag,
         name: item.name,
-        icon: item.icon,
         itemId: item.id,
         objectType: item.objectType,
         children: [{ text: "" }],
       };
       Transforms.insertNodes(editor, mention);
       Transforms.move(editor);
-      // Insert a trailing space
       Transforms.insertText(editor, " ");
       setMentionTarget(null);
+      setSelectedCategory(null);
       ReactEditor.focus(editor);
     },
     [editor, mentionTarget],
@@ -276,7 +291,6 @@ export function AlbusChatInput({
           const query = match[1] || "";
           const matchOffset = match.index ?? 0;
 
-          // Calculate the range of the "@query" in the editor
           const sourceRange = atMatch ? beforeRange : lineRange;
           if (sourceRange) {
             const rangeStart = {
@@ -287,13 +301,56 @@ export function AlbusChatInput({
             setMentionTarget(newTarget);
             setMentionQuery(query);
             setMentionIndex(0);
+            // Reset category when query changes
+            if (query) setSelectedCategory(null);
             return;
           }
         }
       }
       setMentionTarget(null);
+      setSelectedCategory(null);
     },
     [editor, onChange],
+  );
+
+  // Decorate: highlight the @query range with a gray pill
+  const decorate = useCallback(
+    ([node, path]: [Node, Path]) => {
+      if (!mentionTarget || !Text.isText(node)) return [];
+      const nodeRange = Editor.range(editor, path);
+      const intersection = Range.intersection(mentionTarget, nodeRange);
+      if (!intersection) return [];
+      return [{ ...intersection, mentionSearch: true }];
+    },
+    [mentionTarget, editor],
+  );
+
+  // Render leaf: gray pill for active mention search
+  const renderLeaf = useCallback(
+    (props: RenderLeafProps) => {
+      const { attributes, children, leaf } = props;
+      if (leaf.mentionSearch) {
+        return (
+          <span
+            {...attributes}
+            data-mention-pill=""
+            className="inline-flex items-baseline rounded-md bg-neutral-100 px-1 py-[1px] text-neutral-700"
+          >
+            {children}
+            {mentionQuery === "" && (
+              <span
+                contentEditable={false}
+                className="pointer-events-none ml-0.5 select-none text-neutral-400 text-sm"
+              >
+                Search...
+              </span>
+            )}
+          </span>
+        );
+      }
+      return <span {...attributes}>{children}</span>;
+    },
+    [mentionQuery],
   );
 
   // Render elements
@@ -333,9 +390,18 @@ export function AlbusChatInput({
           case "Escape": {
             event.preventDefault();
             setMentionTarget(null);
+            setSelectedCategory(null);
             return;
           }
         }
+      }
+
+      // When mention menu is open with no results (default view), Escape closes
+      if (mentionTarget && event.key === "Escape") {
+        event.preventDefault();
+        setMentionTarget(null);
+        setSelectedCategory(null);
+        return;
       }
 
       // Send on Enter (without Shift)
@@ -404,6 +470,7 @@ export function AlbusChatInput({
     blurTimeout.current = setTimeout(() => {
       setFocused(false);
       setMentionTarget(null);
+      setSelectedCategory(null);
     }, 150);
   };
 
@@ -434,6 +501,14 @@ export function AlbusChatInput({
     }
   }, [plainText, onSend, editor]);
 
+  const handleCategorySelect = useCallback(
+    (category: MentionObjectType) => {
+      setSelectedCategory(category);
+      setMentionIndex(0);
+    },
+    [],
+  );
+
   return (
     <div
       ref={inputContainerRef}
@@ -460,6 +535,8 @@ export function AlbusChatInput({
               >
                 <Editable
                   renderElement={renderElement}
+                  renderLeaf={renderLeaf}
+                  decorate={decorate}
                   placeholder={resolvedPlaceholder}
                   onKeyDown={handleKeyDown}
                   onFocus={handleFocus}
@@ -537,7 +614,9 @@ export function AlbusChatInput({
           groups={mentionGroups}
           activeIndex={mentionIndex}
           style={mentionStyle}
+          hasQuery={mentionQuery.length > 0}
           onSelect={insertMention}
+          onCategorySelect={handleCategorySelect}
         />
       )}
 
@@ -552,7 +631,6 @@ export function AlbusChatInput({
             style={suggestionsStyle}
             revealed={suggestionsRevealed}
             onSelect={(s) => {
-              // Insert suggestion text into editor
               Transforms.delete(editor, {
                 at: {
                   anchor: Editor.start(editor, []),
