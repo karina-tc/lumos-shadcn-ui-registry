@@ -1,78 +1,78 @@
 "use client";
 
 import {
+  type AttributeDef,
   type GroupedResults,
   type MentionItem,
   type MentionObjectType,
-  getMentionsByCategory,
+  attributeValues,
+  categoryAttributes,
+  getPopularItems,
   groupLabels,
   groupOrder,
 } from "@/components/albus-mention-data";
 import {
   type CSSProperties,
   forwardRef,
-  useCallback,
-  useEffect,
-  useState,
 } from "react";
 import { createPortal } from "react-dom";
 
 export interface AlbusMentionSearchProps {
-  /** Grouped search results (empty when no query) */
+  /** Grouped search results — used in free search mode */
   groups: GroupedResults[];
   /** Index of active item for keyboard navigation */
   activeIndex: number;
   /** Fixed positioning style */
   style: CSSProperties;
-  /** Whether a search query is active */
+  /** Whether the query is in free-search mode (has a non-category query) */
   hasQuery: boolean;
-  /** Callback when an item is selected */
+  /** Category currently being browsed (controlled by parent) */
+  expandedCategory: MentionObjectType | null;
+  /** Attribute currently being browsed within a category (controlled by parent) */
+  expandedAttribute: AttributeDef | null;
+  /** Callback when an item row is selected */
   onSelect: (item: MentionItem) => void;
-  /** Callback when a category is selected from default view */
-  onCategorySelect?: (category: MentionObjectType) => void;
+  /** Callback when a category is selected from the default list */
+  onCategorySelect: (category: MentionObjectType) => void;
+  /** Callback when Back is pressed from a category view */
+  onCategoryBack: () => void;
+  /** Callback when an attribute chip is clicked */
+  onAttributeSelect: (attr: AttributeDef) => void;
+  /** Callback when Back is pressed from the attribute value view */
+  onAttributeBack: () => void;
+  /** Callback when an attribute value is selected (terminal action) */
+  onAttributeValueSelect: (value: string) => void;
 }
 
 export const AlbusMentionSearch = forwardRef<
   HTMLDivElement,
   AlbusMentionSearchProps
 >(function AlbusMentionSearch(
-  { groups, activeIndex, style, hasQuery, onSelect, onCategorySelect },
+  {
+    groups,
+    activeIndex,
+    style,
+    hasQuery,
+    expandedCategory,
+    expandedAttribute,
+    onSelect,
+    onCategorySelect,
+    onCategoryBack,
+    onAttributeSelect,
+    onAttributeBack,
+    onAttributeValueSelect,
+  },
   ref,
 ) {
   if (typeof window === "undefined") return null;
 
-  const [expandedCategory, setExpandedCategory] =
-    useState<MentionObjectType | null>(null);
-
-  // Reset expanded category when query changes
-  useEffect(() => {
-    if (hasQuery) setExpandedCategory(null);
-  }, [hasQuery]);
-
-  const handleCategoryClick = useCallback(
-    (category: MentionObjectType) => {
-      setExpandedCategory(category);
-      onCategorySelect?.(category);
-    },
-    [onCategorySelect],
-  );
-
   // Determine what to show
   const showDefaultView = !hasQuery && !expandedCategory;
-  const showCategoryItems = !hasQuery && expandedCategory;
+  const showCategoryItems = !hasQuery && !!expandedCategory && !expandedAttribute;
+  const showAttributeValues = !hasQuery && !!expandedCategory && !!expandedAttribute;
   const showSearchResults = hasQuery;
 
-  const categoryItems = expandedCategory
-    ? getMentionsByCategory(expandedCategory)
-    : [];
-
-  const displayGroups = showSearchResults
-    ? groups
-    : showCategoryItems
-      ? categoryItems
-      : [];
-
-  const flatItems = displayGroups.flatMap((g) => g.items);
+  const flatItems = groups.flatMap((g) => g.items);
   let runningIndex = 0;
 
   return createPortal(
@@ -94,7 +94,7 @@ export const AlbusMentionSearch = forwardRef<
                 className="flex w-full items-center gap-2.5 px-3 py-[7px] text-left text-[0.8125rem] text-neutral-700 transition-colors hover:bg-neutral-50 active:bg-neutral-100"
                 onMouseDown={(e) => {
                   e.preventDefault();
-                  handleCategoryClick(type);
+                  onCategorySelect(type);
                 }}
               >
                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded text-neutral-400">
@@ -115,70 +115,146 @@ export const AlbusMentionSearch = forwardRef<
       )}
 
       {/* Category expanded view */}
-      {showCategoryItems && (
-        <div>
-          <div className="flex items-center gap-1.5 border-neutral-100 border-b px-3 py-2">
-            <button
-              type="button"
-              className="flex items-center gap-1 text-[0.6875rem] text-neutral-400 transition-colors hover:text-neutral-600"
-              onMouseDown={(e) => {
-                e.preventDefault();
-                setExpandedCategory(null);
-              }}
-            >
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 12 12"
-                fill="none"
-                className="shrink-0"
+      {showCategoryItems && (() => {
+        const popular = getPopularItems(expandedCategory!);
+        const attrs = categoryAttributes[expandedCategory!] ?? [];
+        const attrSection = attrs.filter((a) => a.section === "attribute");
+        const propSection = attrs.filter((a) => a.section === "property");
+        let idx = 0;
+
+        return (
+          <div>
+            {/* Back header */}
+            <div className="flex items-center gap-1.5 border-neutral-100 border-b px-3 py-2">
+              <button
+                type="button"
+                className="flex items-center gap-1 text-[0.6875rem] text-neutral-400 transition-colors hover:text-neutral-600"
+                onMouseDown={(e) => { e.preventDefault(); onCategoryBack(); }}
               >
-                <path
-                  d="M7.5 9L4.5 6L7.5 3"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              Back
-            </button>
-            <span className="text-neutral-300">|</span>
-            <span className="font-medium text-[0.6875rem] text-neutral-600">
-              {groupLabels[expandedCategory]}
-            </span>
-          </div>
-          <div className="max-h-64 overflow-y-auto py-1">
-            {flatItems.length === 0 && (
-              <div className="px-3 py-2 text-[0.8125rem] text-neutral-400">
-                No items
-              </div>
-            )}
-            {displayGroups.map((group) => {
-              const groupStartIndex = runningIndex;
-              const groupEl = (
-                <div key={group.type}>
-                  {group.items.map((item, i) => {
-                    const itemIndex = groupStartIndex + i;
-                    const isActive = itemIndex === activeIndex;
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="shrink-0">
+                  <path d="M7.5 9L4.5 6L7.5 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Back
+              </button>
+              <span className="text-neutral-300">|</span>
+              <span className="font-medium text-[0.6875rem] text-neutral-600">
+                {groupLabels[expandedCategory!]}
+              </span>
+            </div>
+
+            <div className="max-h-72 overflow-y-auto">
+              {/* Popular items: "Search by [type] name" */}
+              {popular.length > 0 && (
+                <div>
+                  <div className="px-3 pt-2 pb-1 font-medium text-[0.6875rem] text-neutral-400 uppercase tracking-wider">
+                    Search by {groupLabels[expandedCategory!].toLowerCase().replace(/s$/, "")} name
+                  </div>
+                  {popular.map((item) => {
+                    const itemIndex = idx++;
                     return (
                       <MentionRow
                         key={item.id}
                         item={item}
-                        isActive={isActive}
+                        isActive={itemIndex === activeIndex}
                         itemIndex={itemIndex}
                         onSelect={onSelect}
                       />
                     );
                   })}
                 </div>
-              );
-              runningIndex += group.items.length;
-              return groupEl;
-            })}
+              )}
+
+              {/* Attributes section */}
+              {attrSection.length > 0 && (
+                <div>
+                  <div className="px-3 pt-2 pb-1 font-medium text-[0.6875rem] text-neutral-400 uppercase tracking-wider">
+                    Attributes
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 px-3 pb-2">
+                    {attrSection.map((attr) => (
+                      <button
+                        key={attr.key}
+                        type="button"
+                        className="rounded-md border border-neutral-200 bg-neutral-50 px-2 py-1 text-[0.75rem] text-neutral-600 transition-colors hover:border-neutral-300 hover:bg-neutral-100"
+                        onMouseDown={(e) => { e.preventDefault(); onAttributeSelect(attr); }}
+                      >
+                        {attr.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Properties section */}
+              {propSection.length > 0 && (
+                <div>
+                  <div className="px-3 pt-2 pb-1 font-medium text-[0.6875rem] text-neutral-400 uppercase tracking-wider">
+                    Properties
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 px-3 pb-2">
+                    {propSection.map((attr) => (
+                      <button
+                        key={attr.key}
+                        type="button"
+                        className="rounded-md border border-neutral-200 bg-neutral-50 px-2 py-1 text-[0.75rem] text-neutral-600 transition-colors hover:border-neutral-300 hover:bg-neutral-100"
+                        onMouseDown={(e) => { e.preventDefault(); onAttributeSelect(attr); }}
+                      >
+                        {attr.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
+
+      {/* Attribute values view */}
+      {showAttributeValues && (() => {
+        const values = attributeValues[expandedCategory!]?.[expandedAttribute!.key] ?? [];
+
+        return (
+          <div>
+            {/* Back header */}
+            <div className="flex items-center gap-1.5 border-neutral-100 border-b px-3 py-2">
+              <button
+                type="button"
+                className="flex items-center gap-1 text-[0.6875rem] text-neutral-400 transition-colors hover:text-neutral-600"
+                onMouseDown={(e) => { e.preventDefault(); onAttributeBack(); }}
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="shrink-0">
+                  <path d="M7.5 9L4.5 6L7.5 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Back
+              </button>
+              <span className="text-neutral-300">|</span>
+              <span className="font-medium text-[0.6875rem] text-neutral-600">
+                {groupLabels[expandedCategory!]} › {expandedAttribute!.label}
+              </span>
+            </div>
+
+            <div className="max-h-64 overflow-y-auto py-1">
+              {values.length === 0 && (
+                <div className="px-3 py-2 text-[0.8125rem] text-neutral-400">No values</div>
+              )}
+              {values.map((value, i) => (
+                <div
+                  key={value}
+                  className={`flex cursor-pointer items-center px-3 py-[7px] text-[0.8125rem] transition-colors ${
+                    i === activeIndex
+                      ? "bg-neutral-100 text-neutral-900"
+                      : "text-neutral-700 hover:bg-neutral-50"
+                  }`}
+                  onMouseDown={(e) => { e.preventDefault(); onAttributeValueSelect(value); }}
+                >
+                  {value}
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Search results view */}
       {showSearchResults && (
@@ -188,7 +264,7 @@ export const AlbusMentionSearch = forwardRef<
               No results
             </div>
           )}
-          {displayGroups.map((group) => {
+          {groups.map((group) => {
             const groupStartIndex = runningIndex;
             const groupEl = (
               <div key={group.type}>
