@@ -467,6 +467,8 @@ export function AlbusChatInput({
         }).replace(/^@/, ""),
         itemId: `filter-${selectedCategory}-${selectedAttribute.key}-${value.toLowerCase().replace(/\s+/g, "-")}`,
         objectType: selectedCategory,
+        filterAttribute: selectedAttribute.key,
+        filterValue: value,
         children: [{ text: "" }],
       };
       Transforms.select(editor, mentionTarget);

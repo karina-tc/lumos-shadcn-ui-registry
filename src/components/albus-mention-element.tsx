@@ -15,6 +15,8 @@ export interface MentionElementData {
     | "entitlement"
     | "access-review"
     | "access-request";
+  filterAttribute?: string;
+  filterValue?: string;
   children: [{ text: "" }];
 }
 
