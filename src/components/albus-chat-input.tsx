@@ -1,12 +1,22 @@
 "use client";
 
 import {
+  type AttributeDef,
   type GroupedResults,
   type MentionItem,
   type MentionObjectType,
-  getMentionsByCategory,
+  attributeValues,
+  categoryAttributes,
+  getPopularItems,
+  groupLabels,
   searchMentions,
 } from "@/components/albus-mention-data";
+import {
+  type MentionQueryState,
+  buildMentionTag,
+  buildPillLabel,
+  parseMentionQuery,
+} from "@/components/albus-mention-parser";
 import {
   AlbusMentionElement,
   type MentionElementData,
@@ -148,7 +158,12 @@ export function AlbusChatInput({
   const [mentionStyle, setMentionStyle] = useState<CSSProperties>({});
   const [selectedCategory, setSelectedCategory] =
     useState<MentionObjectType | null>(null);
+  const [selectedAttribute, setSelectedAttribute] = useState<AttributeDef | null>(null);
+  const [categoryAutoMatched, setCategoryAutoMatched] = useState(false);
+  const [parsedQuery, setParsedQuery] = useState<MentionQueryState>({ mode: "free", query: "" });
   const mentionRef = useRef<HTMLDivElement>(null);
+
+  const pillLabel = buildPillLabel(parsedQuery);
 
   const blurTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const menuContainerRef = useRef<HTMLDivElement>(null);
@@ -188,15 +203,29 @@ export function AlbusChatInput({
 
   // Mention groups — search results or category items
   const mentionGroups: GroupedResults[] = useMemo(() => {
+    if (selectedCategory) {
+      // When browsing an attribute's values, mentionGroups is empty (values are plain strings, not MentionItems)
+      if (selectedAttribute) return [];
+      // In category browse mode — return only popular items for keyboard nav
+      const popular = getPopularItems(selectedCategory);
+      return popular.length > 0
+        ? [{ type: selectedCategory, label: groupLabels[selectedCategory], items: popular }]
+        : [];
+    }
     if (mentionQuery) return searchMentions(mentionQuery);
-    if (selectedCategory) return getMentionsByCategory(selectedCategory);
     return [];
-  }, [mentionQuery, selectedCategory]);
+  }, [selectedCategory, selectedAttribute, mentionQuery]);
 
   const flatMentionItems = useMemo(
     () => mentionGroups.flatMap((g) => g.items),
     [mentionGroups],
   );
+
+  // Attribute values for keyboard navigation when in attribute drill-down view
+  const currentAttributeValues = useMemo(() => {
+    if (!selectedCategory || !selectedAttribute) return [];
+    return (attributeValues[selectedCategory]?.[selectedAttribute.key]) ?? [];
+  }, [selectedCategory, selectedAttribute]);
 
   // Position the mention search dropdown anchored to the pill
   useEffect(() => {
@@ -275,7 +304,7 @@ export function AlbusChatInput({
         const beforeText = beforeRange
           ? Editor.string(editor, beforeRange)
           : "";
-        const atMatch = beforeText.match(/@(\w*)$/);
+        const atMatch = beforeText.match(/@([^@\n]*)$/);
 
         // Also check from line start for just "@"
         const lineStart = Editor.before(editor, start, { unit: "line" });
@@ -283,7 +312,7 @@ export function AlbusChatInput({
           ? Editor.range(editor, lineStart, start)
           : null;
         const lineText = lineRange ? Editor.string(editor, lineRange) : "";
-        const lineAtMatch = lineText.match(/@(\w*)$/);
+        const lineAtMatch = lineText.match(/@([^@\n]*)$/);
 
         const match = atMatch || lineAtMatch;
 
@@ -301,14 +330,45 @@ export function AlbusChatInput({
             setMentionTarget(newTarget);
             setMentionQuery(query);
             setMentionIndex(0);
-            // Reset category when query changes
-            if (query) setSelectedCategory(null);
+
+            const parsed = parseMentionQuery(query);
+            setParsedQuery(parsed);
+
+            if (parsed.mode === "scoped") {
+              if (!selectedCategory || selectedCategory !== parsed.category) {
+                setSelectedCategory(parsed.category);
+                setCategoryAutoMatched(true);
+                setSelectedAttribute(null);
+              }
+              // If the path includes an attribute, navigate to it
+              if (parsed.attribute && selectedCategory === parsed.category && !selectedAttribute) {
+                const attrs = categoryAttributes[parsed.category] ?? [];
+                const matchedAttr = attrs.find(
+                  (a) =>
+                    a.key === parsed.attribute ||
+                    a.label.toLowerCase() === parsed.attribute?.toLowerCase(),
+                );
+                if (matchedAttr) {
+                  setSelectedAttribute(matchedAttr);
+                }
+              }
+              return;
+            }
+
+            // Free mode — clear category if it was auto-matched from a previous query
+            if (categoryAutoMatched) {
+              setSelectedCategory(null);
+              setSelectedAttribute(null);
+              setCategoryAutoMatched(false);
+            }
             return;
           }
         }
       }
       setMentionTarget(null);
       setSelectedCategory(null);
+      setSelectedAttribute(null);
+      setCategoryAutoMatched(false);
     },
     [editor, onChange],
   );
@@ -362,9 +422,100 @@ export function AlbusChatInput({
     return <p {...props.attributes}>{props.children}</p>;
   }, []);
 
+  const handleCategorySelect = useCallback(
+    (category: MentionObjectType) => {
+      setSelectedCategory(category);
+      setSelectedAttribute(null);
+      setCategoryAutoMatched(false);
+      setMentionIndex(0);
+    },
+    [],
+  );
+
+  const handleCategoryBack = useCallback(() => {
+    setSelectedCategory(null);
+    setSelectedAttribute(null);
+    setCategoryAutoMatched(false);
+    if (categoryAutoMatched) {
+      setMentionTarget(null);
+    }
+  }, [categoryAutoMatched]);
+
+  const handleAttributeSelect = useCallback((attr: AttributeDef) => {
+    setSelectedAttribute(attr);
+    setMentionIndex(0);
+  }, []);
+
+  const handleAttributeBack = useCallback(() => {
+    setSelectedAttribute(null);
+    setMentionIndex(0);
+  }, []);
+
+  const handleAttributeValueSelect = useCallback(
+    (value: string) => {
+      if (!selectedCategory || !selectedAttribute || !mentionTarget) return;
+      const tag = buildMentionTag(selectedCategory, value);
+      const mention: MentionElementData = {
+        type: "mention",
+        tag,
+        name: buildPillLabel({
+          mode: "scoped",
+          category: selectedCategory,
+          attribute: selectedAttribute.key,
+          value,
+          rawAttributeQuery: `${selectedAttribute.key} ${value}`,
+        }).replace(/^@/, ""),
+        itemId: `filter-${selectedCategory}-${selectedAttribute.key}-${value.toLowerCase().replace(/\s+/g, "-")}`,
+        objectType: selectedCategory,
+        children: [{ text: "" }],
+      };
+      Transforms.select(editor, mentionTarget);
+      Transforms.insertNodes(editor, mention);
+      Transforms.move(editor);
+      Transforms.insertText(editor, " ");
+      setMentionTarget(null);
+      setSelectedCategory(null);
+      setSelectedAttribute(null);
+      setCategoryAutoMatched(false);
+      ReactEditor.focus(editor);
+    },
+    [selectedCategory, selectedAttribute, mentionTarget, editor],
+  );
+
   // Keyboard handler for mention nav + send
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
+      // Attribute value list keyboard navigation
+      if (mentionTarget && selectedAttribute && currentAttributeValues.length > 0) {
+        switch (event.key) {
+          case "ArrowDown": {
+            event.preventDefault();
+            setMentionIndex((prev) =>
+              prev >= currentAttributeValues.length - 1 ? 0 : prev + 1,
+            );
+            return;
+          }
+          case "ArrowUp": {
+            event.preventDefault();
+            setMentionIndex((prev) =>
+              prev <= 0 ? currentAttributeValues.length - 1 : prev - 1,
+            );
+            return;
+          }
+          case "Enter": {
+            event.preventDefault();
+            handleAttributeValueSelect(currentAttributeValues[mentionIndex]);
+            return;
+          }
+          case "Escape": {
+            event.preventDefault();
+            setSelectedAttribute(null);
+            setMentionIndex(0);
+            return;
+          }
+        }
+      }
+
       // Mention menu navigation
       if (mentionTarget && flatMentionItems.length > 0) {
         switch (event.key) {
@@ -414,6 +565,9 @@ export function AlbusChatInput({
     },
     [
       mentionTarget,
+      selectedAttribute,
+      currentAttributeValues,
+      handleAttributeValueSelect,
       flatMentionItems,
       mentionIndex,
       insertMention,
@@ -471,6 +625,8 @@ export function AlbusChatInput({
       setFocused(false);
       setMentionTarget(null);
       setSelectedCategory(null);
+      setSelectedAttribute(null);
+      setCategoryAutoMatched(false);
     }, 150);
   };
 
@@ -500,14 +656,6 @@ export function AlbusChatInput({
       onSend?.(editor.children);
     }
   }, [plainText, onSend, editor]);
-
-  const handleCategorySelect = useCallback(
-    (category: MentionObjectType) => {
-      setSelectedCategory(category);
-      setMentionIndex(0);
-    },
-    [],
-  );
 
   return (
     <div
@@ -614,9 +762,15 @@ export function AlbusChatInput({
           groups={mentionGroups}
           activeIndex={mentionIndex}
           style={mentionStyle}
-          hasQuery={mentionQuery.length > 0}
+          hasQuery={parsedQuery.mode === "free" && mentionQuery.length > 0}
+          expandedCategory={selectedCategory}
+          expandedAttribute={selectedAttribute}
           onSelect={insertMention}
           onCategorySelect={handleCategorySelect}
+          onCategoryBack={handleCategoryBack}
+          onAttributeSelect={handleAttributeSelect}
+          onAttributeBack={handleAttributeBack}
+          onAttributeValueSelect={handleAttributeValueSelect}
         />
       )}
 
