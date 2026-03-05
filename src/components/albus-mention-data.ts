@@ -422,13 +422,13 @@ export const categoryAttributes: Record<MentionObjectType, AttributeDef[]> = {
   ],
 };
 
-export const attributeValues: Partial<Record<MentionObjectType, Record<string, string[]>>> = {
+export const attributeValues: Record<MentionObjectType, Record<string, string[]>> = {
   app: {
     category: ["HR", "Finance", "Engineering", "IT", "Security", "Sales", "Marketing"],
     "business-criticality": ["Critical", "High", "Medium", "Low"],
     status: ["Approved", "Blacklisted", "Deprecated", "Discovered", "In Review", "Needs Review"],
     tags: ["SOC2", "HIPAA", "PCI", "Internal", "External", "Cloud"],
-    entitlements: ["Admin role", "Read-only", "Editor", "Viewer", "Super admin", "Billing admin"],
+    entitlements: entitlements.map((e) => e.name),
   },
   identity: {
     department: ["Engineering", "Design", "Sales", "Marketing", "Finance", "HR", "Legal"],
@@ -473,7 +473,7 @@ export const popularItemIds: Record<MentionObjectType, string[]> = {
 };
 
 export function getPopularItems(category: MentionObjectType): MentionItem[] {
-  const ids = popularItemIds[category] ?? [];
+  const ids = popularItemIds[category];
   return ids
     .map((id) => mentionIndex.find((item) => item.id === id))
     .filter((item): item is MentionItem => item !== undefined);
