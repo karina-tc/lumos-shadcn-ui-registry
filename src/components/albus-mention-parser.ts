@@ -14,8 +14,9 @@ export type MentionQueryState =
  * Parses the raw text after the @ trigger into a typed query state.
  *
  * Rules:
- * - If raw contains ":" → scoped mode. Left of first ":" is category hint,
- *   right is split into attribute + value.
+ * - If raw contains ":" AND the text left of ":" matches a known category → scoped mode.
+ *   If the left side is unrecognized, falls through to free mode with the full raw string.
+ *   Left of first ":" is category hint, right is split into attribute + value.
  * - If raw exactly/closely matches a category name → scoped mode.
  * - Otherwise → free search mode.
  */
@@ -79,12 +80,11 @@ export function buildPillLabel(state: MentionQueryState): string {
  * Used as the pill text after selection.
  *
  * Examples:
- *   ("app", "status", "approved")   → "approved-app"
- *   ("app", "status", "In Review")  → "in-review-app"
+ *   ("app", "approved")   → "approved-app"
+ *   ("app", "In Review")  → "in-review-app"
  */
 export function buildMentionTag(
   category: MentionObjectType,
-  attribute: string,
   value: string,
 ): string {
   const valueSlug = value.toLowerCase().replace(/\s+/g, "-");

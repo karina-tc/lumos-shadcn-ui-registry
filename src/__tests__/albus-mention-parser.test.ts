@@ -63,6 +63,20 @@ describe("parseMentionQuery", () => {
     });
   });
 
+  it("returns free mode when colon is present but left side is unrecognized", () => {
+    expect(parseMentionQuery("cloudflare: something")).toEqual({
+      mode: "free",
+      query: "cloudflare: something",
+    });
+  });
+
+  it("returns free mode for whitespace-only input", () => {
+    expect(parseMentionQuery("   ")).toEqual({
+      mode: "free",
+      query: "",
+    });
+  });
+
   it("handles aliases like 'policies' → policy category", () => {
     const result = parseMentionQuery("policies");
     expect(result.mode).toBe("scoped");
@@ -106,18 +120,30 @@ describe("buildPillLabel", () => {
       buildPillLabel({ mode: "scoped", category: "app", attribute: "status", value: "approved", rawAttributeQuery: "status approved" })
     ).toBe("@approved-apps");
   });
+
+  it("handles multi-word category name (access-review)", () => {
+    expect(
+      buildPillLabel({ mode: "scoped", category: "access-review", attribute: null, value: null, rawAttributeQuery: "" })
+    ).toBe("@access-reviews: search");
+  });
+
+  it("slugifies multi-word value in terminal state", () => {
+    expect(
+      buildPillLabel({ mode: "scoped", category: "app", attribute: "status", value: "In Review", rawAttributeQuery: "status In Review" })
+    ).toBe("@in-review-apps");
+  });
 });
 
 describe("buildMentionTag", () => {
-  it("builds a slug from category + attribute + value", () => {
-    expect(buildMentionTag("app", "status", "approved")).toBe("approved-app");
+  it("builds a slug from category + value", () => {
+    expect(buildMentionTag("app", "approved")).toBe("approved-app");
   });
 
   it("slugifies multi-word values", () => {
-    expect(buildMentionTag("app", "status", "In Review")).toBe("in-review-app");
+    expect(buildMentionTag("app", "In Review")).toBe("in-review-app");
   });
 
   it("handles access-review category", () => {
-    expect(buildMentionTag("access-review", "status", "active")).toBe("active-access-review");
+    expect(buildMentionTag("access-review", "active")).toBe("active-access-review");
   });
 });
