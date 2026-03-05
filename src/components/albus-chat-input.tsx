@@ -370,7 +370,7 @@ export function AlbusChatInput({
       setSelectedAttribute(null);
       setCategoryAutoMatched(false);
     },
-    [editor, onChange],
+    [editor, onChange, selectedCategory, selectedAttribute, categoryAutoMatched],
   );
 
   // Decorate: highlight the @query range with a gray pill
@@ -435,10 +435,10 @@ export function AlbusChatInput({
   const handleCategoryBack = useCallback(() => {
     setSelectedCategory(null);
     setSelectedAttribute(null);
-    setCategoryAutoMatched(false);
     if (categoryAutoMatched) {
       setMentionTarget(null);
     }
+    setCategoryAutoMatched(false);
   }, [categoryAutoMatched]);
 
   const handleAttributeSelect = useCallback((attr: AttributeDef) => {
