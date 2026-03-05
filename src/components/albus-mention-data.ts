@@ -311,6 +311,39 @@ const fuse = new Fuse(mentionIndex, {
   includeScore: true,
 });
 
+const categoryAliasData: Array<{ label: string; type: MentionObjectType }> = [
+  { label: "apps", type: "app" },
+  { label: "app", type: "app" },
+  { label: "applications", type: "app" },
+  { label: "identities", type: "identity" },
+  { label: "identity", type: "identity" },
+  { label: "users", type: "identity" },
+  { label: "people", type: "identity" },
+  { label: "policies", type: "policy" },
+  { label: "policy", type: "policy" },
+  { label: "knowledge", type: "knowledge" },
+  { label: "docs", type: "knowledge" },
+  { label: "entitlements", type: "entitlement" },
+  { label: "entitlement", type: "entitlement" },
+  { label: "permissions", type: "entitlement" },
+  { label: "reviews", type: "access-review" },
+  { label: "access reviews", type: "access-review" },
+  { label: "requests", type: "access-request" },
+  { label: "access requests", type: "access-request" },
+];
+
+const categoryFuse = new Fuse(categoryAliasData, {
+  keys: ["label"],
+  threshold: 0.25,
+});
+
+export function matchCategory(query: string): MentionObjectType | null {
+  const q = query.trim().toLowerCase();
+  if (!q) return null;
+  const results = categoryFuse.search(q);
+  return results[0]?.item.type ?? null;
+}
+
 export interface GroupedResults {
   type: MentionObjectType;
   label: string;
@@ -341,4 +374,107 @@ export function getMentionsByCategory(
   const items = mentionIndex.filter((item) => item.objectType === category);
   if (items.length === 0) return [];
   return [{ type: category, label: groupLabels[category], items }];
+}
+
+export interface AttributeDef {
+  key: string;
+  label: string;
+  section: "attribute" | "property";
+}
+
+export const categoryAttributes: Record<MentionObjectType, AttributeDef[]> = {
+  app: [
+    { key: "category", label: "Category", section: "attribute" },
+    { key: "business-criticality", label: "Criticality", section: "attribute" },
+    { key: "status", label: "Status", section: "attribute" },
+    { key: "tags", label: "Tags", section: "attribute" },
+    { key: "entitlements", label: "Entitlements", section: "property" },
+  ],
+  identity: [
+    { key: "department", label: "Department", section: "attribute" },
+    { key: "role", label: "Role", section: "attribute" },
+    { key: "status", label: "Status", section: "attribute" },
+  ],
+  policy: [
+    { key: "type", label: "Type", section: "attribute" },
+    { key: "status", label: "Status", section: "attribute" },
+    { key: "enforcement", label: "Enforcement", section: "attribute" },
+  ],
+  knowledge: [
+    { key: "type", label: "Type", section: "attribute" },
+    { key: "author", label: "Author", section: "attribute" },
+    { key: "tags", label: "Tags", section: "attribute" },
+  ],
+  entitlement: [
+    { key: "app", label: "App", section: "attribute" },
+    { key: "type", label: "Type", section: "attribute" },
+    { key: "risk-level", label: "Risk Level", section: "attribute" },
+  ],
+  "access-review": [
+    { key: "status", label: "Status", section: "attribute" },
+    { key: "reviewer", label: "Reviewer", section: "attribute" },
+    { key: "scope", label: "Scope", section: "attribute" },
+  ],
+  "access-request": [
+    { key: "status", label: "Status", section: "attribute" },
+    { key: "requester", label: "Requester", section: "attribute" },
+    { key: "app", label: "App", section: "attribute" },
+  ],
+};
+
+export const attributeValues: Partial<Record<MentionObjectType, Record<string, string[]>>> = {
+  app: {
+    category: ["HR", "Finance", "Engineering", "IT", "Security", "Sales", "Marketing"],
+    "business-criticality": ["Critical", "High", "Medium", "Low"],
+    status: ["Approved", "Blacklisted", "Deprecated", "Discovered", "In Review", "Needs Review"],
+    tags: ["SOC2", "HIPAA", "PCI", "Internal", "External", "Cloud"],
+    entitlements: ["Admin role", "Read-only", "Editor", "Viewer", "Super admin", "Billing admin"],
+  },
+  identity: {
+    department: ["Engineering", "Design", "Sales", "Marketing", "Finance", "HR", "Legal"],
+    role: ["Admin", "Member", "Viewer", "Owner"],
+    status: ["Active", "Inactive", "Pending", "Suspended"],
+  },
+  policy: {
+    type: ["Access", "Password", "MFA", "Data Classification", "Acceptable Use"],
+    status: ["Active", "Inactive", "Draft"],
+    enforcement: ["Strict", "Advisory", "Disabled"],
+  },
+  knowledge: {
+    type: ["Policy", "Playbook", "Guide", "Checklist", "Matrix"],
+    author: ["Lumos", "Admin", "Custom"],
+    tags: ["Compliance", "Security", "Onboarding", "Risk", "Access"],
+  },
+  entitlement: {
+    app: ["Okta", "Salesforce", "GitHub", "AWS", "Google Workspace"],
+    type: ["Role", "Group", "Permission"],
+    "risk-level": ["Critical", "High", "Medium", "Low"],
+  },
+  "access-review": {
+    status: ["Active", "Completed", "Draft", "Overdue"],
+    reviewer: ["Admin", "Manager", "Owner"],
+    scope: ["All Users", "Contractors", "Employees", "Vendors"],
+  },
+  "access-request": {
+    status: ["Pending", "Approved", "Rejected", "Expired"],
+    requester: ["Employee", "Contractor", "Any"],
+    app: ["Okta", "Salesforce", "GitHub", "AWS"],
+  },
+};
+
+export const popularItemIds: Record<MentionObjectType, string[]> = {
+  app: ["app-aws", "app-google-workspace", "app-okta"],
+  identity: ["id-employees", "id-engineers", "id-contractors"],
+  policy: ["pol-access-policy", "pol-mfa-policy", "pol-password-policy"],
+  knowledge: ["kb-contractor-access-policy", "kb-birthright-rules", "kb-risk-matrix"],
+  entitlement: ["ent-admin-role", "ent-editor", "ent-read-only"],
+  "access-review": ["ar-q1-review", "ar-annual-compliance", "ar-contractor-review"],
+  "access-request": ["areq-pending", "areq-my-requests", "areq-open-requests"],
+};
+
+export function getPopularItems(category: MentionObjectType): MentionItem[] {
+  const ids = popularItemIds[category] ?? [];
+  return ids
+    .map((id) => mentionIndex.find((item) => item.id === id))
+    .filter((item): item is MentionItem => item !== undefined);
 }
