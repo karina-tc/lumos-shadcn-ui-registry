@@ -1,92 +1,105 @@
-import { matchCategory, type MentionObjectType, groupLabels } from "@/components/albus-mention-data";
+import {
+  type AttributeDef,
+  type MentionObjectType,
+  groupLabels,
+  matchAttribute,
+  matchCategory,
+} from "@/components/albus-mention-data";
 
 export type MentionQueryState =
-  | { mode: "free"; query: string }
+  | { mode: "initial" }
+  | { mode: "search"; query: string }
+  | { mode: "category"; category: MentionObjectType; itemQuery: string }
   | {
-      mode: "scoped";
+      mode: "attribute";
       category: MentionObjectType;
-      attribute: string | null;
-      value: string | null;
-      rawAttributeQuery: string;
+      attribute: AttributeDef;
+      valueQuery: string;
     };
 
 /**
  * Parses the raw text after the @ trigger into a typed query state.
  *
- * Rules:
- * - If raw contains ":" AND the text left of ":" matches a known category → scoped mode.
- *   If the left side is unrecognized, falls through to free mode with the full raw string.
- *   Left of first ":" is category hint, right is split into attribute + value.
- * - If raw exactly/closely matches a category name → scoped mode.
- * - Otherwise → free search mode.
+ * Rules (space-separated, natural language):
+ * - Empty input              → initial (show folders + popular items)
+ * - First token = category   → category mode (show items + attribute chips)
+ * - First token = category + second token = attribute → attribute mode (show values)
+ * - No category match        → free search across all items
+ *
+ * Examples:
+ *   ""                → { mode: "initial" }
+ *   "apps"            → { mode: "category", category: "app", itemQuery: "" }
+ *   "apps okta"       → { mode: "category", category: "app", itemQuery: "okta" }
+ *   "apps status"     → { mode: "attribute", category: "app", attribute: status, valueQuery: "" }
+ *   "apps status app" → { mode: "attribute", category: "app", attribute: status, valueQuery: "app" }
+ *   "okta"            → { mode: "search", query: "okta" }
  */
 export function parseMentionQuery(raw: string): MentionQueryState {
   const trimmed = raw.trim();
+  if (!trimmed) return { mode: "initial" };
 
-  // Colon-scoped: "apps: status approved"
-  const colonIdx = trimmed.indexOf(":");
-  if (colonIdx !== -1) {
-    const categoryHint = trimmed.slice(0, colonIdx).trim();
-    const rest = trimmed.slice(colonIdx + 1).trim();
-    const category = matchCategory(categoryHint);
-    if (category) {
-      const parts = rest.split(/\s+/).filter(Boolean);
-      const attribute = parts.length > 0 ? parts[0] : null;
-      const value = parts.length > 1 ? parts.slice(1).join(" ") : null;
-      return { mode: "scoped", category, attribute, value, rawAttributeQuery: rest };
+  const tokens = trimmed.split(/\s+/);
+  const firstToken = tokens[0];
+
+  const category = matchCategory(firstToken);
+  if (category) {
+    if (tokens.length === 1) {
+      return { mode: "category", category, itemQuery: "" };
     }
+
+    const secondToken = tokens[1];
+    const attribute = matchAttribute(category, secondToken);
+    if (attribute) {
+      const valueQuery = tokens.slice(2).join(" ");
+      return { mode: "attribute", category, attribute, valueQuery };
+    }
+
+    // Second token doesn't match an attribute — treat as item search within category
+    return { mode: "category", category, itemQuery: tokens.slice(1).join(" ") };
   }
 
-  // Category name match (no colon)
-  if (trimmed.length > 0) {
-    const category = matchCategory(trimmed);
-    if (category) {
-      return { mode: "scoped", category, attribute: null, value: null, rawAttributeQuery: "" };
-    }
-  }
-
-  // Free search
-  return { mode: "free", query: trimmed };
+  return { mode: "search", query: trimmed };
 }
 
 /**
  * Returns the display text shown in the editor pill decoration.
  *
  * Examples:
- *   free, ""                          → "@search"
- *   free, "okta"                      → "@okta"
- *   scoped, app, null, null           → "@apps: search"
- *   scoped, app, "status", null       → "@apps-status: search"
- *   scoped, app, "status", "approved" → "@approved-apps" (terminal)
+ *   initial                                    → "@search"
+ *   search, "okta"                             → "@okta"
+ *   category, app, ""                          → "@apps: search"
+ *   category, app, "okta"                      → "@apps: okta"
+ *   attribute, app, status, ""                 → "@apps-status: search"
+ *   attribute, app, status, "approved"         → "@approved-apps"
  */
 export function buildPillLabel(state: MentionQueryState): string {
-  if (state.mode === "free") {
-    return state.query ? `@${state.query}` : "@search";
-  }
-  const { category, attribute, value } = state;
-  const catLabel = groupLabels[category].toLowerCase();
+  if (state.mode === "initial") return "@search";
+  if (state.mode === "search") return `@${state.query}`;
 
-  if (value) {
-    return `@${value.toLowerCase().replace(/\s+/g, "-")}-${catLabel.replace(/\s+/g, "-")}`;
+  const catLabel = groupLabels[state.category].toLowerCase().replace(/\s+/g, "-");
+
+  if (state.mode === "category") {
+    return state.itemQuery
+      ? `@${catLabel}: ${state.itemQuery}`
+      : `@${catLabel}: search`;
   }
-  if (attribute) {
-    return `@${catLabel.replace(/\s+/g, "-")}-${attribute.replace(/\s+/g, "-")}: search`;
+
+  // attribute mode
+  const { attribute, valueQuery } = state;
+  if (valueQuery) {
+    return `@${valueQuery.toLowerCase().replace(/\s+/g, "-")}-${catLabel}`;
   }
-  return `@${catLabel.replace(/\s+/g, "-")}: search`;
+  return `@${catLabel}-${attribute.key}: search`;
 }
 
 /**
  * Builds the mention tag slug for the inserted mention node.
- * Used as the pill text after selection.
  *
  * Examples:
  *   ("app", "approved")   → "approved-app"
  *   ("app", "In Review")  → "in-review-app"
  */
-export function buildMentionTag(
-  category: MentionObjectType,
-  value: string,
-): string {
+export function buildMentionTag(category: MentionObjectType, value: string): string {
   const valueSlug = value.toLowerCase().replace(/\s+/g, "-");
   const catSlug = category.replace(/\s+/g, "-");
   return `${valueSlug}-${catSlug}`;

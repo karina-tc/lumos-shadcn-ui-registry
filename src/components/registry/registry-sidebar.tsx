@@ -17,11 +17,6 @@ import { useEffect, useState } from "react";
 import { RegistryLogo } from "@/components/registry/registry-logo";
 import { ModeToggle } from "@/components/registry/theme-toggle";
 import { Button } from "@/components/ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -69,6 +64,16 @@ export function RegistrySidebar() {
   const [filteredUiItems, setFilteredUiItems] = useState(uiItems);
   const [filteredComponents, setFilteredComponents] = useState(componentItems);
   const [filteredBlocks, setFilteredBlocks] = useState(blockItems);
+
+  const [open, setOpen] = useState({
+    gettingStarted: true,
+    blocks: true,
+    components: true,
+    ui: true,
+  });
+
+  const toggle = (key: keyof typeof open) =>
+    setOpen((prev) => ({ ...prev, [key]: !prev[key] }));
 
   useEffect(() => {
     if (searchTerm) {
@@ -126,156 +131,156 @@ export function RegistrySidebar() {
 
       <SidebarContent>
         <ScrollArea className="h-full w-full pr-2">
-          <Collapsible defaultOpen={true} className="group/collapsible">
-            <SidebarGroup>
-              <CollapsibleTrigger className="w-full">
-                <SidebarGroupLabel className="flex cursor-pointer items-center justify-between">
-                  <div className="flex min-w-0 items-center">
-                    <Home className="size-4 flex-shrink-0" />
-                    <span className="ml-2 opacity-100 transition-all duration-200">
-                      Getting Started
-                    </span>
-                  </div>
-                  <ChevronDown className="size-4 flex-shrink-0 opacity-100 transition-all duration-200 group-data-[state=open]/collapsible:rotate-180" />
-                </SidebarGroupLabel>
-              </CollapsibleTrigger>
+          <SidebarGroup>
+            <button
+              type="button"
+              aria-controls="sidebar-getting-started"
+              aria-expanded={open.gettingStarted}
+              className="w-full"
+              onClick={() => toggle("gettingStarted")}
+            >
+              <SidebarGroupLabel className="flex cursor-pointer items-center justify-between">
+                <div className="flex min-w-0 items-center">
+                  <Home className="size-4 flex-shrink-0" />
+                  <span className="ml-2 opacity-100 transition-all duration-200">
+                    Getting Started
+                  </span>
+                </div>
+                <ChevronDown
+                  className={`size-4 flex-shrink-0 opacity-100 transition-all duration-200 ${open.gettingStarted ? "rotate-180" : ""}`}
+                />
+              </SidebarGroupLabel>
+            </button>
+            {open.gettingStarted && (
+              <SidebarGroupContent id="sidebar-getting-started">
+                <SidebarMenu>
+                  {gettingStartedItems.map((item) => (
+                    <SidebarMenuItem key={item.path}>
+                      <SidebarMenuButton asChild isActive={pathname === item.path}>
+                        <Link onClick={() => setOpenMobile(false)} href={item.path}>
+                          {item.title}
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            )}
+          </SidebarGroup>
 
-              <CollapsibleContent>
-                <SidebarGroupContent>
-                  <SidebarMenu>
-                    {gettingStartedItems.map((item) => (
-                      <SidebarMenuItem key={item.path}>
-                        <SidebarMenuButton
-                          asChild
-                          isActive={pathname === item.path}
+          <SidebarGroup>
+            <button
+              type="button"
+              aria-controls="sidebar-blocks"
+              aria-expanded={open.blocks}
+              className="w-full"
+              onClick={() => toggle("blocks")}
+            >
+              <SidebarGroupLabel className="flex cursor-pointer items-center justify-between">
+                <div className="flex min-w-0 items-center">
+                  <Blocks className="size-4 flex-shrink-0" />
+                  <span className="ml-2 transition-all duration-200">Blocks</span>
+                </div>
+                <ChevronDown
+                  className={`size-4 flex-shrink-0 transition-all duration-200 ${open.blocks ? "rotate-180" : ""}`}
+                />
+              </SidebarGroupLabel>
+            </button>
+            {open.blocks && (
+              <SidebarGroupContent id="sidebar-blocks">
+                <SidebarMenu>
+                  {filteredBlocks.map((item) => (
+                    <SidebarMenuItem key={item.name}>
+                      <SidebarMenuButton asChild isActive={pathname === item.name}>
+                        <Link
+                          onClick={() => setOpenMobile(false)}
+                          href={`/registry/${item.name}`}
                         >
-                          <Link
-                            onClick={() => setOpenMobile(false)}
-                            href={item.path}
-                          >
-                            {item.title}
-                          </Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    ))}
-                  </SidebarMenu>
-                </SidebarGroupContent>
-              </CollapsibleContent>
-            </SidebarGroup>
-          </Collapsible>
+                          {item.title}
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            )}
+          </SidebarGroup>
 
-          <Collapsible defaultOpen={true} className="group/collapsible">
-            <SidebarGroup>
-              <CollapsibleTrigger className="w-full">
-                <SidebarGroupLabel className="flex cursor-pointer items-center justify-between">
-                  <div className="flex min-w-0 items-center">
-                    <Blocks className="size-4 flex-shrink-0" />
-                    <span className="ml-2 transition-all duration-200">
-                      Blocks
-                    </span>
-                  </div>
-                  <ChevronDown className="size-4 flex-shrink-0 transition-all duration-200 group-data-[state=open]/collapsible:rotate-180" />
-                </SidebarGroupLabel>
-              </CollapsibleTrigger>
-
-              <CollapsibleContent>
-                <SidebarGroupContent>
-                  <SidebarMenu>
-                    {filteredBlocks.map((item) => (
-                      <SidebarMenuItem key={item.name}>
-                        <SidebarMenuButton
-                          asChild
-                          isActive={pathname === item.name}
+          <SidebarGroup>
+            <button
+              type="button"
+              aria-controls="sidebar-components"
+              aria-expanded={open.components}
+              className="w-full"
+              onClick={() => toggle("components")}
+            >
+              <SidebarGroupLabel className="flex cursor-pointer items-center justify-between">
+                <div className="flex min-w-0 items-center">
+                  <Component className="size-4 flex-shrink-0" />
+                  <span className="ml-2 transition-all duration-200">Components</span>
+                </div>
+                <ChevronDown
+                  className={`size-4 flex-shrink-0 transition-all duration-200 ${open.components ? "rotate-180" : ""}`}
+                />
+              </SidebarGroupLabel>
+            </button>
+            {open.components && (
+              <SidebarGroupContent id="sidebar-components">
+                <SidebarMenu>
+                  {filteredComponents.map((item) => (
+                    <SidebarMenuItem key={item.name}>
+                      <SidebarMenuButton asChild isActive={pathname === item.name}>
+                        <Link
+                          onClick={() => setOpenMobile(false)}
+                          href={`/registry/${item.name}`}
                         >
-                          <Link
-                            onClick={() => setOpenMobile(false)}
-                            href={`/registry/${item.name}`}
-                          >
-                            {item.title}
-                          </Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    ))}
-                  </SidebarMenu>
-                </SidebarGroupContent>
-              </CollapsibleContent>
-            </SidebarGroup>
-          </Collapsible>
+                          {item.title}
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            )}
+          </SidebarGroup>
 
-          <Collapsible defaultOpen={true} className="group/collapsible">
-            <SidebarGroup>
-              <CollapsibleTrigger className="w-full">
-                <SidebarGroupLabel className="flex cursor-pointer items-center justify-between">
-                  <div className="flex min-w-0 items-center">
-                    <Component className="size-4 flex-shrink-0" />
-                    <span className="ml-2 transition-all duration-200">
-                      Components
-                    </span>
-                  </div>
-                  <ChevronDown className="size-4 flex-shrink-0 transition-all duration-200 group-data-[state=open]/collapsible:rotate-180" />
-                </SidebarGroupLabel>
-              </CollapsibleTrigger>
-
-              <CollapsibleContent>
-                <SidebarGroupContent>
-                  <SidebarMenu>
-                    {filteredComponents.map((item) => (
-                      <SidebarMenuItem key={item.name}>
-                        <SidebarMenuButton
-                          asChild
-                          isActive={pathname === item.name}
+          <SidebarGroup>
+            <button
+              type="button"
+              aria-controls="sidebar-ui"
+              aria-expanded={open.ui}
+              className="w-full"
+              onClick={() => toggle("ui")}
+            >
+              <SidebarGroupLabel className="flex cursor-pointer items-center justify-between">
+                <div className="flex min-w-0 items-center">
+                  <ToyBrick className="size-4 flex-shrink-0" />
+                  <span className="ml-2 transition-all duration-200">UI Primitives</span>
+                </div>
+                <ChevronDown
+                  className={`size-4 flex-shrink-0 transition-all duration-200 ${open.ui ? "rotate-180" : ""}`}
+                />
+              </SidebarGroupLabel>
+            </button>
+            {open.ui && (
+              <SidebarGroupContent id="sidebar-ui">
+                <SidebarMenu>
+                  {filteredUiItems.map((item) => (
+                    <SidebarMenuItem key={item.name}>
+                      <SidebarMenuButton asChild isActive={pathname === item.name}>
+                        <Link
+                          onClick={() => setOpenMobile(false)}
+                          href={`/registry/${item.name}`}
                         >
-                          <Link
-                            onClick={() => setOpenMobile(false)}
-                            href={`/registry/${item.name}`}
-                          >
-                            {item.title}
-                          </Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    ))}
-                  </SidebarMenu>
-                </SidebarGroupContent>
-              </CollapsibleContent>
-            </SidebarGroup>
-          </Collapsible>
-
-          <Collapsible defaultOpen={true} className="group/collapsible">
-            <SidebarGroup>
-              <CollapsibleTrigger className="w-full">
-                <SidebarGroupLabel className="flex cursor-pointer items-center justify-between">
-                  <div className="flex min-w-0 items-center">
-                    <ToyBrick className="size-4 flex-shrink-0" />
-                    <span className="ml-2 transition-all duration-200">
-                      UI Primitives
-                    </span>
-                  </div>
-                  <ChevronDown className="size-4 flex-shrink-0 transition-all duration-200 group-data-[state=open]/collapsible:rotate-180" />
-                </SidebarGroupLabel>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <SidebarGroupContent>
-                  <SidebarMenu>
-                    {filteredUiItems.map((item) => (
-                      <SidebarMenuItem key={item.name}>
-                        <SidebarMenuButton
-                          asChild
-                          isActive={pathname === item.name}
-                        >
-                          <Link
-                            onClick={() => setOpenMobile(false)}
-                            href={`/registry/${item.name}`}
-                          >
-                            {item.title}
-                          </Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    ))}
-                  </SidebarMenu>
-                </SidebarGroupContent>
-              </CollapsibleContent>
-            </SidebarGroup>
-          </Collapsible>
+                          {item.title}
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            )}
+          </SidebarGroup>
         </ScrollArea>
       </SidebarContent>
 

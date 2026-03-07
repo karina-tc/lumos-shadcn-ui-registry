@@ -2,135 +2,177 @@ import { describe, it, expect } from "vitest";
 import { parseMentionQuery, buildPillLabel, buildMentionTag } from "@/components/albus-mention-parser";
 
 describe("parseMentionQuery", () => {
-  it("returns free mode for a simple word", () => {
-    expect(parseMentionQuery("okta")).toEqual({
-      mode: "free",
-      query: "okta",
+  it("returns initial mode for empty string", () => {
+    expect(parseMentionQuery("")).toEqual({ mode: "initial" });
+  });
+
+  it("returns initial mode for whitespace-only input", () => {
+    expect(parseMentionQuery("   ")).toEqual({ mode: "initial" });
+  });
+
+  it("returns search mode for a non-category word", () => {
+    expect(parseMentionQuery("okta")).toEqual({ mode: "search", query: "okta" });
+  });
+
+  it("returns search mode for an unrecognized multi-word query", () => {
+    expect(parseMentionQuery("cloudflare something")).toEqual({
+      mode: "search",
+      query: "cloudflare something",
     });
   });
 
-  it("returns free mode for empty string", () => {
-    expect(parseMentionQuery("")).toEqual({
-      mode: "free",
-      query: "",
-    });
-  });
-
-  it("detects scoped mode from category name match", () => {
+  it("returns category mode for 'apps'", () => {
     const result = parseMentionQuery("apps");
-    expect(result.mode).toBe("scoped");
-    if (result.mode === "scoped") {
+    expect(result.mode).toBe("category");
+    if (result.mode === "category") {
       expect(result.category).toBe("app");
-      expect(result.attribute).toBeNull();
-      expect(result.value).toBeNull();
+      expect(result.itemQuery).toBe("");
     }
   });
 
-  it("detects scoped mode from explicit colon", () => {
-    const result = parseMentionQuery("apps:");
-    expect(result.mode).toBe("scoped");
-    if (result.mode === "scoped") {
-      expect(result.category).toBe("app");
-      expect(result.attribute).toBeNull();
-      expect(result.value).toBeNull();
+  it("returns category mode for alias 'identities'", () => {
+    const result = parseMentionQuery("identities");
+    expect(result.mode).toBe("category");
+    if (result.mode === "category") {
+      expect(result.category).toBe("identity");
+      expect(result.itemQuery).toBe("");
     }
   });
 
-  it("parses category + attribute from colon path", () => {
-    const result = parseMentionQuery("apps: status");
-    expect(result.mode).toBe("scoped");
-    if (result.mode === "scoped") {
-      expect(result.category).toBe("app");
-      expect(result.attribute).toBe("status");
-      expect(result.value).toBeNull();
-    }
-  });
-
-  it("parses category + attribute + value from colon path", () => {
-    const result = parseMentionQuery("apps: status approved");
-    expect(result.mode).toBe("scoped");
-    if (result.mode === "scoped") {
-      expect(result.category).toBe("app");
-      expect(result.attribute).toBe("status");
-      expect(result.value).toBe("approved");
-    }
-  });
-
-  it("stays free mode for an unrecognized word", () => {
-    expect(parseMentionQuery("cloudflare")).toEqual({
-      mode: "free",
-      query: "cloudflare",
-    });
-  });
-
-  it("returns free mode when colon is present but left side is unrecognized", () => {
-    expect(parseMentionQuery("cloudflare: something")).toEqual({
-      mode: "free",
-      query: "cloudflare: something",
-    });
-  });
-
-  it("returns free mode for whitespace-only input", () => {
-    expect(parseMentionQuery("   ")).toEqual({
-      mode: "free",
-      query: "",
-    });
-  });
-
-  it("handles aliases like 'policies' → policy category", () => {
+  it("returns category mode for alias 'policies'", () => {
     const result = parseMentionQuery("policies");
-    expect(result.mode).toBe("scoped");
-    if (result.mode === "scoped") {
+    expect(result.mode).toBe("category");
+    if (result.mode === "category") {
       expect(result.category).toBe("policy");
     }
   });
 
-  it("handles aliases like 'identities' → identity category", () => {
-    const result = parseMentionQuery("identities");
-    expect(result.mode).toBe("scoped");
-    if (result.mode === "scoped") {
-      expect(result.category).toBe("identity");
+  it("returns category mode for alias 'reports'", () => {
+    const result = parseMentionQuery("reports");
+    expect(result.mode).toBe("category");
+    if (result.mode === "category") {
+      expect(result.category).toBe("reports");
     }
+  });
+
+  it("returns category mode for alias 'knowledge' (maps to reports)", () => {
+    const result = parseMentionQuery("knowledge");
+    expect(result.mode).toBe("category");
+    if (result.mode === "category") {
+      expect(result.category).toBe("reports");
+    }
+  });
+
+  it("returns category mode with itemQuery for 'apps okta'", () => {
+    const result = parseMentionQuery("apps okta");
+    expect(result.mode).toBe("category");
+    if (result.mode === "category") {
+      expect(result.category).toBe("app");
+      expect(result.itemQuery).toBe("okta");
+    }
+  });
+
+  it("returns attribute mode for 'apps status'", () => {
+    const result = parseMentionQuery("apps status");
+    expect(result.mode).toBe("attribute");
+    if (result.mode === "attribute") {
+      expect(result.category).toBe("app");
+      expect(result.attribute.key).toBe("status");
+      expect(result.valueQuery).toBe("");
+    }
+  });
+
+  it("returns attribute mode with valueQuery for 'apps status approved'", () => {
+    const result = parseMentionQuery("apps status approved");
+    expect(result.mode).toBe("attribute");
+    if (result.mode === "attribute") {
+      expect(result.category).toBe("app");
+      expect(result.attribute.key).toBe("status");
+      expect(result.valueQuery).toBe("approved");
+    }
+  });
+
+  it("returns attribute mode for 'identities status'", () => {
+    const result = parseMentionQuery("identities status");
+    expect(result.mode).toBe("attribute");
+    if (result.mode === "attribute") {
+      expect(result.category).toBe("identity");
+      expect(result.attribute.key).toBe("status");
+    }
+  });
+
+  it("returns category mode when second token doesn't match an attribute", () => {
+    // "apps okta" — "okta" is not an attribute of app
+    const result = parseMentionQuery("apps okta");
+    expect(result.mode).toBe("category");
+    if (result.mode === "category") {
+      expect(result.itemQuery).toBe("okta");
+    }
+  });
+
+  it("returns search mode for short non-category word (< 3 chars)", () => {
+    expect(parseMentionQuery("ok")).toEqual({ mode: "search", query: "ok" });
   });
 });
 
 describe("buildPillLabel", () => {
-  it("returns @search for empty free query", () => {
-    expect(buildPillLabel({ mode: "free", query: "" })).toBe("@search");
+  it("returns @search for initial mode", () => {
+    expect(buildPillLabel({ mode: "initial" })).toBe("@search");
   });
 
-  it("returns @query for non-empty free query", () => {
-    expect(buildPillLabel({ mode: "free", query: "okta" })).toBe("@okta");
+  it("returns @query for search mode", () => {
+    expect(buildPillLabel({ mode: "search", query: "okta" })).toBe("@okta");
   });
 
-  it("returns scoped label with no attribute", () => {
+  it("returns category label with search for empty itemQuery", () => {
     expect(
-      buildPillLabel({ mode: "scoped", category: "app", attribute: null, value: null, rawAttributeQuery: "" })
+      buildPillLabel({ mode: "category", category: "app", itemQuery: "" })
     ).toBe("@apps: search");
   });
 
-  it("returns scoped label with attribute", () => {
+  it("returns category label with itemQuery when present", () => {
     expect(
-      buildPillLabel({ mode: "scoped", category: "app", attribute: "status", value: null, rawAttributeQuery: "status" })
+      buildPillLabel({ mode: "category", category: "app", itemQuery: "okta" })
+    ).toBe("@apps: okta");
+  });
+
+  it("returns attribute label for attribute mode with no value", () => {
+    expect(
+      buildPillLabel({
+        mode: "attribute",
+        category: "app",
+        attribute: { key: "status", label: "Status", section: "attribute" },
+        valueQuery: "",
+      })
     ).toBe("@apps-status: search");
   });
 
-  it("returns terminal label with value", () => {
+  it("returns terminal label when valueQuery is set", () => {
     expect(
-      buildPillLabel({ mode: "scoped", category: "app", attribute: "status", value: "approved", rawAttributeQuery: "status approved" })
+      buildPillLabel({
+        mode: "attribute",
+        category: "app",
+        attribute: { key: "status", label: "Status", section: "attribute" },
+        valueQuery: "approved",
+      })
     ).toBe("@approved-apps");
   });
 
-  it("handles multi-word category name (access-review)", () => {
+  it("slugifies multi-word valueQuery", () => {
     expect(
-      buildPillLabel({ mode: "scoped", category: "access-review", attribute: null, value: null, rawAttributeQuery: "" })
-    ).toBe("@access-reviews: search");
+      buildPillLabel({
+        mode: "attribute",
+        category: "app",
+        attribute: { key: "status", label: "Status", section: "attribute" },
+        valueQuery: "In Review",
+      })
+    ).toBe("@in-review-apps");
   });
 
-  it("slugifies multi-word value in terminal state", () => {
+  it("handles multi-word category (access-review)", () => {
     expect(
-      buildPillLabel({ mode: "scoped", category: "app", attribute: "status", value: "In Review", rawAttributeQuery: "status In Review" })
-    ).toBe("@in-review-apps");
+      buildPillLabel({ mode: "category", category: "access-review", itemQuery: "" })
+    ).toBe("@access-reviews: search");
   });
 });
 

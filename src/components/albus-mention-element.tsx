@@ -11,8 +11,8 @@ export interface MentionElementData {
     | "app"
     | "identity"
     | "policy"
-    | "knowledge"
     | "entitlement"
+    | "reports"
     | "access-review"
     | "access-request";
   filterAttribute?: string;

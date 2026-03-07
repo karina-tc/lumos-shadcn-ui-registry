@@ -2,13 +2,10 @@
 
 import {
   type AttributeDef,
-  type GroupedResults,
   type MentionItem,
   type MentionObjectType,
-  attributeValues,
-  getPopularItems,
+  filterAttributeValues,
   groupLabels,
-  searchMentions,
 } from "@/components/albus-mention-data";
 import {
   type MentionQueryState,
@@ -20,7 +17,17 @@ import {
   AlbusMentionElement,
   type MentionElementData,
 } from "@/components/albus-mention-element";
-import { AlbusMentionSearch } from "@/components/albus-mention-search";
+import {
+  AlbusMentionSearch,
+  type NavItem,
+  computeNavItems,
+} from "@/components/albus-mention-search";
+import {
+  AlbusMentionSearchV3A,
+  type MentionSearchRef,
+  type MentionSelectResult,
+} from "@/components/albus-mention-search-v3a";
+import { AlbusMentionSearchV3B } from "@/components/albus-mention-search-v3b";
 import {
   type AlbusMode,
   AlbusModeMenu,
@@ -63,6 +70,17 @@ import {
 } from "slate-react";
 
 export type { SuggestionsPosition };
+
+// Canonical alias to type into the editor when entering a folder by keyboard
+const categoryCanonicalAlias: Record<MentionObjectType, string> = {
+  app: "apps",
+  identity: "identities",
+  policy: "policies",
+  entitlement: "entitlements",
+  reports: "reports",
+  "access-review": "reviews",
+  "access-request": "requests",
+};
 
 // ---------------------------------------------------------------------------
 // Slate custom types
@@ -125,6 +143,9 @@ export interface AlbusChatInputProps {
   className?: string;
 }
 
+const MENU_HEIGHT = 180;
+const MENU_GAP = 6;
+
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
@@ -155,44 +176,38 @@ export function AlbusChatInput({
   const [mentionQuery, setMentionQuery] = useState("");
   const [mentionIndex, setMentionIndex] = useState(0);
   const [mentionStyle, setMentionStyle] = useState<CSSProperties>({});
-  const [selectedCategory, setSelectedCategory] =
-    useState<MentionObjectType | null>(null);
-  const [selectedAttribute, setSelectedAttribute] = useState<AttributeDef | null>(null);
-  const [categoryAutoMatched, setCategoryAutoMatched] = useState(false);
-  const [parsedQuery, setParsedQuery] = useState<MentionQueryState>({ mode: "free", query: "" });
+  const [parsedQuery, setParsedQuery] = useState<MentionQueryState>({ mode: "initial" });
   const mentionRef = useRef<HTMLDivElement>(null);
-
-  const pillLabel = buildPillLabel(parsedQuery);
+  const [mentionText, setMentionText] = useState("");
+  const [mentionVariant, setMentionVariant] = useState<"v1" | "v3a" | "v3b">("v3a");
+  const mentionV3ARef = useRef<MentionSearchRef>(null);
+  const mentionV3BRef = useRef<MentionSearchRef>(null);
 
   const blurTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const menuContainerRef = useRef<HTMLDivElement>(null);
   const menuDropdownRef = useRef<HTMLDivElement>(null);
   const inputContainerRef = useRef<HTMLDivElement>(null);
 
-  // Track plain text state for suggestions visibility & send button
   const [plainText, setPlainText] = useState("");
 
-  // Sync external value → editor (only for controlled clear / suggestion fill)
+  // Flat navigable items — single source of truth for keyboard nav
+  const navItems: NavItem[] = useMemo(() => computeNavItems(parsedQuery), [parsedQuery]);
+
+  // Sync external value → editor
   const lastExternalValue = useRef(value);
   useEffect(() => {
     if (value !== undefined && value !== lastExternalValue.current) {
       lastExternalValue.current = value;
       if (value === "") {
         Transforms.delete(editor, {
-          at: {
-            anchor: Editor.start(editor, []),
-            focus: Editor.end(editor, []),
-          },
+          at: { anchor: Editor.start(editor, []), focus: Editor.end(editor, []) },
         });
         const point = { path: [0, 0], offset: 0 };
         Transforms.select(editor, { anchor: point, focus: point });
         setPlainText("");
       } else if (value.length > 0) {
         Transforms.delete(editor, {
-          at: {
-            anchor: Editor.start(editor, []),
-            focus: Editor.end(editor, []),
-          },
+          at: { anchor: Editor.start(editor, []), focus: Editor.end(editor, []) },
         });
         Transforms.insertText(editor, value, { at: Editor.start(editor, []) });
         setPlainText(value);
@@ -200,70 +215,31 @@ export function AlbusChatInput({
     }
   }, [value, editor]);
 
-  // Mention groups — search results or category items
-  const mentionGroups: GroupedResults[] = useMemo(() => {
-    if (selectedCategory) {
-      // When browsing an attribute's values, mentionGroups is empty (values are plain strings, not MentionItems)
-      if (selectedAttribute) return [];
-      // In category browse mode — return only popular items for keyboard nav
-      const popular = getPopularItems(selectedCategory);
-      return popular.length > 0
-        ? [{ type: selectedCategory, label: groupLabels[selectedCategory], items: popular }]
-        : [];
-    }
-    if (mentionQuery) return searchMentions(mentionQuery);
-    return [];
-  }, [selectedCategory, selectedAttribute, mentionQuery]);
-
-  const flatMentionItems = useMemo(
-    () => mentionGroups.flatMap((g) => g.items),
-    [mentionGroups],
-  );
-
-  // Attribute values for keyboard navigation when in attribute drill-down view
-  const currentAttributeValues = useMemo(() => {
-    if (!selectedCategory || !selectedAttribute) return [];
-    return (attributeValues[selectedCategory]?.[selectedAttribute.key]) ?? [];
-  }, [selectedCategory, selectedAttribute]);
-
-  // Position the mention search dropdown anchored to the pill
+  // Smart positioning: above or below the pill depending on space
   useEffect(() => {
     if (!mentionTarget) return;
     const position = () => {
       const pill = document.querySelector("[data-mention-pill]");
-      if (pill) {
-        const rect = pill.getBoundingClientRect();
-        setMentionStyle({
-          position: "fixed",
-          top: rect.bottom + 6,
-          left: rect.left,
-        });
-        return;
-      }
-      // Fallback to DOMRange
-      try {
-        const domRange = ReactEditor.toDOMRange(editor, mentionTarget);
-        const rect = domRange.getBoundingClientRect();
-        setMentionStyle({
-          position: "fixed",
-          top: rect.bottom + 6,
-          left: rect.left,
-        });
-      } catch {
-        // range may become stale
+      const anchor = pill ?? (() => {
+        try { return ReactEditor.toDOMRange(editor, mentionTarget); } catch { return null; }
+      })();
+      if (!anchor) return;
+      const rect = anchor.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      if (spaceBelow >= MENU_HEIGHT + MENU_GAP) {
+        setMentionStyle({ position: "fixed", top: rect.bottom + MENU_GAP, left: rect.left });
+      } else {
+        setMentionStyle({ position: "fixed", bottom: window.innerHeight - rect.top + MENU_GAP, left: rect.left });
       }
     };
-    // RAF to wait for decoration render
     const id = requestAnimationFrame(position);
     return () => cancelAnimationFrame(id);
   }, [editor, mentionTarget, mentionQuery]);
 
-  // Insert a mention node
+  // Insert a mention item
   const insertMention = useCallback(
     (item: MentionItem) => {
-      if (mentionTarget) {
-        Transforms.select(editor, mentionTarget);
-      }
+      if (mentionTarget) Transforms.select(editor, mentionTarget);
       const mention: MentionElementData = {
         type: "mention",
         tag: item.tag,
@@ -276,10 +252,82 @@ export function AlbusChatInput({
       Transforms.move(editor);
       Transforms.insertText(editor, " ");
       setMentionTarget(null);
-      setSelectedCategory(null);
       ReactEditor.focus(editor);
     },
     [editor, mentionTarget],
+  );
+
+  const handleV3Select = useCallback(
+    (result: MentionSelectResult) => {
+      if (result.kind === "item" && result.item) {
+        insertMention(result.item);
+      } else if (result.kind === "value" && result.tag && result.display) {
+        insertMention({
+          id: result.tag,
+          name: result.display,
+          tag: result.tag,
+          objectType: result.objectType ?? "app",
+        });
+      }
+    },
+    [insertMention],
+  );
+
+  const handleV3InsertText = useCallback(
+    (text: string) => {
+      if (!mentionTarget) return;
+      Transforms.select(editor, mentionTarget);
+      Transforms.insertText(editor, text);
+      ReactEditor.focus(editor);
+    },
+    [editor, mentionTarget],
+  );
+
+  // Enter a folder — append canonical alias to query in editor
+  const handleFolderEnter = useCallback(
+    (category: MentionObjectType) => {
+      const alias = categoryCanonicalAlias[category];
+      Transforms.insertText(editor, alias + " ");
+      ReactEditor.focus(editor);
+    },
+    [editor],
+  );
+
+  // Click an attribute row — append attr key to current query
+  const handleAttributeClick = useCallback(
+    (attr: AttributeDef) => {
+      if (!mentionTarget) return;
+      const endPoint = Range.end(mentionTarget);
+      Transforms.select(editor, { anchor: endPoint, focus: endPoint });
+      Transforms.insertText(editor, ` ${attr.key}`);
+      ReactEditor.focus(editor);
+    },
+    [editor, mentionTarget],
+  );
+
+  // Insert a filter mention (category + attribute + value)
+  const handleAttributeValueSelect = useCallback(
+    (category: MentionObjectType, attribute: AttributeDef, value: string) => {
+      if (!mentionTarget) return;
+      const tag = buildMentionTag(category, value);
+      const mention: MentionElementData = {
+        type: "mention",
+        tag,
+        name: buildPillLabel({ mode: "attribute", category, attribute, valueQuery: value }).replace(/^@/, ""),
+        itemId: `filter-${category}-${attribute.key}-${value.toLowerCase().replace(/\s+/g, "-")}`,
+        objectType: category,
+        filterAttribute: attribute.key,
+        filterValue: value,
+        children: [{ text: "" }],
+      };
+      Transforms.select(editor, mentionTarget);
+      Transforms.insertNodes(editor, mention);
+      Transforms.move(editor);
+      Transforms.insertText(editor, " ");
+      setMentionTarget(null);
+      ReactEditor.focus(editor);
+    },
+    [mentionTarget, editor],
   );
 
   // Handle editor change — detect @ trigger
@@ -300,25 +348,18 @@ export function AlbusChatInput({
           : wordBefore
             ? Editor.range(editor, wordBefore, start)
             : null;
-        const beforeText = beforeRange
-          ? Editor.string(editor, beforeRange)
-          : "";
+        const beforeText = beforeRange ? Editor.string(editor, beforeRange) : "";
         const atMatch = beforeText.match(/@([^@\n]*)$/);
 
-        // Also check from line start for just "@"
         const lineStart = Editor.before(editor, start, { unit: "line" });
-        const lineRange = lineStart
-          ? Editor.range(editor, lineStart, start)
-          : null;
+        const lineRange = lineStart ? Editor.range(editor, lineStart, start) : null;
         const lineText = lineRange ? Editor.string(editor, lineRange) : "";
         const lineAtMatch = lineText.match(/@([^@\n]*)$/);
 
         const match = atMatch || lineAtMatch;
-
         if (match) {
           const query = match[1] || "";
           const matchOffset = match.index ?? 0;
-
           const sourceRange = atMatch ? beforeRange : lineRange;
           if (sourceRange) {
             const rangeStart = {
@@ -328,39 +369,21 @@ export function AlbusChatInput({
             const newTarget = Editor.range(editor, rangeStart, start);
             setMentionTarget(newTarget);
             setMentionQuery(query);
+            setMentionText(query);
             setMentionIndex(0);
-
-            const parsed = parseMentionQuery(query);
-            setParsedQuery(parsed);
-
-            if (parsed.mode === "scoped") {
-              if (!selectedCategory || selectedCategory !== parsed.category) {
-                setSelectedCategory(parsed.category);
-                setCategoryAutoMatched(true);
-                setSelectedAttribute(null);
-              }
-              return;
-            }
-
-            // Free mode — clear category if it was auto-matched from a previous query
-            if (categoryAutoMatched) {
-              setSelectedCategory(null);
-              setSelectedAttribute(null);
-              setCategoryAutoMatched(false);
-            }
+            setParsedQuery(parseMentionQuery(query));
             return;
           }
         }
       }
       setMentionTarget(null);
-      setSelectedCategory(null);
-      setSelectedAttribute(null);
-      setCategoryAutoMatched(false);
+      setMentionText("");
+      setParsedQuery({ mode: "initial" });
     },
-    [editor, onChange, selectedCategory],
+    [editor, onChange],
   );
 
-  // Decorate: highlight the @query range with a gray pill
+  // Decorate: highlight the full @query range with a gray pill
   const decorate = useCallback(
     ([node, path]: [Node, Path]) => {
       if (!mentionTarget || !Text.isText(node)) return [];
@@ -372,7 +395,6 @@ export function AlbusChatInput({
     [mentionTarget, editor],
   );
 
-  // Render leaf: gray pill for active mention search
   const renderLeaf = useCallback(
     (props: RenderLeafProps) => {
       const { attributes, children, leaf } = props;
@@ -384,204 +406,122 @@ export function AlbusChatInput({
             className="inline-flex items-baseline rounded-md bg-neutral-100 px-1 py-[1px] text-neutral-700"
           >
             {children}
-            {(() => {
-              if (parsedQuery.mode === "scoped") {
-                const showColon = !mentionQuery.includes(":");
-                const hint = showColon ? ": search" : " search";
-                return (
-                  <span
-                    contentEditable={false}
-                    className="pointer-events-none ml-0.5 select-none text-neutral-400 text-sm"
-                  >
-                    {hint}
-                  </span>
-                );
-              }
-              if (mentionQuery === "") {
-                return (
-                  <span
-                    contentEditable={false}
-                    className="pointer-events-none ml-0.5 select-none text-neutral-400 text-sm"
-                  >
-                    Search...
-                  </span>
-                );
-              }
-              return null;
-            })()}
+            {mentionQuery === "" && (
+              <span
+                contentEditable={false}
+                className="pointer-events-none ml-0.5 select-none text-neutral-400 text-sm"
+              >
+                Search...
+              </span>
+            )}
           </span>
         );
       }
       return <span {...attributes}>{children}</span>;
     },
-    [mentionQuery, parsedQuery],
+    [mentionQuery],
   );
 
-  // Render elements
   const renderElement = useCallback((props: RenderElementProps) => {
     const el = props.element as unknown as CustomElement;
-    if (el.type === "mention") {
-      return <AlbusMentionElement {...props} />;
-    }
+    if (el.type === "mention") return <AlbusMentionElement {...props} />;
     return <p {...props.attributes}>{props.children}</p>;
   }, []);
 
-  const handleCategorySelect = useCallback(
-    (category: MentionObjectType) => {
-      setSelectedCategory(category);
-      setSelectedAttribute(null);
-      setCategoryAutoMatched(false);
-      setMentionIndex(0);
-    },
-    [],
-  );
-
-  const handleCategoryBack = useCallback(() => {
-    setSelectedCategory(null);
-    setSelectedAttribute(null);
-    if (categoryAutoMatched) {
-      setMentionTarget(null);
-      ReactEditor.focus(editor);
+  // Activate the navItem at the current activeIndex
+  const activateCurrentItem = useCallback(() => {
+    const nav = navItems[mentionIndex];
+    if (!nav) return;
+    switch (nav.kind) {
+      case "folder":
+        handleFolderEnter(nav.category);
+        break;
+      case "mention":
+        insertMention(nav.item);
+        break;
+      case "attr":
+        handleAttributeClick(nav.attr);
+        break;
+      case "value":
+        handleAttributeValueSelect(nav.category, nav.attr, nav.value);
+        break;
     }
-    setCategoryAutoMatched(false);
-  }, [categoryAutoMatched, editor]);
+  }, [navItems, mentionIndex, handleFolderEnter, insertMention, handleAttributeClick, handleAttributeValueSelect]);
 
-  const handleAttributeSelect = useCallback((attr: AttributeDef) => {
-    setSelectedAttribute(attr);
-    setMentionIndex(0);
-  }, []);
-
-  const handleAttributeBack = useCallback(() => {
-    setSelectedAttribute(null);
-    setMentionIndex(0);
-  }, []);
-
-  const handleAttributeValueSelect = useCallback(
-    (value: string) => {
-      if (!selectedCategory || !selectedAttribute || !mentionTarget) return;
-      const tag = buildMentionTag(selectedCategory, value);
-      const mention: MentionElementData = {
-        type: "mention",
-        tag,
-        name: buildPillLabel({
-          mode: "scoped",
-          category: selectedCategory,
-          attribute: selectedAttribute.key,
-          value,
-          rawAttributeQuery: `${selectedAttribute.key} ${value}`,
-        }).replace(/^@/, ""),
-        itemId: `filter-${selectedCategory}-${selectedAttribute.key}-${value.toLowerCase().replace(/\s+/g, "-")}`,
-        objectType: selectedCategory,
-        filterAttribute: selectedAttribute.key,
-        filterValue: value,
-        children: [{ text: "" }],
-      };
-      Transforms.select(editor, mentionTarget);
-      Transforms.insertNodes(editor, mention);
-      Transforms.move(editor);
-      Transforms.insertText(editor, " ");
-      setMentionTarget(null);
-      setSelectedCategory(null);
-      setSelectedAttribute(null);
-      setCategoryAutoMatched(false);
-      ReactEditor.focus(editor);
-    },
-    [selectedCategory, selectedAttribute, mentionTarget, editor],
-  );
-
-  // Keyboard handler for mention nav + send
+  // Keyboard handler
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
-      // Attribute value list keyboard navigation
-      if (mentionTarget && selectedAttribute && currentAttributeValues.length > 0) {
-        switch (event.key) {
-          case "ArrowDown": {
-            event.preventDefault();
-            setMentionIndex((prev) =>
-              prev >= currentAttributeValues.length - 1 ? 0 : prev + 1,
-            );
-            return;
-          }
-          case "ArrowUp": {
-            event.preventDefault();
-            setMentionIndex((prev) =>
-              prev <= 0 ? currentAttributeValues.length - 1 : prev - 1,
-            );
-            return;
-          }
-          case "Enter": {
-            event.preventDefault();
-            handleAttributeValueSelect(currentAttributeValues[mentionIndex]);
-            return;
-          }
-          case "Escape": {
-            event.preventDefault();
-            setSelectedAttribute(null);
-            setMentionIndex(0);
-            return;
-          }
-        }
-      }
-
-      // Mention menu navigation
-      if (mentionTarget && flatMentionItems.length > 0) {
-        switch (event.key) {
-          case "ArrowDown": {
-            event.preventDefault();
-            setMentionIndex((prev) =>
-              prev >= flatMentionItems.length - 1 ? 0 : prev + 1,
-            );
-            return;
-          }
-          case "ArrowUp": {
-            event.preventDefault();
-            setMentionIndex((prev) =>
-              prev <= 0 ? flatMentionItems.length - 1 : prev - 1,
-            );
-            return;
-          }
-          case "Enter": {
-            event.preventDefault();
-            insertMention(flatMentionItems[mentionIndex]);
-            return;
-          }
-          case "Escape": {
-            event.preventDefault();
-            setMentionTarget(null);
-            setSelectedCategory(null);
-            return;
-          }
-        }
-      }
-
-      // When mention menu is open with no results (default view), Escape closes
-      if (mentionTarget && event.key === "Escape") {
-        event.preventDefault();
-        setMentionTarget(null);
-        setSelectedCategory(null);
+      // Forward to V3A if active
+      if (mentionTarget && mentionVariant === "v3a" && mentionV3ARef.current?.handleKeyDown(event)) {
         return;
+      }
+      if (mentionTarget && mentionVariant === "v3b" && mentionV3BRef.current?.handleKeyDown(event)) {
+        return;
+      }
+
+      if (mentionTarget) {
+        switch (event.key) {
+          case "ArrowDown": {
+            event.preventDefault();
+            setMentionIndex((prev) => (prev >= navItems.length - 1 ? 0 : prev + 1));
+            return;
+          }
+          case "ArrowUp": {
+            event.preventDefault();
+            setMentionIndex((prev) => (prev <= 0 ? navItems.length - 1 : prev - 1));
+            return;
+          }
+          case "ArrowRight": {
+            // Open a folder (initial mode) or enter an attribute (category mode)
+            const nav = navItems[mentionIndex];
+            if (nav?.kind === "folder" || nav?.kind === "attr") {
+              event.preventDefault();
+              activateCurrentItem();
+            }
+            return;
+          }
+          case "ArrowLeft": {
+            // Go back one step: delete the last space-separated token from the query
+            if (parsedQuery.mode === "category" || parsedQuery.mode === "attribute") {
+              event.preventDefault();
+              Editor.deleteBackward(editor, { unit: "word" });
+              // Also delete any trailing space left by deleteBackward
+              const { selection } = editor;
+              if (selection) {
+                const [start] = Range.edges(selection);
+                const charBefore = Editor.before(editor, start, { unit: "character" });
+                if (charBefore) {
+                  const charRange = Editor.range(editor, charBefore, start);
+                  const char = Editor.string(editor, charRange);
+                  if (char === " ") Editor.deleteBackward(editor, { unit: "character" });
+                }
+              }
+              ReactEditor.focus(editor);
+            }
+            return;
+          }
+          case "Enter": {
+            event.preventDefault();
+            activateCurrentItem();
+            return;
+          }
+          case "Escape": {
+            event.preventDefault();
+            Transforms.delete(editor, { at: mentionTarget });
+            setMentionTarget(null);
+            setParsedQuery({ mode: "initial" });
+            return;
+          }
+        }
       }
 
       // Send on Enter (without Shift)
       if (event.key === "Enter" && !event.shiftKey) {
         event.preventDefault();
-        if (plainText.trim()) {
-          onSend?.(editor.children);
-        }
+        if (plainText.trim()) onSend?.(editor.children);
       }
     },
-    [
-      mentionTarget,
-      selectedAttribute,
-      currentAttributeValues,
-      handleAttributeValueSelect,
-      flatMentionItems,
-      mentionIndex,
-      insertMention,
-      plainText,
-      onSend,
-      editor,
-    ],
+    [mentionTarget, mentionVariant, navItems, mentionIndex, parsedQuery, activateCurrentItem, editor, plainText, onSend],
   );
 
   // Suggestions
@@ -594,10 +534,7 @@ export function AlbusChatInput({
   }, [focused, suggestions.length]);
 
   useEffect(() => {
-    if (plainText.trim() === "") {
-      setSuggestionsVisible(true);
-      return;
-    }
+    if (plainText.trim() === "") { setSuggestionsVisible(true); return; }
     const id = setTimeout(() => setSuggestionsVisible(false), 1000);
     return () => clearTimeout(id);
   }, [plainText]);
@@ -611,40 +548,28 @@ export function AlbusChatInput({
       const gap = -12;
       setSuggestionsStyle(
         suggestionsPosition === "top"
-          ? {
-              position: "fixed",
-              bottom: window.innerHeight - rect.top + gap,
-              left: rect.left,
-              width: rect.width,
-            }
-          : {
-              position: "fixed",
-              top: rect.bottom + gap,
-              left: rect.left,
-              width: rect.width,
-            },
+          ? { position: "fixed", bottom: window.innerHeight - rect.top + gap, left: rect.left, width: rect.width }
+          : { position: "fixed", top: rect.bottom + gap, left: rect.left, width: rect.width },
       );
     }
   };
 
   const handleBlur = () => {
+    const targetAtBlur = mentionTarget;
     blurTimeout.current = setTimeout(() => {
+      if (targetAtBlur) {
+        try { Transforms.delete(editor, { at: targetAtBlur }); } catch { /* range may be stale */ }
+      }
       setFocused(false);
       setMentionTarget(null);
-      setSelectedCategory(null);
-      setSelectedAttribute(null);
-      setCategoryAutoMatched(false);
+      setParsedQuery({ mode: "initial" });
     }, 150);
   };
 
-  // Mode menu outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       const target = e.target as globalThis.Node;
-      if (
-        !menuContainerRef.current?.contains(target) &&
-        !menuDropdownRef.current?.contains(target)
-      ) {
+      if (!menuContainerRef.current?.contains(target) && !menuDropdownRef.current?.contains(target)) {
         setMenuOpen(false);
       }
     };
@@ -659,35 +584,23 @@ export function AlbusChatInput({
       : placeholder;
 
   const handleSend = useCallback(() => {
-    if (plainText.trim()) {
-      onSend?.(editor.children);
-    }
+    if (plainText.trim()) onSend?.(editor.children);
   }, [plainText, onSend, editor]);
 
   return (
-    <div
-      ref={inputContainerRef}
-      className={`relative w-full ${className ?? ""}`}
-    >
+    <div ref={inputContainerRef} className={`relative w-full ${className ?? ""}`}>
       <div className="w-full rounded-[20px] bg-[#eff1f3]">
         <div
           className="rounded-2xl p-[2px] transition-all duration-300"
           style={
             focused
-              ? {
-                  backgroundImage:
-                    "linear-gradient(-74deg, rgba(249,250,250,0) 0%, rgba(254,101,25,0.75) 22%, rgba(248,59,249,0.19) 50%, rgba(248,59,249,0.19) 70%, rgba(249,250,250,0) 99%), linear-gradient(90deg, #f6f7f8 0%, #f6f7f8 100%)",
-                }
+              ? { backgroundImage: "linear-gradient(-74deg, rgba(249,250,250,0) 0%, rgba(254,101,25,0.75) 22%, rgba(248,59,249,0.19) 50%, rgba(248,59,249,0.19) 70%, rgba(249,250,250,0) 99%), linear-gradient(90deg, #f6f7f8 0%, #f6f7f8 100%)" }
               : { background: "#f6f7f8" }
           }
         >
           <div className="flex h-[120px] min-h-[120px] flex-col justify-between overflow-hidden rounded-[12px] border border-[#eff1f3] bg-white p-3 shadow-[0px_6px_8px_-8px_#d3d6de]">
             <div className="w-full flex-1 overflow-y-auto py-1">
-              <Slate
-                editor={editor}
-                initialValue={makeEmptyValue()}
-                onChange={handleEditorChange}
-              >
+              <Slate editor={editor} initialValue={makeEmptyValue()} onChange={handleEditorChange}>
                 <Editable
                   renderElement={renderElement}
                   renderLeaf={renderLeaf}
@@ -698,9 +611,7 @@ export function AlbusChatInput({
                   onBlur={handleBlur}
                   className="[&_[data-slate-placeholder]]:!text-[#79829c] [&_[data-slate-placeholder]]:!opacity-100 h-full w-full resize-none bg-transparent text-foreground text-sm leading-[1.4] outline-none"
                   aria-expanded={!!mentionTarget}
-                  aria-activedescendant={
-                    mentionTarget ? `mention-option-${mentionIndex}` : undefined
-                  }
+                  aria-activedescendant={mentionTarget ? `mention-option-${mentionIndex}` : undefined}
                   aria-controls={mentionTarget ? "mention-search" : undefined}
                 />
               </Slate>
@@ -708,42 +619,43 @@ export function AlbusChatInput({
 
             <div className="flex items-center justify-between pt-3">
               <div className="flex items-center gap-2">
-                <Button
-                  variant="tertiary"
-                  size="icon"
-                  className="size-7 rounded-full"
-                >
+                <Button variant="tertiary" size="icon" className="size-7 rounded-full">
                   <Plus className="h-4 w-4" />
                 </Button>
+                <div className="flex items-center rounded-full border border-neutral-200 bg-neutral-50 p-0.5 text-[0.625rem] font-medium">
+                  {(["v1", "v3a", "v3b"] as const).map((v) => (
+                    <button
+                      key={v}
+                      type="button"
+                      onClick={() => setMentionVariant(v)}
+                      className={`rounded-full px-2 py-0.5 transition-colors ${
+                        mentionVariant === v
+                          ? "bg-white text-neutral-900 shadow-sm"
+                          : "text-neutral-400 hover:text-neutral-600"
+                      }`}
+                    >
+                      {v === "v1" ? "v1" : v === "v3a" ? "A" : "B"}
+                    </button>
+                  ))}
+                </div>
               </div>
-
               <div className="flex items-center gap-3">
                 {showModeSelector && (
-                  <div
-                    ref={menuContainerRef}
-                    className="relative border-[#eff1f3] border-r pr-3"
-                  >
+                  <div ref={menuContainerRef} className="relative border-[#eff1f3] border-r pr-3">
                     <Button
                       variant="tertiary"
                       className="h-7 gap-1 px-2"
                       onClick={() => {
                         if (!menuOpen && menuContainerRef.current) {
-                          const rect =
-                            menuContainerRef.current.getBoundingClientRect();
-                          setMenuStyle({
-                            position: "fixed",
-                            bottom: window.innerHeight - rect.top + 8,
-                            right: window.innerWidth - rect.right,
-                          });
+                          const rect = menuContainerRef.current.getBoundingClientRect();
+                          setMenuStyle({ position: "fixed", bottom: window.innerHeight - rect.top + 8, right: window.innerWidth - rect.right });
                         }
                         setMenuOpen((o) => !o);
                       }}
                     >
                       <currentMode.Icon className="h-4 w-4" />
                       {currentMode.label}
-                      <ChevronDown
-                        className={`h-[18px] w-[18px] transition-transform duration-150 ${menuOpen ? "rotate-180" : ""}`}
-                      />
+                      <ChevronDown className={`h-[18px] w-[18px] transition-transform duration-150 ${menuOpen ? "rotate-180" : ""}`} />
                     </Button>
                   </div>
                 )}
@@ -762,51 +674,53 @@ export function AlbusChatInput({
         </div>
       </div>
 
-      {/* Mention search menu */}
-      {mentionTarget && (
+      {mentionTarget && mentionVariant === "v3a" && (
+        <AlbusMentionSearchV3A
+          ref={mentionV3ARef}
+          query={mentionText}
+          style={mentionStyle}
+          onSelect={handleV3Select}
+          onInsertText={handleV3InsertText}
+        />
+      )}
+      {mentionTarget && mentionVariant === "v3b" && (
+        <AlbusMentionSearchV3B
+          ref={mentionV3BRef}
+          query={mentionText}
+          style={mentionStyle}
+          onSelect={handleV3Select}
+          onInsertText={handleV3InsertText}
+        />
+      )}
+      {mentionTarget && mentionVariant === "v1" && (
         <AlbusMentionSearch
           ref={mentionRef}
-          groups={mentionGroups}
+          parsedQuery={parsedQuery}
           activeIndex={mentionIndex}
           style={mentionStyle}
-          hasQuery={parsedQuery.mode === "free" && mentionQuery.length > 0}
-          expandedCategory={selectedCategory}
-          expandedAttribute={selectedAttribute}
           onSelect={insertMention}
-          onCategorySelect={handleCategorySelect}
-          onCategoryBack={handleCategoryBack}
-          onAttributeSelect={handleAttributeSelect}
-          onAttributeBack={handleAttributeBack}
           onAttributeValueSelect={handleAttributeValueSelect}
+          onAttributeClick={handleAttributeClick}
         />
       )}
 
-      {/* Suggestions panel */}
-      {suggestions.length > 0 &&
-        focused &&
-        suggestionsVisible &&
-        !mentionTarget && (
-          <AlbusSuggestionsPanel
-            suggestions={suggestions}
-            position={suggestionsPosition}
-            style={suggestionsStyle}
-            revealed={suggestionsRevealed}
-            onSelect={(s) => {
-              Transforms.delete(editor, {
-                at: {
-                  anchor: Editor.start(editor, []),
-                  focus: Editor.end(editor, []),
-                },
-              });
-              Transforms.insertText(editor, s, {
-                at: Editor.start(editor, []),
-              });
-              setPlainText(s);
-              onChange?.(s);
-              setFocused(false);
-            }}
-          />
-        )}
+      {suggestions.length > 0 && focused && suggestionsVisible && !mentionTarget && (
+        <AlbusSuggestionsPanel
+          suggestions={suggestions}
+          position={suggestionsPosition}
+          style={suggestionsStyle}
+          revealed={suggestionsRevealed}
+          onSelect={(s) => {
+            Transforms.delete(editor, {
+              at: { anchor: Editor.start(editor, []), focus: Editor.end(editor, []) },
+            });
+            Transforms.insertText(editor, s, { at: Editor.start(editor, []) });
+            setPlainText(s);
+            onChange?.(s);
+            setFocused(false);
+          }}
+        />
+      )}
 
       {showModeSelector && menuOpen && (
         <AlbusModeMenu
