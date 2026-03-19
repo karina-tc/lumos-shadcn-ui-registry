@@ -1,0 +1,22 @@
+<svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 28.53">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #f35325;
+      }
+      .cls-2 {
+        fill: #81bc06;
+      }
+      .cls-3 {
+        fill: #05a6f0;
+      }
+      .cls-4 {
+        fill: #ffba08;
+      }
+    </style>
+  </defs>
+  <path class="cls-1" d="M0,5.5H10v10H0Z" />
+  <path class="cls-2" d="M11,5.5H21v10H11Z" />
+  <path class="cls-3" d="M0,16.5H10v10H0Z" />
+  <path class="cls-4" d="M11,16.5H21v10H11Z" />
+</svg>
