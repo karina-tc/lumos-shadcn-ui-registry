@@ -17,6 +17,7 @@ import {
   lumosAnalyticsIndex,
   lumosIntegrationsIndex,
   lumosSettingsIndex,
+  fullAppDemo,
 } from "@/app/demo/[name]/blocks/lumos-demos";
 
 // components
@@ -79,6 +80,7 @@ export const demos: { [name: string]: Demo } = {
   "lumos-analytics-index": lumosAnalyticsIndex,
   "lumos-integrations-index": lumosIntegrationsIndex,
   "lumos-settings-index": lumosSettingsIndex,
+  "full-app-demo": fullAppDemo,
 
   // components
   "brand-header": brandHeader,

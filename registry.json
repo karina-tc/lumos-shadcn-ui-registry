@@ -176,6 +176,22 @@
       ]
     },
     {
+      "name": "full-app-demo",
+      "type": "registry:block",
+      "title": "Full App Demo",
+      "description": "Demo page showing the FullAppShell layout with working sidebar toggle",
+      "registryDependencies": [
+        "https://lumos-shadcn-ui-registry.vercel.app/r/full-app-layout.json"
+      ],
+      "files": [
+        {
+          "path": "src/app/demo/[name]/blocks/full-app-demo.tsx",
+          "type": "registry:page",
+          "target": "app/page.tsx"
+        }
+      ]
+    },
+    {
       "name": "brand-header",
       "type": "registry:component",
       "title": "Brand Header",

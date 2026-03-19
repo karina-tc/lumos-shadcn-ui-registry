@@ -14,6 +14,7 @@ import LumosAccessPoliciesIndex from "@/app/demo/[name]/blocks/lumos-access-poli
 import LumosAnalyticsIndex from "@/app/demo/[name]/blocks/lumos-analytics-index";
 import LumosIntegrationsIndex from "@/app/demo/[name]/blocks/lumos-integrations-index";
 import LumosSettingsIndex from "@/app/demo/[name]/blocks/lumos-settings-index";
+import FullAppDemo from "@/app/demo/[name]/blocks/full-app-demo";
 
 export const blank = {
   name: "blank",
@@ -88,4 +89,9 @@ export const lumosIntegrationsIndex = {
 export const lumosSettingsIndex = {
   name: "lumos-settings-index",
   components: { Default: <LumosSettingsIndex /> },
+};
+
+export const fullAppDemo = {
+  name: "full-app-demo",
+  components: { Default: <FullAppDemo /> },
 };
