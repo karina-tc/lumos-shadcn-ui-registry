@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { LumosLayout } from "@/components/lumos-layout";
 import { AlbusChatInput } from "@/components/albus-chat-input";
 import { AlbusSymbol } from "@/components/albus-symbol";
 
@@ -16,7 +15,7 @@ export default function LumosAlbusIndex() {
   const [value, setValue] = useState("");
 
   return (
-    <LumosLayout activeItem="Ask Albus" title="Ask Albus">
+    
       <div className="flex h-full items-center justify-center p-5">
         <div className="flex w-full max-w-[560px] flex-col items-center gap-2.5">
           <div className="flex size-11 flex-col items-center justify-center">
@@ -36,6 +35,6 @@ export default function LumosAlbusIndex() {
           />
         </div>
       </div>
-    </LumosLayout>
+    
   );
 }

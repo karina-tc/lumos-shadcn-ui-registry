@@ -1,4 +1,3 @@
-import { LumosLayout } from "@/components/lumos-layout";
 import { PageHeader } from "@/components/page-header";
 export default function LumosActivityLogIndex() {
   const events = [
@@ -61,7 +60,7 @@ export default function LumosActivityLogIndex() {
   ];
 
   return (
-    <LumosLayout title="Activity Log" activeItem="Activity Log">
+    
         <main className="flex-1 overflow-auto bg-background p-6">
           <div className="flex flex-col gap-4">
             <PageHeader title="Activity Log" />
@@ -113,6 +112,6 @@ export default function LumosActivityLogIndex() {
             </div>
           </div>
         </main>
-    </LumosLayout>
+    
   );
 }

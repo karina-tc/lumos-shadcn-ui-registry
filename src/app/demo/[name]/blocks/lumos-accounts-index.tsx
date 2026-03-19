@@ -1,4 +1,3 @@
-import { LumosLayout } from "@/components/lumos-layout";
 import { PageHeader } from "@/components/page-header";
 import { PageTabs } from "@/components/page-tabs";
 export default function LumosAccountsIndex() {
@@ -12,7 +11,7 @@ export default function LumosAccountsIndex() {
   ];
 
   return (
-    <LumosLayout title="Accounts" activeItem="Accounts">
+    
         <main className="flex-1 overflow-auto bg-background p-6">
           <div className="flex flex-col gap-4">
             {/* Page title + description */}
@@ -77,6 +76,6 @@ export default function LumosAccountsIndex() {
             </div>
           </div>
         </main>
-    </LumosLayout>
+    
   );
 }

@@ -1,4 +1,3 @@
-import { LumosLayout } from "@/components/lumos-layout";
 import { PageHeader } from "@/components/page-header";
 export default function LumosSettingsIndex() {
   const settingsCategories = [
@@ -12,7 +11,7 @@ export default function LumosSettingsIndex() {
   ];
 
   return (
-    <LumosLayout title="Settings" activeItem="Settings">
+    
         <main className="flex-1 overflow-auto bg-background p-6">
           <PageHeader title="Settings" />
 
@@ -92,6 +91,6 @@ export default function LumosSettingsIndex() {
             </div>
           </div>
         </main>
-    </LumosLayout>
+    
   );
 }

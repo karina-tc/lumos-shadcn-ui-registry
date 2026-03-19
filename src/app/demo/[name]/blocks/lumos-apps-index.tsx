@@ -1,4 +1,3 @@
-import { LumosLayout } from "@/components/lumos-layout";
 import { PageHeader } from "@/components/page-header";
 export default function LumosAppsIndex() {
   const apps = [
@@ -34,7 +33,7 @@ export default function LumosAppsIndex() {
   ];
 
   return (
-    <LumosLayout title="Applications" activeItem="Apps">
+    <>
       <PageHeader title="Applications" actions={<><div className="relative"><svg className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input placeholder="Search for an application" className="h-8 w-56 rounded-md border border-input bg-background pl-8 pr-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring" /></div><button className="inline-flex h-8 items-center gap-1.5 rounded-full bg-primary px-3 text-sm font-medium text-primary-foreground hover:bg-primary/85">+ Add App</button></>} />
 
       <div className="flex flex-1 flex-col overflow-hidden">
@@ -148,6 +147,6 @@ export default function LumosAppsIndex() {
           </div>
         </div>
       </div>
-    </LumosLayout>
+    </>
   );
 }

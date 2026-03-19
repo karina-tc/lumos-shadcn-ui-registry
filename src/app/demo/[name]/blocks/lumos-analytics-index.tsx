@@ -1,4 +1,3 @@
-import { LumosLayout } from "@/components/lumos-layout";
 import { PageHeader } from "@/components/page-header";
 import { PageTabs } from "@/components/page-tabs";
 export default function LumosAnalyticsIndex() {
@@ -56,7 +55,7 @@ export default function LumosAnalyticsIndex() {
   const chartHeight = 120;
 
   return (
-    <LumosLayout title="Analytics" activeItem="Analytics">
+    
         <main className="flex-1 overflow-auto bg-background p-6">
           <div className="flex flex-col gap-5">
 
@@ -197,6 +196,6 @@ export default function LumosAnalyticsIndex() {
 
           </div>
         </main>
-    </LumosLayout>
+    
   );
 }

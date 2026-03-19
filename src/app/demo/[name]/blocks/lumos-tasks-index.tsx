@@ -1,4 +1,3 @@
-import { LumosLayout } from "@/components/lumos-layout";
 import { PageHeader } from "@/components/page-header";
 export default function LumosTasksIndex() {
   const tasks = [
@@ -107,7 +106,7 @@ export default function LumosTasksIndex() {
   }
 
   return (
-    <LumosLayout title="Tasks" activeItem="Tasks">
+    
         <main className="flex-1 overflow-auto bg-background p-6">
           <div className="flex flex-col gap-4">
             <PageHeader title="Tasks" actions={<><button className="inline-flex h-8 items-center gap-2 rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/85">New Task</button></>} />
@@ -161,6 +160,6 @@ export default function LumosTasksIndex() {
             </div>
           </div>
         </main>
-    </LumosLayout>
+    
   );
 }

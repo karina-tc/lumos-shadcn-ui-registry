@@ -1,4 +1,3 @@
-import { LumosLayout } from "@/components/lumos-layout";
 import { PageHeader } from "@/components/page-header";
 export default function LumosIdentitiesIndex() {
   const identities = [
@@ -19,7 +18,7 @@ export default function LumosIdentitiesIndex() {
   }
 
   return (
-    <LumosLayout title="Identities" activeItem="Identities">
+    
         <main className="flex-1 overflow-auto bg-background p-6">
           <div className="flex flex-col gap-4">
             {/* Page title + description */}
@@ -83,6 +82,6 @@ export default function LumosIdentitiesIndex() {
             </div>
           </div>
         </main>
-    </LumosLayout>
+    
   );
 }

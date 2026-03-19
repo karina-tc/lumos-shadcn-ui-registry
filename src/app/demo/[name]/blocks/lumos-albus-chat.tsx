@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { LumosLayout } from "@/components/lumos-layout";
 import { AlbusSymbol } from "@/components/albus-symbol";
 import { AlbusChatInput } from "@/components/albus-chat-input";
 import { AlbusHistoryPanel } from "@/components/albus-history-panel";
@@ -47,7 +46,7 @@ export default function LumosAlbusChat() {
   const [historyOpen, setHistoryOpen] = useState(false);
 
   return (
-    <LumosLayout activeItem="Ask Albus" title="Ask Albus">
+    <>
       <div className="flex h-full flex-col">
         {/* Page header */}
         <header className="shrink-0 p-4 flex items-center justify-between">
@@ -143,6 +142,6 @@ export default function LumosAlbusChat() {
         recentItems={recentHistoryItems}
         bookmarkedItems={bookmarkedHistoryItems}
       />
-    </LumosLayout>
+    </>
   );
 }

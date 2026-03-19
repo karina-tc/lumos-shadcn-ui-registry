@@ -1,4 +1,3 @@
-import { LumosLayout } from "@/components/lumos-layout";
 import { PageHeader } from "@/components/page-header";
 export default function LumosOnboardingIndex() {
   const onboardings = [
@@ -75,7 +74,7 @@ export default function LumosOnboardingIndex() {
   }
 
   return (
-    <LumosLayout title="Onboarding" activeItem="Employee Lifecycle">
+    
         <main className="flex-1 overflow-auto bg-background p-6">
           <div className="flex flex-col gap-4">
             <PageHeader title="Onboarding" actions={<><button className="inline-flex h-8 items-center gap-2 rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/85">New Onboarding</button></>} />
@@ -133,6 +132,6 @@ export default function LumosOnboardingIndex() {
             </div>
           </div>
         </main>
-    </LumosLayout>
+    
   );
 }
