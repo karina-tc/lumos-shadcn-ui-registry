@@ -158,6 +158,7 @@
         "brand-sidebar"
       ],
       "registryDependencies": [
+        "https://lumos-shadcn-ui-registry.vercel.app/r/lumos-layout.json",
         "https://lumos-shadcn-ui-registry.vercel.app/r/brand-header.json",
         "https://lumos-shadcn-ui-registry.vercel.app/r/brand-sidebar.json"
       ],

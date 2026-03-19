@@ -155,9 +155,6 @@ export function BrandHeader({ title, sidenavOpen = true, onToggleSidenav }: Bran
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* Albus */}
-        <Button variant="tertiary" className="-mr-5 px-3 h-7">Ask Albus</Button>
-
       </div>
     </header>
   );
