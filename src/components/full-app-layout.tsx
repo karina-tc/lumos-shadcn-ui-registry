@@ -4,7 +4,6 @@ import React, { ReactNode, useState } from "react";
 import { usePathname } from "next/navigation";
 import { BrandHeader } from "@/components/brand-header";
 import { BrandSidebar } from "@/components/brand-sidebar";
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 
 const routes: Array<{ path: string; title: string }> = [
   { path: "/", title: "Ask Albus" },
@@ -30,18 +29,16 @@ export function FullAppShell({ children }: { children: ReactNode }) {
   const title = currentRoute?.title || "";
 
   return (
-    <SidebarProvider>
-      <SidebarInset>
-        <BrandHeader
-          title={title}
-          sidenavOpen={sidenavOpen}
-          onToggleSidenav={() => setSidenavOpen((o) => !o)}
-        />
-        <main className="flex flex-1 flex-col gap-4 p-4 bg-background">
-          <BrandSidebar open={sidenavOpen} />
-          <div className="flex-1">{children}</div>
-        </main>
-      </SidebarInset>
-    </SidebarProvider>
+    <div className="flex h-screen w-full flex-col overflow-hidden bg-sidebar">
+      <BrandHeader
+        title={title}
+        sidenavOpen={sidenavOpen}
+        onToggleSidenav={() => setSidenavOpen((o) => !o)}
+      />
+      <div className="flex flex-1 overflow-hidden">
+        <BrandSidebar open={sidenavOpen} />
+        <main className="flex-1 overflow-auto bg-background">{children}</main>
+      </div>
+    </div>
   );
 }
