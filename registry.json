@@ -213,6 +213,22 @@
       ]
     },
     {
+      "name": "full-app-layout",
+      "type": "registry:component",
+      "title": "Full App Layout Shell",
+      "description": "Route-aware shell component for full-app installations. Manages sidebar state and displays page title based on current route.",
+      "registryDependencies": [
+        "https://lumos-shadcn-ui-registry.vercel.app/r/brand-header.json",
+        "https://lumos-shadcn-ui-registry.vercel.app/r/brand-sidebar.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/full-app-layout.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "accordion",
       "type": "registry:ui",
       "title": "Accordion",
