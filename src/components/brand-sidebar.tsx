@@ -73,7 +73,7 @@ export function BrandSidebar({ navSections = defaultNav, activeItem, open = true
   };
 
   return (
-    <div className={`!bg-white flex h-full shrink-0 flex-col  overflow-y-auto overflow-x-hidden transition-[width] duration-300 ease-in-out ${open ? "w-52" : "w-0 border-r-0"}`}>
+    <div className={`!bg-white flex h-full shrink-0 flex-col border-r border-sidebar-border overflow-y-auto overflow-x-hidden transition-[width] duration-300 ease-in-out ${open ? "w-52" : "w-0 border-r-0"}`}>
       <div className="flex flex-col gap-5 pt-6 pb-2 px-0 !bg-white">
         {navSections.map((section) => (
           <div key={section.title} className="flex flex-col">
