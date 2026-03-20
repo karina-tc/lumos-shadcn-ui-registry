@@ -151,17 +151,11 @@ Use the `/import-figma-component` skill to convert a Figma component into a code
 
 The skill reads Figma auto layout, variants, tokens, and properties, maps them to Tailwind/CVA patterns using the Lumos token system, and creates the component file, demo, and registry entry. See the skill for the full Figma-to-code translation guide.
 
-## Viewing Spells
+## Spell Template
 
-Spells are blank prototypes accessible at `/spells/[project-name]`. The route auto-formats the project name for display.
+View the blank spell template at **`http://localhost:3000/spells/project`** — a clean canvas with the full Lumos app layout ready to build on.
 
-Examples:
-- `localhost:3000/spells/access-reviews` → "Access Reviews"
-- `localhost:3000/spells/analytics-dashboard` → "Analytics Dashboard"
-
-Each spell is a blank canvas with the full Lumos app layout (header + sidebar) ready for building.
-
-## Creating a Spell (Template)
+## Creating a Spell
 
 `spells/lumos-spells/` is the working template for standalone spell projects (separate from the registry).
 
