@@ -11,7 +11,8 @@
     "lint:fix": "biome check --write",
     "test": "vitest run",
     "test:watch": "vitest",
-    "registry:build": "node scripts/registry-build.mjs"
+    "registry:build": "node scripts/registry-build.mjs",
+    "create-spell": "bash scripts/create-spell.sh"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",

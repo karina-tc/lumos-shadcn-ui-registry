@@ -5,6 +5,7 @@ A shadcn/ui registry serving the Lumos design system — tokens, components, blo
 ## Commands
 
 ```
+pnpm create-spell   # Create a new spell from the template
 pnpm dev            # registry:build + next dev (Turbopack)
 pnpm build          # registry:build + next build
 pnpm lint           # biome check
@@ -153,27 +154,36 @@ The skill reads Figma auto layout, variants, tokens, and properties, maps them t
 
 ## Spell Template
 
-View the blank spell template at **`http://localhost:3000/spells/project`** — a clean canvas with the full Lumos app layout ready to build on.
+View the blank spell template at **localhost:3000/spells/project** — a clean canvas with the full Lumos app layout ready to build on.
 
 ## Creating a Spell
 
-`spells/lumos-spells/` is the working template for standalone spell projects (separate from the registry).
+The fastest way to create a new spell:
 
-To create a new spell as a standalone Next.js app:
-
-1. Branch off your own work: `git checkout -b spell/your-feature`
-2. Copy the template: `cp -r spells/lumos-spells spells/your-spell-name`
-3. Edit `spells/your-spell-name/package.json` and `README.md` with your spell name
-4. Customize the home page (`src/app/page.tsx`) based on your use case
-5. Add pages as needed — all Lumos components available via `@/components/*` imports
-
-To develop locally:
 ```bash
-cd spells/your-spell-name
-pnpm install
+pnpm create-spell my-feature-name
+```
+
+This script:
+1. Copies the template from `spells/lumos-spells`
+2. Sets up the new spell directory with the correct package name
+3. Installs all dependencies
+4. Prints next steps
+
+Then open the spell directory in Claude Code and ask it to build your feature:
+
+```bash
+# After the script completes
+cd spells/my-feature-name
 pnpm dev
 ```
 
-Navigate to http://localhost:3001 and iterate.
+The spell runs on localhost:3001 with full access to all Lumos components via `@/components/*` imports.
+
+**Manual alternative** (if you prefer):
+1. Branch off: `git checkout -b spell/your-feature`
+2. Copy template: `cp -r spells/lumos-spells spells/your-spell-name`
+3. Update `package.json` with your spell name
+4. Run `pnpm install && pnpm dev`
 
 See `docs/superpowers/specs/2026-03-20-lumos-spells-design.md` for architecture details.
