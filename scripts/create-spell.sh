@@ -92,9 +92,19 @@ When you open this folder in Claude Code, follow these steps **exactly**:
    - Step-by-step implementation tasks
    - Testing strategy
 
-3. **Execute the plan** — implement each task, test, commit
+3. **Add to Notion** — after writing PLAN.md, before implementation:
+   - Ask: "Which Lumos product does this spell relate to?" (pick from: AI - Albus, Identity Intelligence, AppStore, Access Reviews, LCM, Settings, Platform, Policies, Identities, Tasks, Vendors)
+   - Create entry in Notion "Room of Requirement - Lumos Design Prototypes" database with:
+     - **Spell Name**: the spell name
+     - **Code**: GitHub branch URL (e.g., `https://github.com/karina-tc/lumos-shadcn-ui-registry/tree/BRANCH_NAME`)
+     - **Preview**: localhost URL (e.g., `http://localhost:3000/spells/SPELL_NAME`)
+     - **Tags**: the selected Lumos product
+     - **Content**: full PLAN.md content in the Notion page body
+   - Use Notion MCP tool to create the entry
 
-4. **Track progress** — update `SESSIONS.md` with each commit:
+4. **Execute the plan** — implement each task, test, commit
+
+5. **Track progress** — update `SESSIONS.md` with each commit:
    - What was done
    - Files changed
    - Commit message

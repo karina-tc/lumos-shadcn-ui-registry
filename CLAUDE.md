@@ -29,7 +29,15 @@ If you're in a spell directory (`src/app/spells/[name]/`), **follow this workflo
    - Step-by-step implementation tasks
    - Testing strategy
 
-3. **Execute the plan** — implement each task, test, commit
+3. **Add to Notion** — after writing PLAN.md, create an entry in the **Room of Requirement** Notion database:
+   - URL: https://www.notion.so/lumosapp/Room-of-Requirement-3283b0ad64028099b0fcf3093ef3b187
+   - Set: Spell Name, Code (GitHub branch URL), Preview (localhost URL), Tags (Lumos product)
+   - Include the full PLAN.md content in the Notion page body
+   - This creates a public record of the spell and its implementation plan
+
+4. **Execute the plan** — implement each task, test, commit
+
+5. **Track progress** — update `SESSIONS.md` with each commit to document what was done
 
 Do not skip to option selection. Do not mention other projects. Focus on **this spell only**.
 
