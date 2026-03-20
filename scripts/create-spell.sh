@@ -11,6 +11,7 @@ fi
 
 SPELL_NAME=$1
 SPELL_DIR="spells/$SPELL_NAME"
+BRANCH_NAME="spell/$SPELL_NAME"
 
 # Check if spell already exists
 if [ -d "$SPELL_DIR" ]; then
@@ -18,8 +19,18 @@ if [ -d "$SPELL_DIR" ]; then
   exit 1
 fi
 
+# Check if branch already exists
+if git rev-parse --verify "$BRANCH_NAME" > /dev/null 2>&1; then
+  echo "❌ Branch '$BRANCH_NAME' already exists"
+  exit 1
+fi
+
 echo "🪄 Creating new spell: $SPELL_NAME..."
 echo ""
+
+# Create and checkout branch
+echo "🌿 Creating branch: $BRANCH_NAME..."
+git checkout -b "$BRANCH_NAME"
 
 # Copy template
 cp -r spells/lumos-spells "$SPELL_DIR"
@@ -42,8 +53,11 @@ pnpm install
 echo ""
 echo "✅ Spell '$SPELL_NAME' created successfully!"
 echo ""
+echo "Branch: $BRANCH_NAME"
+echo "Location: $SPELL_DIR"
+echo ""
 echo "To start building:"
 echo "  cd $SPELL_DIR"
 echo "  pnpm dev"
 echo ""
-echo "Then open localhost:3001 and ask Claude to help build your spell!"
+echo "Then open localhost:3000 and ask Claude to help build your spell!"
