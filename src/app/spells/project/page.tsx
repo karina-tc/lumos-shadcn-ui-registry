@@ -3,11 +3,11 @@ import { PageHeader } from '@/components/page-header';
 
 export default function SpellTemplate() {
   return (
-    <LumosLayout>
+    <LumosLayout title="Blank Spell">
       <div className="p-6">
         <PageHeader
-          title="Spell Template"
-          description="Blank canvas — build your prototype here"
+          title="Your Magic Awaits..."
+          description="Build your spell here"
         />
       </div>
     </LumosLayout>
