@@ -129,7 +129,7 @@ export default function SpellPage() {
 
         {/* Metrics Cards */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <LumosCard className="p-6">
+          <LumosCard className="shadow-none p-6">
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">
                 Total Pending
@@ -139,7 +139,7 @@ export default function SpellPage() {
             </div>
           </LumosCard>
 
-          <LumosCard className="p-6">
+          <LumosCard className="shadow-none p-6">
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">
                 Urgent Requests
@@ -151,7 +151,7 @@ export default function SpellPage() {
             </div>
           </LumosCard>
 
-          <LumosCard className="p-6">
+          <LumosCard className="shadow-none p-6">
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">
                 Apps Affected
@@ -175,7 +175,7 @@ export default function SpellPage() {
             />
           </div>
 
-          <LumosCard>
+          <LumosCard className="shadow-none">
             <Table>
               <TableHeader>
                 <TableRow>
