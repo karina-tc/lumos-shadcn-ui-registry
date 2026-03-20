@@ -153,25 +153,23 @@ The skill reads Figma auto layout, variants, tokens, and properties, maps them t
 
 ## Creating a Spell
 
-Spells are lightweight prototypes using Lumos components. Ask Claude to create one:
+Spells are lightweight prototypes using Lumos components. `spells/lumos-spells/` is the working template.
 
-> "Create a spell for [feature area]"
+To create a new spell:
 
-Claude will:
-1. Generate `spells/{spell-name}/` with minimal Next.js app structure
-2. Create a single home page with `LumosLayout` (the app shell with header + sidebar)
-3. Set up path aliases to import from parent registry
-4. Git add → commit
-
-You then add pages as needed. All Lumos components are available via `@/components/*` imports.
+1. Branch off your own work: `git checkout -b spell/your-feature`
+2. Copy the template: `cp -r spells/lumos-spells spells/your-spell-name`
+3. Edit `spells/your-spell-name/package.json` and `README.md` with your spell name
+4. Customize the home page (`src/app/page.tsx`) based on your use case
+5. Add pages as needed — all Lumos components available via `@/components/*` imports
 
 To develop locally:
 ```bash
-cd spells/{spell-name}
+cd spells/your-spell-name
 pnpm install
 pnpm dev
 ```
 
-Navigate to http://localhost:3001 and start building.
+Navigate to http://localhost:3001 and iterate.
 
 See `docs/superpowers/specs/2026-03-20-lumos-spells-design.md` for architecture details.
