@@ -13,9 +13,27 @@ pnpm lint:fix       # biome check --write
 pnpm test           # vitest run
 ```
 
-## Working in a Spell Directory?
+## Building a Spell
 
-If you opened a folder under `src/app/spells/[name]/` in Claude Code, **read and follow the `CLAUDE.md` in that directory first**. Each spell has its own workflow — don't skip it or mention other projects.
+If you're in a spell directory (`src/app/spells/[name]/`), **follow this workflow exactly**:
+
+1. **Ask clarifying questions** — understand what needs to be built
+   - What is the main purpose?
+   - Who is the user?
+   - What are the key features?
+   - Any constraints or preferences?
+
+2. **Write a plan** — create `PLAN.md` in this directory with:
+   - Goal and approach
+   - File structure
+   - Step-by-step implementation tasks
+   - Testing strategy
+
+3. **Execute the plan** — implement each task, test, commit
+
+Do not skip to option selection. Do not mention other projects. Focus on **this spell only**.
+
+Available components via `@/components/*`: `LumosLayout`, `PageHeader`, `LumosButton`, `LumosCard`, `LumosBadge`, and all shadcn/ui primitives.
 
 ## How it works
 
