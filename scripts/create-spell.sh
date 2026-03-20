@@ -59,28 +59,39 @@ export default function SpellPage() {
 }
 EOF
 
-# Create CLAUDE.md to trigger superpowers workflow
+# Create CLAUDE.md to guide spell development workflow
 cat > "$SPELL_DIR/CLAUDE.md" << 'EOF'
-# Spell Development
+# Spell Development Workflow
 
-This spell uses Lumos components from the parent registry. When building features:
+## When you're ready to build:
 
-**Always use superpowers skills:**
-- Invoke `/brainstorming` to design features
-- Invoke `/writing-plans` to create implementation plans
-- Use `superpowers:subagent-driven-development` to execute plans
+1. **Ask clarifying questions** — understand what needs to be built
+   - What is the main purpose?
+   - Who is the user?
+   - What are the key features?
+   - Any constraints or preferences?
 
-**Component access:**
+2. **Write a plan** — create `PLAN.md` in this directory with:
+   - Goal and approach
+   - File structure
+   - Step-by-step implementation tasks
+   - Testing strategy
+
+3. **Execute the plan** — implement each task, test, commit
+
+## Available
+
 All Lumos components available via `@/components/*`:
 - `LumosLayout` — full app shell with header + sidebar
 - `PageHeader` — page title + description
 - `LumosButton`, `LumosCard`, `LumosBadge` — UI components
 - shadcn/ui primitives via `@/components/ui/*`
 
-**Page location:**
-This file: `src/app/spells/$SPELL_NAME/page.tsx`
+## Page location
 
-Build your feature here. Refresh localhost:3000/spells/$SPELL_NAME to see changes.
+Edit: `src/app/spells/$SPELL_NAME/page.tsx`
+
+Refresh localhost:3000/spells/$SPELL_NAME to see changes.
 EOF
 
 echo ""
