@@ -92,6 +92,6 @@ export const lumosSettingsIndex = {
 };
 
 export const fullAppDemo = {
-  name: "full-app-demo",
+  name: "lumos-full-app",
   components: { Default: <FullAppDemo /> },
 };

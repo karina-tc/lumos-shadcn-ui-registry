@@ -80,7 +80,7 @@ export const demos: { [name: string]: Demo } = {
   "lumos-analytics-index": lumosAnalyticsIndex,
   "lumos-integrations-index": lumosIntegrationsIndex,
   "lumos-settings-index": lumosSettingsIndex,
-  "full-app-demo": fullAppDemo,
+  "lumos-full-app": fullAppDemo,
 
   // components
   "brand-header": brandHeader,
