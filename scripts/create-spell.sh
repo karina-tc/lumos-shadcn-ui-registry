@@ -11,7 +11,12 @@ fi
 
 SPELL_NAME=$1
 SPELL_DIR="spells/$SPELL_NAME"
-BRANCH_NAME="spell/$SPELL_NAME"
+
+# Get GitHub username from remote
+GITHUB_URL=$(git config --get remote.origin.url)
+GITHUB_USERNAME=$(echo "$GITHUB_URL" | sed -E 's|.*[:/]([^/]+)/.*|\1|')
+
+BRANCH_NAME="$GITHUB_USERNAME/$SPELL_NAME"
 
 # Check if spell already exists
 if [ -d "$SPELL_DIR" ]; then
