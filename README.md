@@ -13,15 +13,34 @@ The Lumos registry provides:
 - **Blocks** — Full-page templates (apps, identities, analytics, etc.)
 - **Spells** — Blank prototype templates with pre-configured Lumos layout
 
+## Running Locally
+
+```bash
+pnpm install
+pnpm dev
+```
+
+Registry runs on localhost:3000.
+
+## Commands
+
+```bash
+pnpm dev            # Start dev server (Turbopack)
+pnpm build          # Build + generate registry JSON
+pnpm lint           # Lint with Biome
+pnpm lint:fix       # Auto-fix linting issues
+pnpm test           # Run tests (vitest)
+```
+
 ## Getting Started
 
 ### View the Registry
 
-Open http://localhost:3000 to browse components, blocks, and tokens. Each item shows interactive examples and can be opened in v0.
+Open localhost:3000 to browse components, blocks, and tokens. Each item shows interactive examples and can be opened in v0.
 
 ### Access the Spell Template
 
-Blank canvas to build your prototype: http://localhost:3000/spells/project
+Blank canvas to build your prototype: localhost:3000/spells/project
 
 The template includes the full Lumos app layout (header + sidebar) with a blank content area. Perfect for rapid prototyping.
 
@@ -42,26 +61,7 @@ pnpm install
 pnpm dev
 ```
 
-Navigate to http://localhost:3001 and build. All Lumos components available via `@/components/*` imports.
-
-## Running Locally
-
-```bash
-pnpm install
-pnpm dev
-```
-
-Registry runs on http://localhost:3000.
-
-## Commands
-
-```bash
-pnpm dev            # Start dev server (Turbopack)
-pnpm build          # Build + generate registry JSON
-pnpm lint           # Lint with Biome
-pnpm lint:fix       # Auto-fix linting issues
-pnpm test           # Run tests (vitest)
-```
+Navigate to localhost:3001 and build. All Lumos components available via `@/components/*` imports.
 
 ## Architecture
 
