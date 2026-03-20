@@ -1,4 +1,4 @@
-import { ArrowRight, Blocks, Component, ToyBrick } from "lucide-react";
+import { ArrowRight, Blocks, Component, Wand2, ToyBrick } from "lucide-react";
 import Link from "next/link";
 
 import { MCPTabs } from "@/components/registry/mcp-tabs";
@@ -29,6 +29,30 @@ export default function Home() {
           </p>
         </div>
       </div>
+
+      <Card className="mb-4 shadow-none border-primary/20 bg-accent/50">
+        <CardHeader className="space-y-1">
+          <div className="flex items-center justify-between">
+            <CardTitle>Spell Template</CardTitle>
+            <div className="rounded-md bg-primary p-1">
+              <Wand2 className="size-5 text-primary-foreground" />
+            </div>
+          </div>
+          <CardDescription>
+            Blank canvas with the full Lumos app layout — ready to build your prototype
+          </CardDescription>
+        </CardHeader>
+
+        <CardContent>
+          <Link
+            href="/spells/project"
+            className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
+          >
+            Open Template
+            <ArrowRight className="size-4" />
+          </Link>
+        </CardContent>
+      </Card>
 
       <Card className="mb-4 shadow-none">
         <CardHeader className="space-y-1">
