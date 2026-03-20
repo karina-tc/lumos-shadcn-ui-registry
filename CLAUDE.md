@@ -158,12 +158,12 @@ Spells are lightweight prototypes using Lumos components. Ask Claude to create o
 > "Create a spell for [feature area]"
 
 Claude will:
-1. Ask 3 questions (feature, name, pages)
-2. Generate `spells/{spell-name}/` with Next.js app structure
-3. Create pages importing from parent registry components
-4. Git add → commit → create feature branch
+1. Generate `spells/{spell-name}/` with minimal Next.js app structure
+2. Create a single home page with `LumosLayout` (the app shell with header + sidebar)
+3. Set up path aliases to import from parent registry
+4. Git add → commit
 
-You can then edit pages and iterate. All Lumos components are available via `@/components/*` imports.
+You then add pages as needed. All Lumos components are available via `@/components/*` imports.
 
 To develop locally:
 ```bash
@@ -171,5 +171,7 @@ cd spells/{spell-name}
 pnpm install
 pnpm dev
 ```
+
+Navigate to http://localhost:3001 and start building.
 
 See `docs/superpowers/specs/2026-03-20-lumos-spells-design.md` for architecture details.
