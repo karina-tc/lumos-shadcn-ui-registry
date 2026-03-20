@@ -5,9 +5,7 @@ function LumosCard({ className, ...props }: React.HTMLAttributes<HTMLDivElement>
   return (
     <div
       className={cn(
-        "rounded-lg border border-border bg-card p-4 transition-shadow",
-        "[box-shadow:-6px_12px_32px_-6px_rgba(0,0,0,0.16)]",
-        "hover:[box-shadow:-6px_12px_40px_-6px_rgba(0,0,0,0.24)]",
+        "rounded-lg border border-border bg-card p-4",
         className
       )}
       {...props}
