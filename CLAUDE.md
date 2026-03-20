@@ -35,6 +35,61 @@ Do not skip to option selection. Do not mention other projects. Focus on **this 
 
 Available components via `@/components/*`: `LumosLayout`, `PageHeader`, `LumosButton`, `LumosCard`, `LumosBadge`, and all shadcn/ui primitives.
 
+## Design Rules
+
+**Do NOT add drop shadows unless explicitly requested.** Lumos uses the `shadow-app-tile` system for cards only. No other shadows. No depth effects without reason.
+
+### Typography
+
+Always use **Roobert**. Never Inter, never system fonts.
+
+- `<h1>` — 24px, weight 500 (page titles)
+- `<h2>` — 18px, weight 500 (section headings)
+- `<h3>` — 16px, weight 500 (subsection headings)
+- `<p>` body — 14px, weight 400 (normal) / 500 (medium) / 700 (bold)
+- `<p>` caption — 12px, weight 400 (metadata, helper text)
+
+**Always use semantic HTML for headings** — never `<div>` or `<span>` for heading-level text.
+
+### Colors
+
+Use **semantic token classes only** — never hard-code hex values:
+- Primary action: `bg-primary`, `text-primary` (orange #FE5019)
+- Text: `text-foreground` (primary), `text-muted-foreground` (secondary labels)
+- Borders: `border-border` (dividers), `border-destructive` (errors)
+- Background: `bg-background`, `bg-secondary` (nested containers)
+
+### Spacing
+
+All spacing must be a multiple of **4px**. Use Tailwind `gap` on containers, not scattered `margin` on children.
+
+- Tight (4–8px): Items that belong together (icon + label)
+- Medium (16–24px): Related but distinct items (form fields)
+- Loose (32px+): Separate sections
+
+### Borders & Radius
+
+- Buttons: `rounded-full` (999px)
+- Inputs: `rounded-lg` (8px)
+- Cards: `rounded-xl` (12px)
+- Borders: always use semantic classes (`border-border`, `border-destructive`)
+
+**Nested radius rule:** Inner radius = outer radius − padding. E.g., card at `rounded-xl` with `p-1` → inner content at `rounded-lg`.
+
+### Shadows
+
+Only card tiles use shadows, and only the Lumos shadow system:
+- `shadow-app-tile` — standard cards
+- `shadow-app-tile-hover` — on hover
+- **No other shadows. Ever.** No raw `box-shadow` values. No depth effects unless the card system is being used.
+
+### Visual Hierarchy
+
+- Exactly one primary CTA per view (orange primary button)
+- Adjacent heading levels must differ in both size AND weight to read as hierarchy
+- Supporting text uses `text-muted-foreground`, not `text-foreground`
+- Never make two elements look almost identical — they must be clearly distinct or the hierarchy fails
+
 ## How it works
 
 `registry.json` is the source of truth. Every component, block, and theme is declared there.
