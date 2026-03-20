@@ -47,6 +47,50 @@ Available components via `@/components/*`: `LumosLayout`, `PageHeader`, `LumosBu
 - **Semantic color classes** only — never hard-code hex values
 - **Nested radius rule**: Inner rounded elements must be smaller than outer
 
+## Using LumosLayout
+
+`LumosLayout` is the main shell component for building pages. **Do not modify this component** — use its props instead:
+
+```tsx
+<LumosLayout activeItem="Navigation Label" title="Page Title">
+  <div className="p-6">
+    {/* Your content here */}
+  </div>
+</LumosLayout>
+```
+
+**Props:**
+
+| Prop | Type | Purpose | Example |
+|------|------|---------|---------|
+| `activeItem` | `string` | Highlights a nav item by label | `activeItem="Access Reviews"` |
+| `title` | `string` | Sets the page title in the header | `title="User Management"` |
+| `children` | `ReactNode` | Page content (required) | `<div>Page content</div>` |
+
+**How activeItem works:** Pass the exact label of a nav item from the sidebar. The sidebar will highlight it visually. This is the preferred way to indicate which page the user is on — **do not modify BrandSidebar or LumosLayout to add this capability**.
+
+**Example:**
+```tsx
+// ✅ Correct — use activeItem prop
+<LumosLayout activeItem="Analytics" title="Analytics Dashboard">
+  <DashboardContent />
+</LumosLayout>
+
+// ❌ Wrong — don't modify components
+// Change: I need to highlight the Analytics item, so I'll modify BrandSidebar...
+```
+
+## Core Component Props
+
+**Before modifying a component, check if it already supports what you need via props:**
+
+- **LumosButton**: `variant` (primary, secondary, outline, ghost), `size` (default, sm, lg), `disabled`, `isLoading`
+- **LumosCard**: `className` for custom styling — always use this, never override the base styles
+- **PageHeader**: `title`, `description`, `action` (optional button/CTA)
+- **LumosBadge**: `variant` (blue, green, red, yellow, orange, purple), `size` (default, sm, lg)
+
+**Rule: If a component already has a prop for what you need, use it. Do not modify the component.**
+
 ## How it works
 
 `registry.json` is the source of truth. Every component, block, and theme is declared there.
