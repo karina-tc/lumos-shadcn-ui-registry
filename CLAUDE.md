@@ -150,3 +150,26 @@ Use the `/validate-registry` skill to check:
 Use the `/import-figma-component` skill to convert a Figma component into a coded registry component. Requires Figma MCP server to be configured.
 
 The skill reads Figma auto layout, variants, tokens, and properties, maps them to Tailwind/CVA patterns using the Lumos token system, and creates the component file, demo, and registry entry. See the skill for the full Figma-to-code translation guide.
+
+## Creating a Spell
+
+Spells are lightweight prototypes using Lumos components. Ask Claude to create one:
+
+> "Create a spell for [feature area]"
+
+Claude will:
+1. Ask 3 questions (feature, name, pages)
+2. Generate `spells/{spell-name}/` with Next.js app structure
+3. Create pages importing from parent registry components
+4. Git add → commit → create feature branch
+
+You can then edit pages and iterate. All Lumos components are available via `@/components/*` imports.
+
+To develop locally:
+```bash
+cd spells/{spell-name}
+pnpm install
+pnpm dev
+```
+
+See `docs/superpowers/specs/2026-03-20-lumos-spells-design.md` for architecture details.
