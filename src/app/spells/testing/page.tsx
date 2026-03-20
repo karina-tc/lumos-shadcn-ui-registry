@@ -120,7 +120,7 @@ export default function SpellPage() {
   };
 
   return (
-    <LumosLayout>
+    <LumosLayout activeItem="Access Reviews">
       <div className="space-y-8 p-8">
         <PageHeader
           title="Access Reviews"
