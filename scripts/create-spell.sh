@@ -59,11 +59,26 @@ export default function SpellPage() {
 }
 EOF
 
+# Create START_HERE.md to guide Claude immediately
+cat > "$SPELL_DIR/START_HERE.md" << 'EOF'
+# Your Spell Awaits 🪄
+
+Before you do anything else:
+
+1. **Read `CLAUDE.md`** in this directory
+2. **Follow it exactly** — ask clarifying questions, write a plan, build it
+3. **Don't skip to other projects** — this is a fresh spell
+
+Ready? Tell me what you want to build!
+EOF
+
 # Create CLAUDE.md to guide spell development workflow
 cat > "$SPELL_DIR/CLAUDE.md" << 'EOF'
 # Spell Development Workflow
 
-## When you're ready to build:
+## ⚡ READ THIS FIRST
+
+When you open this folder in Claude Code, follow these steps **exactly**:
 
 1. **Ask clarifying questions** — understand what needs to be built
    - What is the main purpose?
@@ -79,7 +94,11 @@ cat > "$SPELL_DIR/CLAUDE.md" << 'EOF'
 
 3. **Execute the plan** — implement each task, test, commit
 
-## Available
+Do not skip to option selection. Do not mention other projects. Focus on **this spell only**.
+
+---
+
+## Available Components
 
 All Lumos components available via `@/components/*`:
 - `LumosLayout` — full app shell with header + sidebar

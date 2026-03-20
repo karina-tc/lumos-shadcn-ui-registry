@@ -13,6 +13,10 @@ pnpm lint:fix       # biome check --write
 pnpm test           # vitest run
 ```
 
+## Working in a Spell Directory?
+
+If you opened a folder under `src/app/spells/[name]/` in Claude Code, **read and follow the `CLAUDE.md` in that directory first**. Each spell has its own workflow — don't skip it or mention other projects.
+
 ## How it works
 
 `registry.json` is the source of truth. Every component, block, and theme is declared there.
