@@ -5,7 +5,7 @@ A shadcn/ui registry serving the Lumos design system — tokens, components, blo
 ## Commands
 
 ```
-pnpm create-spell   # Create a new spell from the template
+pnpm create-spell   # Create a new spell route (creates branch + page.tsx)
 pnpm dev            # registry:build + next dev (Turbopack)
 pnpm build          # registry:build + next build
 pnpm lint           # biome check
@@ -165,25 +165,18 @@ pnpm create-spell my-feature-name
 ```
 
 This script:
-1. Copies the template from `spells/lumos-spells`
-2. Sets up the new spell directory with the correct package name
-3. Installs all dependencies
-4. Prints next steps
+1. Creates a `githubusername/my-feature-name` branch
+2. Creates `src/app/spells/my-feature-name/page.tsx` with a blank template
+3. Ready to build immediately
 
-Then open the spell directory in Claude Code and ask it to build your feature:
+Then:
 
 ```bash
-# After the script completes
-cd spells/my-feature-name
 pnpm dev
 ```
 
-The spell runs on localhost:3000 with full access to all Lumos components via `@/components/*` imports.
+The registry runs on localhost:3000. Your spell is at **localhost:3000/spells/my-feature-name**.
 
-**Manual alternative** (if you prefer):
-1. Branch off: `git checkout -b spell/your-feature`
-2. Copy template: `cp -r spells/lumos-spells spells/your-spell-name`
-3. Update `package.json` with your spell name
-4. Run `pnpm install && pnpm dev`
+Open the registry directory in Claude Code and ask it to help build your spell. All Lumos components are available via `@/components/*` imports.
 
 See `docs/superpowers/specs/2026-03-20-lumos-spells-design.md` for architecture details.

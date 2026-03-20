@@ -25,6 +25,7 @@ Registry runs on localhost:3000.
 ## Commands
 
 ```bash
+pnpm create-spell   # Create a new spell route
 pnpm dev            # Start dev server (Turbopack)
 pnpm build          # Build + generate registry JSON
 pnpm lint           # Lint with Biome
@@ -44,24 +45,26 @@ Blank canvas to build your prototype: localhost:3000/spells/project
 
 The template includes the full Lumos app layout (header + sidebar) with a blank content area. Perfect for rapid prototyping.
 
-### Create a Spell (Standalone App)
+### Create a Spell (Routes in the Registry)
 
-Spells are standalone Next.js projects that import components from the registry:
+Create a new spell route with:
 
 ```bash
-# Branch off your work
-git checkout -b spell/your-feature
+pnpm create-spell my-feature-name
+```
 
-# Copy the template
-cp -r spells/lumos-spells spells/your-spell-name
+This creates:
+- A `githubusername/my-feature-name` branch
+- A blank page at `src/app/spells/my-feature-name/page.tsx`
+- Ready to build immediately on localhost:3000/spells/my-feature-name
 
-# Customize
-cd spells/your-spell-name
-pnpm install
+Then start the registry:
+
+```bash
 pnpm dev
 ```
 
-Navigate to localhost:3001 and build. All Lumos components available via `@/components/*` imports.
+Open the registry directory in Claude Code and ask it to help build your spell. All Lumos components available via `@/components/*` imports.
 
 ## Architecture
 

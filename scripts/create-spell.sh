@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Create a new Lumos spell from the template
+# Create a new Lumos spell route in the registry
 
 if [ -z "$1" ]; then
   echo "Usage: ./scripts/create-spell.sh <spell-name>"
@@ -10,7 +10,7 @@ if [ -z "$1" ]; then
 fi
 
 SPELL_NAME=$1
-SPELL_DIR="spells/$SPELL_NAME"
+SPELL_DIR="src/app/spells/$SPELL_NAME"
 
 # Get GitHub username from remote
 GITHUB_URL=$(git config --get remote.origin.url)
@@ -37,32 +37,35 @@ echo ""
 echo "🌿 Creating branch: $BRANCH_NAME..."
 git checkout -b "$BRANCH_NAME"
 
-# Copy template
-cp -r spells/lumos-spells "$SPELL_DIR"
+# Create spell directory
+mkdir -p "$SPELL_DIR"
 
-# Update package.json name
-echo "📦 Updating package.json..."
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  # macOS
-  sed -i '' "s/@lumos\/spell-lumos-spells/@lumos\/spell-$SPELL_NAME/g" "$SPELL_DIR/package.json"
-else
-  # Linux
-  sed -i "s/@lumos\/spell-lumos-spells/@lumos\/spell-$SPELL_NAME/g" "$SPELL_DIR/package.json"
-fi
+# Create spell page with blank template
+cat > "$SPELL_DIR/page.tsx" << 'EOF'
+import { LumosLayout } from '@/components/lumos-layout';
+import { PageHeader } from '@/components/page-header';
 
-# Install dependencies
-echo "📥 Installing dependencies..."
-cd "$SPELL_DIR"
-pnpm install
+export default function SpellPage() {
+  return (
+    <LumosLayout>
+      <div className="p-6">
+        <PageHeader
+          title="Your Magic Awaits..."
+          description="Build your spell here"
+        />
+      </div>
+    </LumosLayout>
+  );
+}
+EOF
 
 echo ""
 echo "✅ Spell '$SPELL_NAME' created successfully!"
 echo ""
 echo "Branch: $BRANCH_NAME"
-echo "Location: $SPELL_DIR"
+echo "Location: $SPELL_DIR/page.tsx"
 echo ""
-echo "To start building:"
-echo "  cd $SPELL_DIR"
-echo "  pnpm dev"
+echo "Registry is already running on localhost:3000"
+echo "Open the spell at: localhost:3000/spells/$SPELL_NAME"
 echo ""
-echo "Then open localhost:3000 and ask Claude to help build your spell!"
+echo "Then open the registry directory in Claude Code and ask it to help build your spell!"
