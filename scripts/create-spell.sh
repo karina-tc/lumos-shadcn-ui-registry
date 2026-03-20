@@ -94,6 +94,12 @@ When you open this folder in Claude Code, follow these steps **exactly**:
 
 3. **Execute the plan** — implement each task, test, commit
 
+4. **Track progress** — update `SESSIONS.md` with each commit:
+   - What was done
+   - Files changed
+   - Commit message
+   - Any notes or decisions
+
 Do not skip to option selection. Do not mention other projects. Focus on **this spell only**.
 
 ---
@@ -111,6 +117,23 @@ All Lumos components available via `@/components/*`:
 Edit: `src/app/spells/$SPELL_NAME/page.tsx`
 
 Refresh localhost:3000/spells/$SPELL_NAME to see changes.
+EOF
+
+# Create SESSIONS.md to track work progress
+cat > "$SPELL_DIR/SESSIONS.md" << 'EOF'
+# Development Sessions
+
+Track all work sessions and commits made to this spell.
+
+## Session 1
+
+- **Started:** [Date]
+- **Goal:** [What we're building]
+
+### Commits
+
+[Commits will be logged here as work progresses]
+
 EOF
 
 echo ""
