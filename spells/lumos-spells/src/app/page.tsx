@@ -1,6 +1,5 @@
 import { LumosLayout } from '@/components/lumos-layout';
 import { PageHeader } from '@/components/page-header';
-import { LumosButton } from '@/components/lumos-button';
 import { Card } from '@/components/ui/card';
 
 export default function Home() {
