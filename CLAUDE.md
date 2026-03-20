@@ -178,7 +178,7 @@ cd spells/my-feature-name
 pnpm dev
 ```
 
-The spell runs on localhost:3001 with full access to all Lumos components via `@/components/*` imports.
+The spell runs on localhost:3000 with full access to all Lumos components via `@/components/*` imports.
 
 **Manual alternative** (if you prefer):
 1. Branch off: `git checkout -b spell/your-feature`
