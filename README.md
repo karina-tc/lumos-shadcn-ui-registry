@@ -1,146 +1,176 @@
-<a href="https://registry-starter.vercel.app/">
-  <h1 align="center">Registry Starter</h1>
-</a>
+# Lumos Design System Registry
 
-<p align="center">
-    Registry Starter is a free, open-source template built with Next.js and Shadcn/ui Registry to accelerate your AI-Native Design System.
-</p>
+A production design system registry built with Next.js, shadcn/ui, and Tailwind CSS. Serves components, tokens, blocks, and full-app layouts for Lumos prototypes and applications.
 
-<p align="center">
-  <a href="#deploy-your-own"><strong>Deploy Your Own</strong></a> ·
-  <a href="#open-in-v0"><strong>Open in v0</strong></a> ·
-  <a href="#theming"><strong>Theming</strong></a> ·
-  <a href="#mcp"><strong>MCP</strong></a> ·
-  <a href="#authentication"><strong>Authentication</strong></a> ·
-  <a href="#running-locally"><strong>Running Locally</strong></a> ·
-  <a href="#file-structure"><strong>File Structure</strong></a> ·
-  <a href="https://ui.shadcn.com/docs/registry"><strong>Read Docs</strong></a>
-</p>
-<br/>
+**Live:** https://lumos-shadcn-ui-registry.vercel.app
 
-## Deploy Your Own
+## Overview
 
-You can deploy your own version of the Next.js Registry Starter to Vercel with one click:
+The Lumos registry provides:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fregistry-starter&project-name=my-registry&repository-name=my-registry&demo-title=Registry%20Starter&demo-description=Registry%20Starter%20is%20a%20free%2C%20open-source%20template%20built%20with%20Next.js%20and%20Shadcn%2Fui%20Registry%20to%20accelerate%20your%20AI-Native%20Design%20System.&demo-url=https%3A%2F%2Fregistry-starter.vercel.app&demo-image=%2F%2Fregistry-starter.vercel.app%2Fpreview.png)
+- **Design Tokens** — Orange primary, neutral color palette, Roobert font, semantic colors
+- **Components** — Brand header, sidebar, buttons, badges, page headers, chat UI
+- **Blocks** — Full-page templates (apps, identities, analytics, etc.)
+- **Spells** — Blank prototype templates with pre-configured Lumos layout
 
-## Open in v0
+## Getting Started
 
-[![Open in v0](https://registry-starter.vercel.app/open-in-v0.svg)](https://v0.dev/chat/api/open?title=Dashboard+Kit&prompt=These+are+existing+design+system+styles+and+files.+Please+utilize+them+alongside+base+components+to+build.&url=https%3A%2F%2Fregistry-starter.vercel.app%2Fr%2Fdashboard.json)
+### View the Registry
 
-This registry application also exposes `Open in v0` buttons for each component. Once this application is deployed, the
-`Open in v0` button redirects to [`v0.dev`](https://v0.dev) with a prepopulated prompt and a URL pointing back to this
-registry's `/r/${component_name}.json` endpoint. This endpoint will provide v0 the necessary file information, content,
-and metadata to start your v0 chat with your component, theme, and other related code.
+Open http://localhost:3000 to browse components, blocks, and tokens. Each item shows interactive examples and can be opened in v0.
 
-These `/r/${component_name}.json` files are generated using `shadcn/ui` during the `build` and `dev` based on the
-repository's [`registry.json`](./registry.json). For more information, refer to the
-[documentation](https://ui.shadcn.com/docs/registry/registry-json).
+### Access the Spell Template
 
-## Theming
+Blank canvas to build your prototype: http://localhost:3000/spells/project
 
-To use a custom theme for all the components, all you need to do is modify the CSS tokens in
-[`globals.css`](./src/app/globals.css). More information on these practices can be found
-on [ui.shadcn.com/docs](https://ui.shadcn.com/docs).
+The template includes the full Lumos app layout (header + sidebar) with a blank content area. Perfect for rapid prototyping.
 
-#### Fonts
+### Create a Spell (Standalone App)
 
-To use custom fonts, you can either use [
-`next/font/google`](https://nextjs.org/docs/pages/getting-started/fonts#google-fonts) or the 
-[`@font-face`](https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face) CSS rule in your 
-[`globals.css`](./src/app/globals.css).
+Spells are standalone Next.js projects that import components from the registry:
 
-```css
-@font-face {
-    font-family: 'Montserrat';
-    font-style: normal;
-    font-weight: 400;
-    src: url('https://fonts.gstatic.com/s/montserrat/v15/JTUSjIg1_i6t8kCHKm45xW5rygbi49c.woff2') format('woff2'),
-    url('https://fonts.gstatic.com/s/montserrat/v15/JTUSjIg1_i6t8kCHKm45xW5rygbj49c.woff') format('woff');
-}
+```bash
+# Branch off your work
+git checkout -b spell/your-feature
+
+# Copy the template
+cp -r spells/lumos-spells spells/your-spell-name
+
+# Customize
+cd spells/your-spell-name
+pnpm install
+pnpm dev
 ```
 
-If you use `@font-face`, ensure you modify [`globals.css`](src/app/globals.css) tailwind configuration to map 
-your custom font variables to Tailwind fonts. Refer to this
-[Tailwind documentation](https://tailwindcss.com/docs/font-family#customizing-your-theme)
+Navigate to http://localhost:3001 and build. All Lumos components available via `@/components/*` imports.
 
-## MCP
-
-To use this registry with MCP, you must also edit [`registry.json`](./registry.json)'s first
-`registry-item` named `theme`. This `registry:theme` item not only contains the tailwind configuration, but it also
-contains your design tokens / CSS variables.
-
-The `shadcn/ui` CLI's MCP command will use the entire `registy.json` file, so it must be put in the `/public` folder
-with all of your `registry:item`s. This will enable you to use your registry in tools like Cursor & Windsurf.
-
-## Authentication
-
-To protect your registry, you must first protect your `registry.json` and all `registry:item` JSON files.  
-This is made possible with an environment variable and basic Next.js Middleware.
-
-1. Create new `REGISTRY_AUTH_TOKEN`. For example, you can generate one:
-
-    ```bash
-    node -e "console.log(crypto.randomBytes(32).toString('base64url'))"
-    ```
-
-2. Add new `middleware.ts` file to protect `/r/:path` routes
-
-    ```ts
-    // src/middleware.ts
-    import { NextResponse } from "next/server";
-    import type { NextRequest } from "next/server";
-    
-    export const config = { matcher: "/r/:path*" };
-    
-    export function middleware(request: NextRequest) {
-      const token = request.nextUrl.searchParams.get("token");
-    
-      if (token == null || token !== process.env.REGISTRY_AUTH_TOKEN) {
-        return new NextResponse("Unauthorized", { status: 401 });
-      }
-    
-      return NextResponse.next();
-    }
-    
-    ```
-
-When using `Open in v0`, the v0 platform will use the `token` search parameter to authenticate with your Registry:
-
-```ts
-const v0Url = `https://v0.dev/chat/api/open?url=https%3A%2F%2Fregistry-starter.vercel.app%2Fr%2Faccordion.json&token=${process.env.REGISTRY_AUTH_TOKEN}`
-```
-
-> [!NOTE]  
-> This method only protects the `/r/:path` routes, this does NOT protect the Registry's UI / component previews. If you
-> choose to protect the UI / component preview, you must ensure the `registry.json` and all `registry:item`s are 
-> publicly accessible or protected using the `token` search parameter. This ensures v0 and other AI Tools have access to
-> use the registry
-    
-
-## Running locally
+## Running Locally
 
 ```bash
 pnpm install
 pnpm dev
 ```
 
-Your app should now be running on [localhost:3000](http://localhost:3000).
+Registry runs on http://localhost:3000.
 
-## File Structure
+## Commands
 
-`app/(registry)` routes contains the registry pages.
+```bash
+pnpm dev            # Start dev server (Turbopack)
+pnpm build          # Build + generate registry JSON
+pnpm lint           # Lint with Biome
+pnpm lint:fix       # Auto-fix linting issues
+pnpm test           # Run tests (vitest)
+```
 
-`app/demo` routes contains various UI primitives, Components, or Blocks (based on `registry.json`)
+## Architecture
 
-`@/components` contains all components used in the registry
+### Registry Structure
 
-`@/components/ui` contains all `shadcn/ui` UI Primitives used in the registry
+```
+registry.json                  # Master config for all items
+src/
+  components/
+    lumos-layout.tsx          # App shell (header + sidebar)
+    brand-header.tsx          # Top navigation
+    brand-sidebar.tsx         # Left sidebar nav
+    page-header.tsx           # Page title + description
+    lumos-button.tsx          # Primary action button
+    albus-*.tsx               # AI chat components
+    ui/                       # shadcn primitives
+  app/
+    globals.css               # Design tokens + fonts
+    (registry)/               # Registry UI
+    spells/project/           # Spell template route
+    demo/[name]/              # Component/block demos
+```
 
-`@/components/registry` contains all components for this Registry Starter application
+### Design Tokens
 
-`@/hooks` contains all React hooks
+Lumos uses primitive color tokens in `globals.css` that map to shadcn semantic aliases:
 
-`@/lib` contains all business logic & utils
+| Primitive | Alias | Tailwind |
+|-----------|-------|----------|
+| `--orange-500` | `--primary` | `bg-primary`, `text-primary` |
+| `--neutral-900` | `--foreground` | `text-foreground` |
+| `--neutral-200` | `--border` | `border-border` |
 
-`@/layouts` contains all v0 layouts used in `registry.json`
+Always use Tailwind semantic classes, never raw token variables.
+
+## Registry Items
+
+Items are declared in `registry.json` and generated to `public/r/*.json` on build:
+
+- **`registry:theme`** — Design tokens + CSS variables
+- **`registry:component`** — Reusable components (brand-header, lumos-button, etc.)
+- **`registry:block`** — Full pages with layout (lumos-apps-index, etc.)
+- **`registry:ui`** — shadcn primitive overrides
+
+## Integration
+
+### V0 Integration
+
+Every component has an "Open in v0" button. Clicking it opens v0 with:
+- Pre-loaded theme tokens from this registry
+- Theme colors and design system applied
+- Ability to generate variations using Lumos components
+
+### MCP (Model Context Protocol)
+
+Use this registry with AI IDEs (Cursor, Windsurf, Claude):
+
+```json
+{
+  "mcpServers": {
+    "lumos-registry": {
+      "command": "npx",
+      "args": ["shadcn-ui@latest", "registry-mcp", "https://lumos-shadcn-ui-registry.vercel.app"]
+    }
+  }
+}
+```
+
+The registry exposes `public/r/registry.json` with all items in shadcn format.
+
+## Development
+
+### Adding a Component
+
+```bash
+1. Create src/components/{name}.tsx
+2. Create demo at src/app/demo/[name]/components/{name}.tsx
+3. Add export to src/app/demo/[name]/index.tsx
+4. Add entry to registry.json with dependencies
+5. pnpm build to verify
+```
+
+### Adding a Block (Full Page)
+
+```bash
+1. Create standalone block at src/app/demo/[name]/blocks/{name}.tsx
+2. Create content-only version at src/app/demo/[name]/blocks/full-app/{name}-page.tsx
+3. Add exports to src/app/demo/[name]/index.tsx
+4. Add entries to registry.json
+5. Add route to full-app-layout.tsx
+6. pnpm build to verify
+```
+
+## Deployment
+
+Deploy to Vercel with one click:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fkarina-tc%2Flumos-shadcn-ui-registry)
+
+Environment variables (optional):
+- `REGISTRY_AUTH_TOKEN` — Protect `/r/*` routes with token auth
+
+## Resources
+
+- [shadcn/ui Registry Docs](https://ui.shadcn.com/docs/registry)
+- [Tailwind CSS Docs](https://tailwindcss.com/docs)
+- [Next.js App Router](https://nextjs.org/docs/app)
+- Lumos Design Spec — `docs/superpowers/specs/2026-03-20-lumos-spells-design.md`
+
+## License
+
+MIT
